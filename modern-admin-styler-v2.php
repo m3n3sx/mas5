@@ -1867,8 +1867,8 @@ class ModernAdminStylerV2 {
         
         // ✅ DEBUG: Body classes are now controlled only by PHP
         
-        // Basic plugin classes
-        if (isset($settings['enable_plugin']) && $settings['enable_plugin']) {
+        // Basic plugin classes - domyślnie włączone!
+        if (!isset($settings['enable_plugin']) || $settings['enable_plugin']) {
             $classes .= ' mas-v2-modern-style';
         }
         

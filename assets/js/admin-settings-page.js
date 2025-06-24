@@ -47,6 +47,8 @@
                 this.setupConditionalFields();
                 this.setupSliderValues();
                 this.addInteractiveEffects();
+                this.setupQuickThemes();
+                this.setupLivePreviewToggle();
             });
         }
         
@@ -209,13 +211,8 @@
         }
         
         setupThemeSwitcher() {
-            // Dodaj przycisk theme switcher jeśli nie istnieje
-            if (!$('.mas-v2-theme-switcher').length) {
-                $('<div class="mas-v2-theme-switcher" title="Przełącz motyw"></div>')
-                    .appendTo('body');
-            }
-            
-            $('.mas-v2-theme-switcher').on('click', function() {
+            // Theme toggle button
+            $('#mas-v2-theme-toggle').on('click', function() {
                 const $body = $('body');
                 const isDark = $body.hasClass('mas-theme-dark');
                 
@@ -412,6 +409,109 @@
         animateButton($btn) {
             $btn.addClass('mas-v2-btn-animated');
             setTimeout(() => $btn.removeClass('mas-v2-btn-animated'), 600);
+        }
+        
+        setupQuickThemes() {
+            $('.mas-v2-theme-preset').on('click', function() {
+                const theme = $(this).data('theme');
+                
+                // Remove active from all
+                $('.mas-v2-theme-preset').removeClass('active');
+                $(this).addClass('active');
+                
+                // Apply theme
+                const themes = {
+                    modern: {
+                        menu_background: '#1e1e1e',
+                        menu_text_color: '#e0e0e0',
+                        menu_hover_background: 'rgba(255, 255, 255, 0.1)',
+                        menu_active_background: '#6366f1',
+                        admin_bar_bg: '#1a1a1a',
+                        accent_color: '#6366f1'
+                    },
+                    minimal: {
+                        menu_background: '#ffffff',
+                        menu_text_color: '#374151',
+                        menu_hover_background: '#f3f4f6',
+                        menu_active_background: '#6366f1',
+                        admin_bar_bg: '#ffffff',
+                        accent_color: '#6366f1'
+                    },
+                    dark: {
+                        menu_background: '#0f172a',
+                        menu_text_color: '#e2e8f0',
+                        menu_hover_background: '#1e293b',
+                        menu_active_background: '#3b82f6',
+                        admin_bar_bg: '#0f172a',
+                        accent_color: '#3b82f6'
+                    },
+                    colorful: {
+                        menu_background: '#8b5cf6',
+                        menu_text_color: '#ffffff',
+                        menu_hover_background: 'rgba(255, 255, 255, 0.2)',
+                        menu_active_background: '#ec4899',
+                        admin_bar_bg: '#7c3aed',
+                        accent_color: '#ec4899'
+                    },
+                    ocean: {
+                        menu_background: '#0891b2',
+                        menu_text_color: '#ffffff',
+                        menu_hover_background: 'rgba(255, 255, 255, 0.2)',
+                        menu_active_background: '#06b6d4',
+                        admin_bar_bg: '#0e7490',
+                        accent_color: '#06b6d4'
+                    },
+                    sunset: {
+                        menu_background: '#f97316',
+                        menu_text_color: '#ffffff',
+                        menu_hover_background: 'rgba(255, 255, 255, 0.2)',
+                        menu_active_background: '#f59e0b',
+                        admin_bar_bg: '#ea580c',
+                        accent_color: '#f59e0b'
+                    }
+                };
+                
+                if (themes[theme]) {
+                    // Apply theme colors to form inputs
+                    Object.entries(themes[theme]).forEach(([key, value]) => {
+                        const $input = $(`[name="${key}"]`);
+                        if ($input.length) {
+                            $input.val(value).trigger('input');
+                        }
+                    });
+                    
+                    this.showNotification('success', `Motyw "${theme}" został zastosowany!`);
+                }
+            });
+        }
+        
+        setupLivePreviewToggle() {
+            $('#mas-v2-live-preview-toggle').on('click', function() {
+                const $btn = $(this);
+                const isActive = $btn.hasClass('active');
+                
+                if (isActive) {
+                    $btn.removeClass('active');
+                    // Disable live preview
+                    $(document).off('input.livepreview');
+                    this.showNotification('info', 'Podgląd na żywo wyłączony');
+                } else {
+                    $btn.addClass('active');
+                    // Enable live preview
+                    $(document).on('input.livepreview', 'input, select', function() {
+                        // Trigger save via AJAX for live preview
+                        const $form = $('#mas-v2-settings-form');
+                        const formData = $form.serialize();
+                        
+                        $.post(masV2Global.ajaxUrl, {
+                            action: 'mas_v2_live_preview',
+                            nonce: masV2Global.nonce,
+                            ...formData
+                        });
+                    });
+                    this.showNotification('success', 'Podgląd na żywo włączony');
+                }
+            }.bind(this));
         }
     }
     

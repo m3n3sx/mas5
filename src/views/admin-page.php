@@ -118,6 +118,57 @@ if (!$is_main_page) {
         </div>
     </div>
 
+    <!-- Quick Controls Bar -->
+    <div class="mas-v2-quick-controls">
+        <div class="mas-v2-controls-left">
+            <!-- Theme Switcher -->
+            <button type="button" class="mas-v2-btn mas-v2-btn-icon" id="mas-v2-theme-toggle" title="<?php esc_attr_e('Przełącz motyw jasny/ciemny', 'modern-admin-styler-v2'); ?>">
+                <span class="theme-icon-light">🌞</span>
+                <span class="theme-icon-dark" style="display: none;">🌙</span>
+            </button>
+            
+            <!-- Live Preview -->
+            <button type="button" class="mas-v2-btn mas-v2-btn-icon" id="mas-v2-live-preview-toggle" title="<?php esc_attr_e('Podgląd na żywo', 'modern-admin-styler-v2'); ?>">
+                👁️
+            </button>
+        </div>
+        
+        <div class="mas-v2-controls-center">
+            <!-- Quick Themes -->
+            <div class="mas-v2-quick-themes">
+                <span class="mas-v2-quick-themes-label"><?php esc_html_e('Szybkie motywy:', 'modern-admin-styler-v2'); ?></span>
+                <button type="button" class="mas-v2-theme-preset" data-theme="modern" title="Modern">
+                    <span style="background: linear-gradient(45deg, #667eea, #764ba2);"></span>
+                </button>
+                <button type="button" class="mas-v2-theme-preset" data-theme="minimal" title="Minimal">
+                    <span style="background: #f3f4f6;"></span>
+                </button>
+                <button type="button" class="mas-v2-theme-preset" data-theme="dark" title="Dark">
+                    <span style="background: #1f2937;"></span>
+                </button>
+                <button type="button" class="mas-v2-theme-preset" data-theme="colorful" title="Colorful">
+                    <span style="background: linear-gradient(45deg, #f093fb, #f5576c);"></span>
+                </button>
+                <button type="button" class="mas-v2-theme-preset" data-theme="ocean" title="Ocean">
+                    <span style="background: linear-gradient(45deg, #4facfe, #00f2fe);"></span>
+                </button>
+                <button type="button" class="mas-v2-theme-preset" data-theme="sunset" title="Sunset">
+                    <span style="background: linear-gradient(45deg, #fa709a, #fee140);"></span>
+                </button>
+            </div>
+        </div>
+        
+        <div class="mas-v2-controls-right">
+            <!-- Settings Shortcuts -->
+            <button type="button" class="mas-v2-btn mas-v2-btn-icon" onclick="location.href='<?php echo admin_url('admin.php?page=mas-v2-menu'); ?>'" title="<?php esc_attr_e('Ustawienia menu', 'modern-admin-styler-v2'); ?>">
+                ☰
+            </button>
+            <button type="button" class="mas-v2-btn mas-v2-btn-icon" onclick="location.href='<?php echo admin_url('admin.php?page=mas-v2-effects'); ?>'" title="<?php esc_attr_e('Efekty wizualne', 'modern-admin-styler-v2'); ?>">
+                ✨
+            </button>
+        </div>
+    </div>
+
     <!-- Metrics cards na wszystkich stronach -->
     <!-- Custom Metrics Grid - zastąpienie domyślnych metryk -->
     <div class="mas-v2-metrics-grid">

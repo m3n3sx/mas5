@@ -38,8 +38,8 @@ class MenuManagerFixed {
     applyMenuEnhancements() {
         const body = document.body;
         
-        // Zawsze dodaj podstawową klasę jeśli włączone
-        if (this.settings.enable_plugin) {
+        // Zawsze dodaj podstawową klasę jeśli włączone (domyślnie true)
+        if (this.settings.enable_plugin !== false) {
             body.classList.add('mas-v2-menu-enhanced');
         }
         
