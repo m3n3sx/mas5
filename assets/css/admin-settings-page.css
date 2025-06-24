@@ -1,0 +1,700 @@
+/**
+ * Modern Admin Styler V2 - Settings Page Design
+ * 
+ * 🎨 CREATIVE REDESIGN 2024
+ * Ultra-modern design dla strony ustawień wtyczki
+ */
+
+/* ========================================
+   🏗️ WRAPPER & LAYOUT
+   ======================================== */
+.mas-v2-admin-wrapper {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    animation: fadeInScale 0.6s ease-out;
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* ========================================
+   🎯 HEADER SECTION
+   ======================================== */
+.mas-v2-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 24px;
+    padding: 40px;
+    margin-bottom: 30px;
+    box-shadow: 0 20px 40px rgba(99, 102, 241, 0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.mas-v2-header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -10%;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: float 20s infinite ease-in-out;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(180deg); }
+}
+
+.mas-v2-header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+}
+
+.mas-v2-user-welcome {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.mas-v2-user-avatar {
+    position: relative;
+}
+
+.mas-v2-avatar-img {
+    width: 60px;
+    height: 60px;
+    border-radius: 20px;
+    border: 3px solid rgba(255,255,255,0.3);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+}
+
+.mas-v2-avatar-img:hover {
+    transform: scale(1.1) rotate(5deg);
+    border-color: rgba(255,255,255,0.5);
+}
+
+.mas-v2-user-info {
+    color: white;
+}
+
+.mas-v2-greeting {
+    font-size: 16px;
+    opacity: 0.9;
+    margin-bottom: 5px;
+}
+
+.mas-v2-title {
+    font-size: 32px;
+    font-weight: 700;
+    margin: 0;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    background: linear-gradient(45deg, #ffffff 30%, #f0f0f0 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* ========================================
+   🎨 METRICS CARDS
+   ======================================== */
+.mas-v2-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.mas-v2-metric-card {
+    background: white;
+    border-radius: 20px;
+    padding: 25px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+.mas-v2-metric-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+}
+
+.mas-v2-metric-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+}
+
+.mas-v2-metric-card.purple {
+    --gradient-start: #8b5cf6;
+    --gradient-end: #7c3aed;
+}
+
+.mas-v2-metric-card.pink {
+    --gradient-start: #ec4899;
+    --gradient-end: #db2777;
+}
+
+.mas-v2-metric-card.orange {
+    --gradient-start: #f59e0b;
+    --gradient-end: #d97706;
+}
+
+.mas-v2-metric-card.green {
+    --gradient-start: #10b981;
+    --gradient-end: #059669;
+}
+
+.mas-v2-metric-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.mas-v2-metric-icon {
+    font-size: 24px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0,0,0,0.05);
+    border-radius: 12px;
+}
+
+.mas-v2-metric-trend {
+    font-size: 14px;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 6px;
+    background: rgba(16, 185, 129, 0.1);
+    color: #059669;
+}
+
+.mas-v2-metric-trend.negative {
+    background: rgba(239, 68, 68, 0.1);
+    color: #dc2626;
+}
+
+.mas-v2-metric-value {
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 8px;
+    background: linear-gradient(135deg, #1e293b 0%, #475569 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.mas-v2-metric-label {
+    font-size: 14px;
+    color: #6b7280;
+    font-weight: 500;
+}
+
+/* Special Cards */
+.mas-v2-quick-actions-mini {
+    display: flex;
+    gap: 8px;
+    margin-top: 15px;
+}
+
+.mas-v2-btn-mini {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: rgba(0,0,0,0.05);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mas-v2-btn-mini:hover {
+    background: var(--gradient-start);
+    color: white;
+    transform: scale(1.1);
+}
+
+.mas-v2-rotating-tip {
+    margin-top: 15px;
+    font-size: 13px;
+    color: #6b7280;
+    min-height: 20px;
+    animation: fadeInOut 8s infinite;
+}
+
+@keyframes fadeInOut {
+    0%, 100% { opacity: 0; }
+    10%, 90% { opacity: 1; }
+}
+
+.mas-v2-system-mini {
+    display: flex;
+    gap: 15px;
+    margin-top: 15px;
+    font-size: 13px;
+}
+
+.mas-v2-system-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: #6b7280;
+}
+
+/* ========================================
+   📦 CONTENT CARDS
+   ======================================== */
+.mas-v2-content-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 30px;
+}
+
+.mas-v2-main-content {
+    background: white;
+    border-radius: 24px;
+    padding: 40px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    min-height: 500px;
+}
+
+.mas-v2-settings-columns {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 30px;
+}
+
+.mas-v2-card {
+    background: #f9fafb;
+    border-radius: 16px;
+    padding: 30px;
+    border: 1px solid #e5e7eb;
+    transition: all 0.3s ease;
+}
+
+.mas-v2-card:hover {
+    background: #f3f4f6;
+    border-color: #d1d5db;
+    transform: translateY(-2px);
+}
+
+.mas-v2-card-header {
+    margin-bottom: 25px;
+}
+
+.mas-v2-card-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0;
+    color: #1f2937;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* ========================================
+   🎯 FORM ELEMENTS
+   ======================================== */
+.mas-v2-field {
+    margin-bottom: 20px;
+}
+
+.mas-v2-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.mas-v2-input,
+.mas-v2-select,
+select.mas-v2-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #e5e7eb;
+    border-radius: 10px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    background: white;
+    color: #1f2937;
+}
+
+.mas-v2-input:focus,
+.mas-v2-select:focus,
+select.mas-v2-input:focus {
+    outline: none;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+/* Color Inputs */
+input[type="color"].mas-v2-input {
+    height: 44px;
+    padding: 4px;
+    cursor: pointer;
+}
+
+/* Sliders */
+.mas-v2-slider {
+    width: 100%;
+    height: 6px;
+    border-radius: 3px;
+    background: #e5e7eb;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+    margin-top: 10px;
+}
+
+.mas-v2-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+    transition: all 0.2s ease;
+}
+
+.mas-v2-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+}
+
+.mas-v2-slider-value {
+    font-size: 12px;
+    color: #6366f1;
+    font-weight: 600;
+    background: rgba(99, 102, 241, 0.1);
+    padding: 2px 8px;
+    border-radius: 6px;
+}
+
+/* Checkboxes */
+.mas-v2-checkbox {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 14px;
+    color: #374151;
+    position: relative;
+    padding-left: 32px;
+    user-select: none;
+}
+
+.mas-v2-checkbox input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.mas-v2-checkbox-mark {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    background: white;
+    border: 2px solid #e5e7eb;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+}
+
+.mas-v2-checkbox:hover .mas-v2-checkbox-mark {
+    border-color: #6366f1;
+}
+
+.mas-v2-checkbox input:checked ~ .mas-v2-checkbox-mark {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    border-color: transparent;
+}
+
+.mas-v2-checkbox input:checked ~ .mas-v2-checkbox-mark::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* ========================================
+   🎯 BUTTONS
+   ======================================== */
+.mas-v2-btn {
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+    overflow: hidden;
+}
+
+.mas-v2-btn-primary {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    color: white;
+    box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);
+}
+
+.mas-v2-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+}
+
+.mas-v2-btn-primary::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.mas-v2-btn-primary:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.mas-v2-btn-secondary {
+    background: white;
+    color: #6366f1;
+    border: 2px solid #e5e7eb;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.mas-v2-btn-secondary:hover {
+    background: #f9fafb;
+    border-color: #6366f1;
+    transform: translateY(-1px);
+}
+
+.mas-v2-header-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.mas-v2-actions-vertical {
+    display: flex;
+    gap: 12px;
+}
+
+/* ========================================
+   🎨 SPECIAL EFFECTS
+   ======================================== */
+
+/* Conditional Fields */
+.conditional-field {
+    transition: all 0.3s ease;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    margin-bottom: 0;
+}
+
+.conditional-field.show {
+    max-height: 200px;
+    opacity: 1;
+    margin-bottom: 20px;
+}
+
+/* Info Grid */
+.mas-v2-info-grid {
+    display: grid;
+    gap: 15px;
+}
+
+.mas-v2-info-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.mas-v2-info-item:last-child {
+    border-bottom: none;
+}
+
+.mas-v2-info-label {
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.mas-v2-info-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+/* ========================================
+   📱 RESPONSIVE
+   ======================================== */
+@media (max-width: 768px) {
+    .mas-v2-admin-wrapper {
+        padding: 10px;
+    }
+    
+    .mas-v2-header {
+        padding: 25px;
+        border-radius: 16px;
+    }
+    
+    .mas-v2-header-content {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .mas-v2-title {
+        font-size: 24px;
+    }
+    
+    .mas-v2-metrics-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .mas-v2-settings-columns {
+        grid-template-columns: 1fr;
+    }
+    
+    .mas-v2-main-content {
+        padding: 20px;
+    }
+    
+    .mas-v2-actions-vertical {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .mas-v2-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* ========================================
+   ✨ LOADING & ANIMATIONS
+   ======================================== */
+.mas-v2-loading {
+    position: relative;
+    overflow: hidden;
+}
+
+.mas-v2-loading::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(255,255,255,0.4) 50%,
+        transparent 100%
+    );
+    animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+    to {
+        left: 100%;
+    }
+}
+
+/* Success Animation */
+.mas-v2-success-pulse {
+    animation: successPulse 0.6s ease;
+}
+
+@keyframes successPulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+    }
+}
+
+/* ========================================
+   🌈 THEME VARIATIONS
+   ======================================== */
+body.mas-theme-dark .mas-v2-admin-wrapper {
+    background: #0f172a;
+    color: #e2e8f0;
+}
+
+body.mas-theme-dark .mas-v2-metric-card,
+body.mas-theme-dark .mas-v2-main-content {
+    background: #1e293b;
+    border-color: #334155;
+}
+
+body.mas-theme-dark .mas-v2-card {
+    background: #0f172a;
+    border-color: #1e293b;
+}
+
+body.mas-theme-dark .mas-v2-input,
+body.mas-theme-dark select.mas-v2-input {
+    background: #0f172a;
+    border-color: #334155;
+    color: #e2e8f0;
+}
+
+body.mas-theme-dark .mas-v2-btn-secondary {
+    background: #1e293b;
+    color: #818cf8;
+    border-color: #334155;
+} 

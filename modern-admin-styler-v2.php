@@ -429,6 +429,26 @@ class ModernAdminStylerV2 {
         //     MAS_V2_VERSION
         // );
         
+        // 🎨 Settings page specific styles
+        $current_page = $_GET['page'] ?? '';
+        if (strpos($current_page, 'mas-v2') !== false) {
+            wp_enqueue_style(
+                'mas-v2-admin-settings-page',
+                MAS_V2_PLUGIN_URL . 'assets/css/admin-settings-page.css',
+                array('mas-v2-global'),
+                MAS_V2_VERSION
+            );
+            
+            // Settings page JavaScript
+            wp_enqueue_script(
+                'mas-v2-admin-settings-page',
+                MAS_V2_PLUGIN_URL . 'assets/js/admin-settings-page.js',
+                array('jquery', 'mas-v2-global'),
+                MAS_V2_VERSION,
+                true
+            );
+        }
+        
         // 🚀 KLUCZOWE: Najpierw ładuj loader modułów!
         wp_enqueue_script(
             'mas-v2-loader',
@@ -1848,7 +1868,9 @@ class ModernAdminStylerV2 {
         // ✅ DEBUG: Body classes are now controlled only by PHP
         
         // Basic plugin classes
-        $classes .= ' mas-v2-modern-style';
+        if (isset($settings['enable_plugin']) && $settings['enable_plugin']) {
+            $classes .= ' mas-v2-modern-style';
+        }
         
         if (isset($settings['compact_mode']) && $settings['compact_mode']) {
             $classes .= ' mas-compact-mode';
