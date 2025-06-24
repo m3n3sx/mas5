@@ -1,0 +1,400 @@
+/**
+ * Modern Admin Styler V2 - Modern Menu Styles (ENHANCED)
+ * 
+ * Te style używają CSS Variables ustawianych przez MenuManager.js
+ * z ustawień wtyczki - PEŁNA KONTROLA przez opcje!
+ * 
+ * CSS Variables pochodzą z:
+ * - menu_background, menu_text_color, menu_hover_background, itp.
+ * - menu_width, menu_item_height
+ * - menu_border_radius_type, menu_margin_type
+ * - floating/glossy/shadow options
+ */
+
+/* === CSS VARIABLES DEFAULTS === */
+:root {
+    /* Menu podstawowe */
+    --mas-menu-bg-color: #23282d;
+    --mas-menu-text-color: #eee;
+    --mas-menu-hover-color: rgba(255,255,255,0.1);
+    --mas-menu-hover-text-color: #fff;
+    --mas-menu-active-bg: #0073aa;
+    --mas-menu-active-text-color: white;
+    
+    /* Menu wymiary */
+    --mas-menu-width: auto;
+    --mas-menu-item-height: 34px;
+    --mas-menu-item-padding: 8px 12px;
+    --mas-menu-border-radius: 0px;
+    --mas-menu-font-size: 14px;
+    --mas-menu-font-family: inherit;
+    
+    /* Floating margins */
+    --mas-menu-floating-margin-top: 10px;
+    --mas-menu-floating-margin-right: 10px;
+    --mas-menu-floating-margin-bottom: 10px;
+    --mas-menu-floating-margin-left: 10px;
+    
+    /* Submenu */
+    --mas-submenu-bg-color: rgba(0, 0, 0, 0.2);
+    --mas-submenu-text-color: #ccc;
+    --mas-submenu-hover-bg: rgba(255, 255, 255, 0.1);
+    --mas-submenu-hover-text-color: #fff;
+    --mas-submenu-active-bg: rgba(139, 92, 246, 0.8);
+    --mas-submenu-active-text-color: white;
+    --mas-submenu-border-radius: 8px;
+    --mas-submenu-min-width: 200px;
+    --mas-submenu-padding: 8px;
+    --mas-submenu-item-padding: 8px 16px;
+    --mas-submenu-offset-x: 8px;
+    --mas-submenu-offset-y: 0px;
+    --mas-submenu-opacity: 0;
+    --mas-submenu-transform: translateX(-10px) scale(0.95);
+    --mas-submenu-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    
+    /* Efekty */
+    --mas-menu-glossy-bg: rgba(35, 40, 45, 0.8);
+    --mas-menu-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    --mas-menu-transition-duration: 300ms;
+    --mas-menu-animation-enabled: 1;
+}
+
+/* === FORCE RESET PROBLEMATYCZNYCH STYLÓW === */
+/* Używamy bardzo wysokiej specyficzności zamiast !important */
+html body.wp-admin div#adminmenu,
+html body.wp-admin div#adminmenuwrap,
+html body.wp-admin div#adminmenu .wp-submenu,
+html body.wp-admin div#adminmenuback {
+    width: auto;
+    background-color: transparent;
+}
+
+/* SUPER RESET dla hardcoded wartości */
+html body.wp-admin #adminmenu,
+html body.wp-admin #adminmenuwrap {
+    width: auto;
+    background: var(--mas-menu-bg-color);
+    background-color: var(--mas-menu-bg-color);
+}
+
+/* === BASIC MENU STYLES === */
+body.wp-admin #adminmenu {
+    background: var(--mas-menu-bg-color);
+    width: var(--mas-menu-width);
+    border-radius: var(--mas-menu-border-radius);
+    transition: all var(--mas-menu-transition-duration) ease;
+    font-size: var(--mas-menu-font-size);
+    font-family: var(--mas-menu-font-family);
+    box-shadow: var(--mas-menu-shadow);
+}
+
+body.wp-admin #adminmenuwrap {
+    width: var(--mas-menu-width);
+}
+
+/* Menu items */
+body.wp-admin #adminmenu li.menu-top > a {
+    color: var(--mas-menu-text-color);
+    padding: var(--mas-menu-item-padding);
+    border-radius: calc(var(--mas-menu-border-radius) * 0.7);
+    margin: 2px 4px;
+    transition: all calc(var(--mas-menu-transition-duration) * 0.7) ease;
+    min-height: var(--mas-menu-item-height);
+    display: flex;
+    align-items: center;
+    font-size: var(--mas-menu-font-size);
+}
+
+body.wp-admin #adminmenu li.menu-top:hover > a,
+body.wp-admin #adminmenu li.menu-top > a:hover {
+    background: var(--mas-menu-hover-color);
+    color: var(--mas-menu-hover-text-color);
+    transform: calc(var(--mas-menu-animation-enabled) * 2px) translateX(0);
+}
+
+body.wp-admin #adminmenu li.menu-top.current > a,
+body.wp-admin #adminmenu li.wp-has-current-submenu > a {
+    background: var(--mas-menu-active-bg);
+    color: var(--mas-menu-active-text-color);
+}
+
+/* Menu icons */
+body.wp-admin #adminmenu .wp-menu-image {
+    opacity: 0.8;
+    transition: opacity var(--mas-menu-transition-duration) ease;
+}
+
+body.wp-admin #adminmenu li.menu-top:hover .wp-menu-image {
+    opacity: 1;
+}
+
+/* === FLOATING MENU STYLES === */
+body.wp-admin.mas-v2-menu-floating #adminmenuwrap {
+    position: fixed;
+    top: calc(32px + var(--mas-menu-floating-margin-top));
+    left: var(--mas-menu-floating-margin-left);
+    bottom: var(--mas-menu-floating-margin-bottom);
+    right: auto;
+    width: var(--mas-menu-width);
+    z-index: 9999;
+    border-radius: var(--mas-menu-border-radius);
+    box-shadow: var(--mas-menu-shadow);
+    overflow: visible;
+}
+
+body.wp-admin.mas-v2-menu-floating #adminmenu {
+    border-radius: var(--mas-menu-border-radius);
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: visible;
+}
+
+body.wp-admin.mas-v2-menu-floating #wpbody-content {
+    margin-left: 0;
+}
+
+/* Collapsed floating menu */
+body.wp-admin.mas-v2-menu-floating.folded #adminmenuwrap {
+    width: 36px;
+}
+
+body.wp-admin.mas-v2-menu-floating.folded #adminmenu {
+    width: 36px;
+}
+
+/* Floating right side option */
+body.wp-admin.mas-v2-menu-floating.mas-menu-position-right #adminmenuwrap {
+    left: auto;
+    right: var(--mas-menu-floating-margin-right);
+}
+
+/* === SUBMENU STYLES === */
+body.wp-admin #adminmenu .wp-submenu {
+    background: var(--mas-submenu-bg-color);
+    border-radius: var(--mas-submenu-border-radius);
+    margin: 4px 8px 8px 8px;
+    padding: 4px 0;
+    overflow: hidden;
+    transition: all var(--mas-menu-transition-duration) ease;
+}
+
+/* Normal menu submenu (expanded accordion style) */
+body.wp-admin:not(.mas-v2-menu-floating):not(.folded) #adminmenu li.wp-has-current-submenu .wp-submenu,
+body.wp-admin:not(.mas-v2-menu-floating):not(.folded) #adminmenu li.current .wp-submenu {
+    display: block;
+    position: static;
+    width: auto;
+    opacity: 1;
+    transform: none;
+}
+
+/* Floating/collapsed menu submenu - hide by default */
+body.wp-admin.mas-v2-menu-floating #adminmenu li:not(:hover) .wp-submenu,
+body.wp-admin.folded:not(.mas-v2-menu-floating) #adminmenu li:not(:hover) .wp-submenu {
+    display: none;
+    position: absolute;
+    left: calc(100% + var(--mas-submenu-offset-x));
+    top: var(--mas-submenu-offset-y);
+    min-width: var(--mas-submenu-min-width);
+    background: var(--mas-submenu-bg-color);
+    backdrop-filter: blur(20px);
+    box-shadow: var(--mas-submenu-shadow);
+    border-radius: var(--mas-submenu-border-radius);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 99999;
+    padding: var(--mas-submenu-padding);
+    margin: 0;
+    opacity: var(--mas-submenu-opacity);
+    transform: var(--mas-submenu-transform);
+    transition: opacity calc(var(--mas-menu-transition-duration) * 0.7) ease, 
+                transform calc(var(--mas-menu-transition-duration) * 0.7) ease;
+    pointer-events: none;
+}
+
+/* Base submenu positioning for floating/collapsed */
+body.wp-admin.mas-v2-menu-floating #adminmenu .wp-submenu,
+body.wp-admin.folded:not(.mas-v2-menu-floating) #adminmenu .wp-submenu {
+    position: absolute;
+    left: calc(100% + var(--mas-submenu-offset-x));
+    top: var(--mas-submenu-offset-y);
+    min-width: var(--mas-submenu-min-width);
+    background: var(--mas-submenu-bg-color);
+    backdrop-filter: blur(20px);
+    box-shadow: var(--mas-submenu-shadow);
+    border-radius: var(--mas-submenu-border-radius);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 99999;
+    padding: var(--mas-submenu-padding);
+    margin: 0;
+}
+
+/* Show submenu on hover */
+body.wp-admin.mas-v2-menu-floating #adminmenu li.menu-top:hover .wp-submenu,
+body.wp-admin.folded:not(.mas-v2-menu-floating) #adminmenu li.menu-top:hover .wp-submenu,
+body.wp-admin.mas-v2-menu-floating #adminmenu li.menu-top.mas-keyboard-focus .wp-submenu,
+body.wp-admin.folded:not(.mas-v2-menu-floating) #adminmenu li.menu-top.mas-keyboard-focus .wp-submenu {
+    display: block;
+    opacity: 1;
+    transform: translateX(0) scale(1);
+    pointer-events: auto;
+    animation: submenuSlideIn calc(var(--mas-menu-transition-duration) * 0.7) ease-out;
+}
+
+/* Submenu slide-in animation */
+@keyframes submenuSlideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-10px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
+}
+
+/* Disable animations if user prefers reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        --mas-menu-transition-duration: 0ms !important;
+        --mas-menu-animation-enabled: 0 !important;
+    }
+    
+    @keyframes submenuSlideIn {
+        from, to {
+            opacity: 1;
+            transform: translateX(0) scale(1);
+        }
+    }
+}
+
+/* Submenu items */
+body.wp-admin #adminmenu .wp-submenu li a {
+    padding: var(--mas-submenu-item-padding);
+    margin: 2px 8px;
+    border-radius: calc(var(--mas-submenu-border-radius) * 0.7);
+    color: var(--mas-submenu-text-color);
+    transition: all calc(var(--mas-menu-transition-duration) * 0.5) ease;
+    display: block;
+    font-size: calc(var(--mas-menu-font-size) * 0.9);
+}
+
+body.wp-admin #adminmenu .wp-submenu li a:hover {
+    background: var(--mas-submenu-hover-bg);
+    color: var(--mas-submenu-hover-text-color);
+    transform: calc(var(--mas-menu-animation-enabled) * 4px) translateX(0);
+}
+
+body.wp-admin #adminmenu .wp-submenu li.current a {
+    background: var(--mas-submenu-active-bg);
+    color: var(--mas-submenu-active-text-color);
+}
+
+/* === GLOSSY EFFECT === */
+body.wp-admin.mas-v2-menu-glossy #adminmenu {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    background: var(--mas-menu-glossy-bg);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+body.wp-admin.mas-v2-menu-glossy #adminmenu .wp-submenu {
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* === COMPACT MODE === */
+body.wp-admin.mas-v2-menu-compact #adminmenu li.menu-top > a {
+    padding: 6px 10px;
+    min-height: 28px;
+    font-size: calc(var(--mas-menu-font-size) * 0.9);
+}
+
+body.wp-admin.mas-v2-menu-compact #adminmenu .wp-submenu li a {
+    padding: 6px 12px;
+    font-size: calc(var(--mas-menu-font-size) * 0.85);
+}
+
+/* === ROUNDED CORNERS ENHANCED === */
+body.wp-admin.mas-v2-menu-rounded #adminmenu {
+    border-radius: var(--mas-menu-border-radius);
+}
+
+body.wp-admin.mas-v2-menu-rounded #adminmenu li.menu-top > a {
+    border-radius: calc(var(--mas-menu-border-radius) * 0.7);
+}
+
+body.wp-admin.mas-v2-menu-rounded #adminmenu .wp-submenu {
+    border-radius: var(--mas-submenu-border-radius);
+}
+
+/* === SHADOW EFFECTS === */
+body.wp-admin.mas-v2-menu-shadows #adminmenu {
+    box-shadow: var(--mas-menu-shadow);
+}
+
+body.wp-admin.mas-v2-menu-shadows #adminmenu .wp-submenu {
+    box-shadow: var(--mas-submenu-shadow);
+}
+
+/* === RESPONSIVE === */
+@media screen and (max-width: 782px) {
+    body.wp-admin.mas-v2-menu-floating #adminmenuwrap {
+        position: static;
+        width: 100%;
+        border-radius: 0;
+        box-shadow: none;
+        top: auto;
+        left: auto;
+        bottom: auto;
+        right: auto;
+    }
+    
+    body.wp-admin.mas-v2-menu-floating #adminmenu .wp-submenu {
+        position: static;
+        width: auto;
+        box-shadow: none;
+        transform: none;
+        opacity: 1;
+        display: block;
+        backdrop-filter: none;
+        border: none;
+    }
+    
+    /* Mobile menu adjustments */
+    body.wp-admin #adminmenu li.menu-top > a {
+        min-height: 44px; /* Better touch targets */
+        padding: 12px 16px;
+    }
+}
+
+/* === HIGH CONTRAST MODE === */
+@media (prefers-contrast: high) {
+    :root {
+        --mas-menu-bg-color: #000000;
+        --mas-menu-text-color: #ffffff;
+        --mas-menu-hover-color: #ffffff;
+        --mas-menu-hover-text-color: #000000;
+        --mas-submenu-bg-color: #1a1a1a;
+        --mas-submenu-text-color: #ffffff;
+    }
+}
+
+/* === FALLBACK STYLES === */
+/* W przypadku gdy CSS Variables nie są dostępne */
+@supports not (color: var(--color)) {
+    body.wp-admin #adminmenu {
+        background: #23282d;
+        font-size: 14px;
+    }
+    
+    body.wp-admin #adminmenu .wp-submenu {
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+    }
+    
+    body.wp-admin #adminmenu li.menu-top > a {
+        color: #eee;
+        padding: 8px 12px;
+    }
+} 

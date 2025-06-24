@@ -1,0 +1,150 @@
+{
+  "name": "cursor-localhost-viewer",
+  "displayName": "Localhost Viewer",
+  "description": "Wyświetla strony localhost w embedded Chrome browser w Cursorze",
+  "version": "0.1.0",
+  "publisher": "cursor-localhost-viewer",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:cursor-localhost-viewer.openLocalhost",
+    "onCommand:cursor-localhost-viewer.openWordPress",
+    "onCommand:cursor-localhost-viewer.openCommonPorts",
+    "onCommand:cursor-localhost-viewer.test"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "cursor-localhost-viewer.test",
+        "title": "Localhost Viewer: Test Extension",
+        "category": "Localhost Viewer"
+      },
+      {
+        "command": "cursor-localhost-viewer.openLocalhost",
+        "title": "Localhost Viewer: Open URL",
+        "category": "Localhost Viewer"
+      },
+      {
+        "command": "cursor-localhost-viewer.openWordPress",
+        "title": "Localhost Viewer: Open WordPress",
+        "category": "Localhost Viewer"
+      },
+      {
+        "command": "cursor-localhost-viewer.openCommonPorts",
+        "title": "Localhost Viewer: Quick Ports",
+        "category": "Localhost Viewer"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "cursor-localhost-viewer.test",
+          "when": "true"
+        },
+        {
+          "command": "cursor-localhost-viewer.openLocalhost",
+          "when": "true"
+        },
+        {
+          "command": "cursor-localhost-viewer.openWordPress",
+          "when": "true"
+        },
+        {
+          "command": "cursor-localhost-viewer.openCommonPorts",
+          "when": "true"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Localhost Viewer",
+      "properties": {
+        "cursorLocalhostViewer.defaultPort": {
+          "type": "number",
+          "default": 3000,
+          "description": "Domyślny port dla localhost"
+        },
+        "cursorLocalhostViewer.wordPressPort": {
+          "type": "number",
+          "default": 10018,
+          "description": "Port WordPress (Local by Flywheel)"
+        },
+        "cursorLocalhostViewer.commonPorts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "port": {
+                "type": "number"
+              },
+              "description": {
+                "type": "string"
+              }
+            }
+          },
+          "default": [
+            {
+              "name": "WordPress",
+              "port": 10018,
+              "description": "Local by Flywheel"
+            },
+            {
+              "name": "React Dev",
+              "port": 3000,
+              "description": "React Development Server"
+            },
+            {
+              "name": "Vue Dev",
+              "port": 8080,
+              "description": "Vue Development Server"
+            },
+            {
+              "name": "Next.js",
+              "port": 3001,
+              "description": "Next.js Development Server"
+            },
+            {
+              "name": "Laravel",
+              "port": 8000,
+              "description": "Laravel Development Server"
+            },
+            {
+              "name": "Django",
+              "port": 8000,
+              "description": "Django Development Server"
+            }
+          ],
+          "description": "Lista popularnych portów development"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.74.0",
+    "@types/node": "16.x",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.0.0",
+    "typescript": "^5.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/example/cursor-localhost-viewer.git"
+  },
+  "license": "MIT"
+} 

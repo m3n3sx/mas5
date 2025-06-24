@@ -1,0 +1,348 @@
+/*
+ * Modern Admin Styler V2 - Color Palette System
+ * MOOD-BASED DESIGN PALETTES 🌈
+ * 
+ * Predefiniowane palety nastrojów dla jednego kliknięcia
+ */
+
+/* ========================================
+   🌊 PROFESSIONAL BLUE - Profesjonalny Błękit
+   ======================================== */
+
+[data-palette="professional-blue"] {
+    --mas-glass-primary: rgba(240, 248, 255, 0.85);
+    --mas-glass-dark: rgba(15, 30, 50, 0.85);
+    --mas-glass-border: rgba(59, 130, 246, 0.2);
+    --mas-glass-border-dark: rgba(96, 165, 250, 0.1);
+    --mas-submenu-glass: rgba(248, 250, 252, 0.95);
+    
+    --mas-accent-start: #3B82F6;
+    --mas-accent-end: #1E40AF;
+    --mas-accent-glow: rgba(59, 130, 246, 0.6);
+    
+    --mas-active-start: rgba(59, 130, 246, 0.1);
+    --mas-active-end: rgba(30, 64, 175, 0.1);
+    
+    /* Professional blue backgrounds */
+    --mas-bg-primary: #F8FAFC;
+    --mas-bg-secondary: #F1F5F9;
+    --mas-text-primary: #1E293B;
+    --mas-text-secondary: #475569;
+}
+
+/* ========================================
+   💜 CREATIVE PURPLE - Kreatywny Fiolet
+   ======================================== */
+
+[data-palette="creative-purple"] {
+    --mas-glass-primary: rgba(250, 245, 255, 0.85);
+    --mas-glass-dark: rgba(30, 15, 50, 0.85);
+    --mas-glass-border: rgba(147, 51, 234, 0.2);
+    --mas-glass-border-dark: rgba(168, 85, 247, 0.1);
+    --mas-submenu-glass: rgba(252, 248, 255, 0.95);
+    
+    --mas-accent-start: #9333EA;
+    --mas-accent-end: #6B21A8;
+    --mas-accent-glow: rgba(147, 51, 234, 0.6);
+    
+    --mas-active-start: rgba(147, 51, 234, 0.1);
+    --mas-active-end: rgba(107, 33, 168, 0.1);
+    
+    --mas-bg-primary: #FEFCFF;
+    --mas-bg-secondary: #FDF4FF;
+    --mas-text-primary: #581C87;
+    --mas-text-secondary: #7C3AED;
+}
+
+/* ========================================
+   🌿 ENERGETIC GREEN - Energetyczna Zieleń
+   ======================================== */
+
+[data-palette="energetic-green"] {
+    --mas-glass-primary: rgba(240, 253, 244, 0.85);
+    --mas-glass-dark: rgba(5, 30, 15, 0.85);
+    --mas-glass-border: rgba(34, 197, 94, 0.2);
+    --mas-glass-border-dark: rgba(74, 222, 128, 0.1);
+    --mas-submenu-glass: rgba(247, 254, 231, 0.95);
+    
+    --mas-accent-start: #22C55E;
+    --mas-accent-end: #15803D;
+    --mas-accent-glow: rgba(34, 197, 94, 0.6);
+    
+    --mas-active-start: rgba(34, 197, 94, 0.1);
+    --mas-active-end: rgba(21, 128, 61, 0.1);
+    
+    --mas-bg-primary: #F7FEF0;
+    --mas-bg-secondary: #ECFDF5;
+    --mas-text-primary: #14532D;
+    --mas-text-secondary: #166534;
+}
+
+/* ========================================
+   🔥 SUNSET ORANGE - Zachód Słońca
+   ======================================== */
+
+[data-palette="sunset-orange"] {
+    --mas-glass-primary: rgba(255, 247, 237, 0.85);
+    --mas-glass-dark: rgba(50, 25, 5, 0.85);
+    --mas-glass-border: rgba(249, 115, 22, 0.2);
+    --mas-glass-border-dark: rgba(251, 146, 60, 0.1);
+    --mas-submenu-glass: rgba(255, 251, 235, 0.95);
+    
+    --mas-accent-start: #F97316;
+    --mas-accent-end: #EA580C;
+    --mas-accent-glow: rgba(249, 115, 22, 0.6);
+    
+    --mas-active-start: rgba(249, 115, 22, 0.1);
+    --mas-active-end: rgba(234, 88, 12, 0.1);
+    
+    --mas-bg-primary: #FFFBEB;
+    --mas-bg-secondary: #FEF3C7;
+    --mas-text-primary: #92400E;
+    --mas-text-secondary: #D97706;
+}
+
+/* ========================================
+   🌸 ROSE GOLD - Różowe Złoto
+   ======================================== */
+
+[data-palette="rose-gold"] {
+    --mas-glass-primary: rgba(255, 241, 242, 0.85);
+    --mas-glass-dark: rgba(50, 15, 25, 0.85);
+    --mas-glass-border: rgba(244, 63, 94, 0.2);
+    --mas-glass-border-dark: rgba(251, 113, 133, 0.1);
+    --mas-submenu-glass: rgba(255, 247, 237, 0.95);
+    
+    --mas-accent-start: #F43F5E;
+    --mas-accent-end: #BE185D;
+    --mas-accent-glow: rgba(244, 63, 94, 0.6);
+    
+    --mas-active-start: rgba(244, 63, 94, 0.1);
+    --mas-active-end: rgba(190, 24, 93, 0.1);
+    
+    --mas-bg-primary: #FFF1F2;
+    --mas-bg-secondary: #FFE4E6;
+    --mas-text-primary: #881337;
+    --mas-text-secondary: #BE185D;
+}
+
+/* ========================================
+   🌙 MIDNIGHT - Ciemna Elegancja
+   ======================================== */
+
+[data-palette="midnight"] {
+    --mas-glass-primary: rgba(30, 41, 59, 0.85);
+    --mas-glass-dark: rgba(15, 23, 42, 0.85);
+    --mas-glass-border: rgba(148, 163, 184, 0.2);
+    --mas-glass-border-dark: rgba(100, 116, 139, 0.1);
+    --mas-submenu-glass: rgba(51, 65, 85, 0.95);
+    
+    --mas-accent-start: #94A3B8;
+    --mas-accent-end: #64748B;
+    --mas-accent-glow: rgba(148, 163, 184, 0.6);
+    
+    --mas-active-start: rgba(148, 163, 184, 0.1);
+    --mas-active-end: rgba(100, 116, 139, 0.1);
+    
+    --mas-bg-primary: #0F172A;
+    --mas-bg-secondary: #1E293B;
+    --mas-text-primary: #F1F5F9;
+    --mas-text-secondary: #CBD5E1;
+}
+
+/* ========================================
+   🌊 OCEAN TEAL - Ocean
+   ======================================== */
+
+[data-palette="ocean-teal"] {
+    --mas-glass-primary: rgba(240, 253, 250, 0.85);
+    --mas-glass-dark: rgba(5, 30, 25, 0.85);
+    --mas-glass-border: rgba(20, 184, 166, 0.2);
+    --mas-glass-border-dark: rgba(45, 212, 191, 0.1);
+    --mas-submenu-glass: rgba(240, 253, 250, 0.95);
+    
+    --mas-accent-start: #14B8A6;
+    --mas-accent-end: #0F766E;
+    --mas-accent-glow: rgba(20, 184, 166, 0.6);
+    
+    --mas-active-start: rgba(20, 184, 166, 0.1);
+    --mas-active-end: rgba(15, 118, 110, 0.1);
+    
+    --mas-bg-primary: #F0FDFA;
+    --mas-bg-secondary: #CCFBF1;
+    --mas-text-primary: #134E4A;
+    --mas-text-secondary: #0F766E;
+}
+
+/* ========================================
+   ⚡ ELECTRIC CYBER - Cyber Elektryczny
+   ======================================== */
+
+[data-palette="electric-cyber"] {
+    --mas-glass-primary: rgba(240, 248, 255, 0.85);
+    --mas-glass-dark: rgba(15, 15, 50, 0.85);
+    --mas-glass-border: rgba(0, 255, 255, 0.3);
+    --mas-glass-border-dark: rgba(0, 255, 255, 0.2);
+    --mas-submenu-glass: rgba(15, 23, 42, 0.95);
+    
+    --mas-accent-start: #00FFFF;
+    --mas-accent-end: #0080FF;
+    --mas-accent-glow: rgba(0, 255, 255, 0.8);
+    
+    --mas-active-start: rgba(0, 255, 255, 0.1);
+    --mas-active-end: rgba(0, 128, 255, 0.1);
+    
+    --mas-bg-primary: #0A0A0A;
+    --mas-bg-secondary: #1A1A2E;
+    --mas-text-primary: #00FFFF;
+    --mas-text-secondary: #0080FF;
+    
+    /* Cyber glow effects */
+    --mas-cyber-glow: 0 0 20px rgba(0, 255, 255, 0.5);
+}
+
+/* ========================================
+   🌅 GOLDEN SUNRISE - Złoty Wschód
+   ======================================== */
+
+[data-palette="golden-sunrise"] {
+    --mas-glass-primary: rgba(255, 251, 235, 0.85);
+    --mas-glass-dark: rgba(50, 35, 5, 0.85);
+    --mas-glass-border: rgba(251, 191, 36, 0.2);
+    --mas-glass-border-dark: rgba(252, 211, 77, 0.1);
+    --mas-submenu-glass: rgba(255, 248, 220, 0.95);
+    
+    --mas-accent-start: #FBBF24;
+    --mas-accent-end: #D97706;
+    --mas-accent-glow: rgba(251, 191, 36, 0.6);
+    
+    --mas-active-start: rgba(251, 191, 36, 0.1);
+    --mas-active-end: rgba(217, 119, 6, 0.1);
+    
+    --mas-bg-primary: #FFFBEB;
+    --mas-bg-secondary: #FEF3C7;
+    --mas-text-primary: #78350F;
+    --mas-text-secondary: #92400E;
+}
+
+/* ========================================
+   🎮 GAMING NEON - Gaming Neon
+   ======================================== */
+
+[data-palette="gaming-neon"] {
+    --mas-glass-primary: rgba(15, 15, 25, 0.85);
+    --mas-glass-dark: rgba(5, 5, 15, 0.85);
+    --mas-glass-border: rgba(255, 0, 255, 0.3);
+    --mas-glass-border-dark: rgba(255, 0, 255, 0.2);
+    --mas-submenu-glass: rgba(20, 20, 35, 0.95);
+    
+    --mas-accent-start: #FF00FF;
+    --mas-accent-end: #8000FF;
+    --mas-accent-glow: rgba(255, 0, 255, 0.8);
+    
+    --mas-active-start: rgba(255, 0, 255, 0.1);
+    --mas-active-end: rgba(128, 0, 255, 0.1);
+    
+    --mas-bg-primary: #0A0A0F;
+    --mas-bg-secondary: #14141A;
+    --mas-text-primary: #FF00FF;
+    --mas-text-secondary: #8000FF;
+    
+    /* Gaming neon effects */
+    --mas-neon-glow: 0 0 30px rgba(255, 0, 255, 0.6);
+}
+
+/* ========================================
+   🎯 PALETTE SWITCHER ANIMATIONS
+   ======================================== */
+
+/* Smooth transitions between palettes */
+:root {
+    transition: 
+        --mas-glass-primary 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+        --mas-glass-border 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+        --mas-accent-start 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+        --mas-accent-end 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+        --mas-bg-primary 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+        --mas-text-primary 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Special effects for cyber and gaming palettes */
+[data-palette="electric-cyber"] #adminmenuwrap,
+[data-palette="gaming-neon"] #adminmenuwrap {
+    box-shadow: 
+        0 4px 16px rgba(0, 0, 0, 0.3),
+        var(--mas-cyber-glow, var(--mas-neon-glow, none)) !important;
+}
+
+[data-palette="electric-cyber"] .mas-v2-menu-floating #adminmenu .wp-has-current-submenu > a:before,
+[data-palette="gaming-neon"] .mas-v2-menu-floating #adminmenu .wp-has-current-submenu > a:before {
+    box-shadow: var(--mas-cyber-glow, var(--mas-neon-glow, none));
+}
+
+/* ========================================
+   🎨 PALETTE PREVIEW SYSTEM
+   ======================================== */
+
+/* Quick palette preview cards (for settings page) */
+.mas-palette-preview {
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s var(--mas-ease-bounce);
+    border: 2px solid transparent;
+}
+
+.mas-palette-preview:hover {
+    transform: scale(1.1);
+    border-color: var(--mas-accent-start);
+}
+
+.mas-palette-preview.active {
+    border-color: var(--mas-accent-start);
+    box-shadow: 0 0 0 4px rgba(var(--mas-accent-start), 0.2);
+}
+
+/* Generate preview gradients */
+.mas-palette-preview[data-palette="professional-blue"] {
+    background: linear-gradient(135deg, #3B82F6, #1E40AF);
+}
+
+.mas-palette-preview[data-palette="creative-purple"] {
+    background: linear-gradient(135deg, #9333EA, #6B21A8);
+}
+
+.mas-palette-preview[data-palette="energetic-green"] {
+    background: linear-gradient(135deg, #22C55E, #15803D);
+}
+
+.mas-palette-preview[data-palette="sunset-orange"] {
+    background: linear-gradient(135deg, #F97316, #EA580C);
+}
+
+.mas-palette-preview[data-palette="rose-gold"] {
+    background: linear-gradient(135deg, #F43F5E, #BE185D);
+}
+
+.mas-palette-preview[data-palette="midnight"] {
+    background: linear-gradient(135deg, #1E293B, #0F172A);
+}
+
+.mas-palette-preview[data-palette="ocean-teal"] {
+    background: linear-gradient(135deg, #14B8A6, #0F766E);
+}
+
+.mas-palette-preview[data-palette="electric-cyber"] {
+    background: linear-gradient(135deg, #00FFFF, #0080FF);
+}
+
+.mas-palette-preview[data-palette="golden-sunrise"] {
+    background: linear-gradient(135deg, #FBBF24, #D97706);
+}
+
+.mas-palette-preview[data-palette="gaming-neon"] {
+    background: linear-gradient(135deg, #FF00FF, #8000FF);
+} 

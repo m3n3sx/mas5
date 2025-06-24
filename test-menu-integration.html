@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Menu Integration - Modern Admin Styler V2</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f1f1f1;
+        }
+        
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        
+        .controls {
+            background: #23282d;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .control-group {
+            margin-bottom: 15px;
+        }
+        
+        .control-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        .control-group input, .control-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .control-group input[type="color"] {
+            width: 60px;
+            height: 40px;
+            padding: 2px;
+        }
+        
+        .control-group input[type="checkbox"] {
+            width: auto;
+            margin-right: 8px;
+        }
+        
+        .css-variables-display {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 12px;
+            overflow-x: auto;
+        }
+        
+        .menu-preview {
+            background: var(--mas-menu-bg-color, #23282d);
+            width: var(--mas-menu-width, 200px);
+            border-radius: var(--mas-menu-border-radius, 0px);
+            padding: 10px;
+            margin: 20px 0;
+            color: var(--mas-menu-text-color, #eee);
+            box-shadow: var(--mas-menu-shadow, none);
+            transition: all var(--mas-menu-transition-duration, 300ms) ease;
+        }
+        
+        .menu-item {
+            padding: var(--mas-menu-item-padding, 8px 12px);
+            margin: 2px 0;
+            border-radius: calc(var(--mas-menu-border-radius, 0px) * 0.7);
+            cursor: pointer;
+            transition: all calc(var(--mas-menu-transition-duration, 300ms) * 0.7) ease;
+            font-size: var(--mas-menu-font-size, 14px);
+        }
+        
+        .menu-item:hover {
+            background: var(--mas-menu-hover-color, rgba(255,255,255,0.1));
+            color: var(--mas-menu-hover-text-color, #fff);
+        }
+        
+        .menu-item.active {
+            background: var(--mas-menu-active-bg, #0073aa);
+            color: var(--mas-menu-active-text-color, white);
+        }
+        
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        
+        .status {
+            background: #d4edda;
+            color: #155724;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border-color: #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 Test Menu Integration</h1>
+        <p>Test strony do sprawdzenia integracji MenuManager.js z ustawieniami wtyczki.</p>
+        
+        <div id="status" class="status">
+            ⏳ Ładowanie MenuManager...
+        </div>
+        
+        <div class="controls">
+            <h2>🎛️ Symulowane ustawienia menu</h2>
+            <div class="controls-grid">
+                <div class="control-group">
+                    <label for="menu_background">Tło menu:</label>
+                    <input type="color" id="menu_background" name="menu_background" value="#23282d" class="mas-v2-field">
+                </div>
+                
+                <div class="control-group">
+                    <label for="menu_text_color">Kolor tekstu:</label>
+                    <input type="color" id="menu_text_color" name="menu_text_color" value="#ffffff" class="mas-v2-field">
+                </div>
+                
+                <div class="control-group">
+                    <label for="menu_hover_background">Kolor hover:</label>
+                    <input type="color" id="menu_hover_background" name="menu_hover_background" value="#32373c" class="mas-v2-field">
+                </div>
+                
+                <div class="control-group">
+                    <label for="menu_width">Szerokość menu:</label>
+                    <input type="range" id="menu_width" name="menu_width" min="140" max="400" value="200" class="mas-v2-field">
+                    <span id="menu_width_value">200px</span>
+                </div>
+                
+                <div class="control-group">
+                    <label for="menu_border_radius_all">Border radius:</label>
+                    <input type="range" id="menu_border_radius_all" name="menu_border_radius_all" min="0" max="30" value="0" class="mas-v2-field">
+                    <span id="menu_border_radius_all_value">0px</span>
+                </div>
+                
+                <div class="control-group">
+                    <label for="menu_item_height">Wysokość elementów:</label>
+                    <input type="range" id="menu_item_height" name="menu_item_height" min="25" max="60" value="34" class="mas-v2-field">
+                    <span id="menu_item_height_value">34px</span>
+                </div>
+                
+                <div class="control-group">
+                    <label>
+                        <input type="checkbox" id="menu_floating" name="menu_floating" class="mas-v2-field">
+                        Floating menu
+                    </label>
+                </div>
+                
+                <div class="control-group">
+                    <label>
+                        <input type="checkbox" id="menu_glossy" name="menu_glossy" class="mas-v2-field">
+                        Glossy effect
+                    </label>
+                </div>
+            </div>
+        </div>
+        
+        <div class="css-variables-display">
+            <h3>📊 CSS Variables (Live)</h3>
+            <pre id="css-variables-output">Ładowanie...</pre>
+        </div>
+        
+        <div>
+            <h3>🎨 Menu Preview</h3>
+            <div class="menu-preview" id="menu-preview">
+                <div class="menu-item">📊 Dashboard</div>
+                <div class="menu-item active">📝 Posts</div>
+                <div class="menu-item">📄 Pages</div>
+                <div class="menu-item">💬 Comments</div>
+                <div class="menu-item">🎨 Appearance</div>
+                <div class="menu-item">🔌 Plugins</div>
+                <div class="menu-item">👥 Users</div>
+                <div class="menu-item">🔧 Settings</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Symulacja środowiska WordPress -->
+    <script>
+        // Mock WordPress environment
+        window.masV2Global = {
+            settings: {
+                menu_background: '#23282d',
+                menu_text_color: '#ffffff',
+                menu_hover_background: '#32373c',
+                menu_hover_text_color: '#ffffff',
+                menu_active_background: '#0073aa',
+                menu_active_text_color: '#ffffff',
+                menu_width: 200,
+                menu_item_height: 34,
+                menu_border_radius_all: 0,
+                menu_floating: false,
+                menu_glossy: false,
+                animation_speed: 300,
+                enable_animations: true
+            }
+        };
+        
+        // Mock jQuery dla compatibility
+        window.jQuery = {
+            fn: {},
+            extend: function() { return {}; }
+        };
+        
+        window.$ = window.jQuery;
+    </script>
+    
+    <!-- Load MenuManager.js -->
+    <script src="assets/js/modules/MenuManager.js"></script>
+    
+    <script>
+        let menuManager;
+        
+        // Initialize test
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeTest();
+            setupControls();
+            updateCSSVariablesDisplay();
+        });
+        
+        function initializeTest() {
+            try {
+                // Create MenuManager instance
+                menuManager = new MenuManager();
+                
+                // Initialize with mock settings
+                menuManager.init(window.masV2Global.settings);
+                
+                document.getElementById('status').innerHTML = '✅ MenuManager załadowany pomyślnie!';
+                document.getElementById('status').className = 'status';
+                
+                console.log('✅ Test initialization complete', menuManager);
+            } catch (error) {
+                document.getElementById('status').innerHTML = '❌ Błąd ładowania MenuManager: ' + error.message;
+                document.getElementById('status').className = 'status error';
+                console.error('❌ Test initialization failed:', error);
+            }
+        }
+        
+        function setupControls() {
+            // Update range display values
+            document.querySelectorAll('input[type="range"]').forEach(input => {
+                const valueSpan = document.getElementById(input.id + '_value');
+                if (valueSpan) {
+                    input.addEventListener('input', function() {
+                        valueSpan.textContent = this.value + 'px';
+                    });
+                }
+            });
+            
+            // Listen for all control changes
+            document.querySelectorAll('.mas-v2-field').forEach(field => {
+                field.addEventListener('change', handleFieldChange);
+                field.addEventListener('input', handleFieldChange);
+            });
+        }
+        
+        function handleFieldChange(e) {
+            const fieldName = e.target.name;
+            let fieldValue;
+            
+            if (e.target.type === 'checkbox') {
+                fieldValue = e.target.checked;
+            } else if (e.target.type === 'number' || e.target.type === 'range') {
+                fieldValue = parseInt(e.target.value) || 0;
+            } else {
+                fieldValue = e.target.value;
+            }
+            
+            console.log(`🎛️ Field ${fieldName} changed to:`, fieldValue);
+            
+            // Update global settings
+            window.masV2Global.settings[fieldName] = fieldValue;
+            
+            // Update MenuManager if available
+            if (menuManager) {
+                const partialSettings = {};
+                partialSettings[fieldName] = fieldValue;
+                menuManager.updatePartialSettings(partialSettings);
+            }
+            
+            // Update CSS variables display
+            updateCSSVariablesDisplay();
+        }
+        
+        function updateCSSVariablesDisplay() {
+            const root = document.documentElement;
+            const variables = [
+                '--mas-menu-bg-color',
+                '--mas-menu-text-color',
+                '--mas-menu-hover-color',
+                '--mas-menu-hover-text-color',
+                '--mas-menu-active-bg',
+                '--mas-menu-active-text-color',
+                '--mas-menu-width',
+                '--mas-menu-item-height',
+                '--mas-menu-border-radius',
+                '--mas-menu-transition-duration',
+                '--mas-menu-animation-enabled'
+            ];
+            
+            let output = '';
+            variables.forEach(variable => {
+                const value = getComputedStyle(root).getPropertyValue(variable) || 'nie ustawione';
+                output += `${variable}: ${value.trim()}\n`;
+            });
+            
+            document.getElementById('css-variables-output').textContent = output;
+        }
+        
+        // Update display every 500ms to catch changes
+        setInterval(updateCSSVariablesDisplay, 500);
+    </script>
+</body>
+</html> 

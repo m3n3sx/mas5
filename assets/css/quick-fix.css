@@ -1,0 +1,196 @@
+/*
+ * QUICK FIX CSS - Modern Admin Styler V2
+ * KOMPATYBILNOŚĆ Z MENUMANAGER! 🚀
+ */
+
+/* 
+ * WAŻNE: Menu styles są teraz zarządzane przez MenuManager.js
+ * Ten plik zawiera tylko pomocnicze style i nie koliduje z MenuManager
+ */
+
+/* 📱 Mobile responsiveness fixes */
+@media (max-width: 768px) {
+    body.mas-v2-menu-floating #adminmenuwrap {
+        border-radius: 8px !important;
+    }
+    
+    body.mas-v2-admin-bar-floating #wpadminbar {
+        border-radius: 8px !important;
+    }
+}
+
+/* 🎯 Visual feedback dla aktywnych efektów */
+body.mas-v2-modern-style:before {
+    content: "🎨 MAS V2 Active!";
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    z-index: 999999;
+    animation: fadeInOut 4s ease-in-out;
+    pointer-events: none;
+}
+
+@keyframes fadeInOut {
+    0%, 100% { opacity: 0; }
+    20%, 80% { opacity: 1; }
+}
+
+/* 🌟 Performance optimizations */
+body.mas-v2-modern-style * {
+    will-change: auto;
+}
+
+/* 🎨 Helper classes dla MenuManager */
+.mas-menu-transitioning {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.mas-menu-hidden {
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+.mas-menu-visible {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
+
+/**
+ * QUICK FIX CSS - SUPER RESET dla problematycznych stylów
+ * Cache buster: <?php echo time(); ?>
+ * Ten plik ma najwyższą specyficzność i ładuje się ostatni
+ */
+
+/* ULTIMATE RESET - najwyższa możliwa specyficzność */
+html body.wp-admin div#adminmenu,
+html body.wp-admin div#adminmenuwrap,
+html body.wp-admin div#adminmenu .wp-submenu,
+html body.wp-admin div#adminmenuback {
+    width: auto !important;
+    background: var(--mas-menu-bg-color, #23282d) !important;
+    background-color: var(--mas-menu-bg-color, #23282d) !important;
+}
+
+/* Reset dla wszystkich możliwych selektorów */
+body.wp-admin #adminmenu,
+body.wp-admin #adminmenuwrap,
+body.wp-admin #adminmenu .wp-submenu,
+body.wp-admin #adminmenuback,
+.wp-admin #adminmenu,
+.wp-admin #adminmenuwrap {
+    width: auto !important;
+    background: var(--mas-menu-bg-color, #23282d) !important;
+    background-color: var(--mas-menu-bg-color, #23282d) !important;
+}
+
+/* Zmusz reset z najwyższą możliwą specyficznością */
+html body.wp-admin[class] #adminmenu[id],
+html body.wp-admin[class] #adminmenuwrap[id] {
+    width: auto !important;
+    background: var(--mas-menu-bg-color, #23282d) !important;
+    background-color: var(--mas-menu-bg-color, #23282d) !important;
+}
+
+/* Reset dla WordPress defaults */
+body.wp-admin #adminmenu,
+body.wp-admin #adminmenu .wp-submenu, 
+body.wp-admin #adminmenuwrap, 
+body.wp-admin #adminmenuback {
+    width: auto !important;
+    background-color: var(--mas-menu-bg-color, #23282d) !important;
+    background: var(--mas-menu-bg-color, #23282d) !important;
+}
+
+/* Reset dla floating menu z maksymalną specyficznością */
+html body.wp-admin.mas-v2-menu-floating[class] #adminmenuwrap[id] {
+    width: var(--mas-menu-width, auto) !important;
+    background: var(--mas-menu-bg-color, #23282d) !important;
+    background-color: var(--mas-menu-bg-color, #23282d) !important;
+}
+
+html body.wp-admin.mas-v2-menu-floating[class] #adminmenu[id] {
+    width: 100% !important;
+    background: var(--mas-menu-bg-color, #23282d) !important;
+    background-color: var(--mas-menu-bg-color, #23282d) !important;
+}
+
+/* RESET DLA WSZYSTKICH WARIANTÓW MENU z ultra specyficznością */
+html body.wp-admin:not(.mas-v2-menu-floating)[class] #adminmenu[id],
+html body.wp-admin:not(.mas-v2-menu-floating)[class] #adminmenuwrap[id] {
+    width: auto !important;
+    background: var(--mas-menu-bg-color, #23282d) !important;
+    background-color: var(--mas-menu-bg-color, #23282d) !important;
+}
+
+/* Responsive - pewność że mobile też działa */
+@media screen and (max-width: 960px) {
+    html body.wp-admin[class] #adminmenu[id],
+    html body.wp-admin[class] #adminmenuwrap[id] {
+        width: auto !important;
+        background: var(--mas-menu-bg-color, #23282d) !important;
+        background-color: var(--mas-menu-bg-color, #23282d) !important;
+    }
+}
+
+/* Debug - reset dla inline styles */
+html body.wp-admin[class] [style*="160px"][id],
+html body.wp-admin[class] [style*="#1d2327"][id] {
+    width: auto !important;
+    background: var(--mas-menu-bg-color, #23282d) !important;
+    background-color: var(--mas-menu-bg-color, #23282d) !important;
+}
+
+/* SUPER NUCLEAR OPTION - jeśli wszystko inne zawiedzie */
+*[id="adminmenu"],
+*[id="adminmenuwrap"] {
+    width: auto !important;
+    background: var(--mas-menu-bg-color, #23282d) !important;
+    background-color: var(--mas-menu-bg-color, #23282d) !important;
+}
+
+/* 🚫 STOP INFINITE ANIMATIONS - ULTIMATE FIX */
+/* Wyłącz wszystkie problematyczne animacje infinite */
+body.mas-v2-menu-floating #adminmenuwrap,
+body.mas-v2-menu-floating #adminmenu,
+body.mas-v2-menu-floating #adminmenu .wp-has-current-submenu > a,
+body.mas-v2-menu-floating #adminmenu .current > a,
+body.mas-v2-menu-floating #adminmenu .wp-has-current-submenu > a:before,
+body.mas-v2-menu-floating #adminmenu .current > a:before {
+    animation: none !important;
+    animation-name: none !important;
+    animation-duration: 0s !important;
+    animation-iteration-count: 0 !important;
+}
+
+/* Wyłącz wszystkie transform które mogą powodować ciągłe animacje */
+body.mas-v2-menu-floating #adminmenuwrap {
+    transform: none !important;
+    transform-style: flat !important;
+}
+
+/* Wyłącz hover effects z scale i transform */
+body.mas-v2-menu-floating #adminmenuwrap:hover,
+body.mas-v2-menu-floating #adminmenu li:hover .wp-menu-image,
+body.mas-v2-admin-bar-floating #wpadminbar:hover {
+    transform: none !important;
+    animation: none !important;
+}
+
+/* Ostateczny reset dla wszystkich animacji w menu */
+body.mas-v2-menu-floating * {
+    animation-name: none !important;
+    animation-duration: 0s !important;
+    animation-iteration-count: 0 !important;
+}
+
+/* Zachowaj tylko podstawowe transitions (nie animacje) */
+body.mas-v2-menu-floating #adminmenu,
+body.mas-v2-menu-floating #adminmenu .wp-submenu {
+    transition: opacity 0.2s ease, visibility 0.2s ease !important;
+    animation: none !important;
+}

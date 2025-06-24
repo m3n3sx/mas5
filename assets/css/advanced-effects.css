@@ -1,0 +1,364 @@
+/*
+ * Modern Admin Styler V2 - Advanced Visual Effects
+ * MASTERPIECE UX/UI SYSTEM 🎨
+ * 
+ * Efekty "WOW!" - Głębokość, Warstwy, Mikroanimacje
+ */
+
+/* ========================================
+   🌊 FLOATING CARDS SYSTEM
+   ======================================== */
+
+/* Menu boczne jako elegancka floating card */
+body.mas-v2-menu-floating #adminmenuwrap {
+    /* Transformacja w floating card */
+    margin: 16px;
+    margin-right: 0;
+    border-radius: 20px;
+    
+    /* Wielowarstwowe cienie dla głębi */
+    box-shadow: 
+        0 4px 16px rgba(0, 0, 0, 0.1),
+        0 8px 32px rgba(0, 0, 0, 0.08),
+        0 16px 64px rgba(0, 0, 0, 0.05);
+    
+    /* Glassmorphism effect */
+    backdrop-filter: blur(20px) saturate(1.2);
+    background: var(--mas-glass-primary, rgba(255, 255, 255, 0.85));
+    border: 1px solid var(--mas-glass-border, rgba(255, 255, 255, 0.2));
+    
+    /* Delikatna animacja breathe - WYŁĄCZONA (powodowała ciągłe animacje) */
+    /* animation: menuCardBreathe 4s ease-in-out infinite; */
+    
+    /* Overflow dla smooth edges */
+    overflow: hidden;
+    
+    /* Transformacja 3D dla dodatkowej głębi - WYŁĄCZONA (powodowała ciągłe animacje) */
+    /* transform-style: preserve-3d; */
+    /* transform: translateZ(8px); */
+    
+    /* Smooth transitions */
+    transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+/* Dynamiczne cienie zależne od pory dnia */
+@media (prefers-color-scheme: dark) {
+    body.mas-v2-menu-floating #adminmenuwrap {
+        background: var(--mas-glass-dark, rgba(20, 25, 30, 0.85));
+        border-color: var(--mas-glass-border-dark, rgba(255, 255, 255, 0.1));
+        box-shadow: 
+            0 4px 16px rgba(0, 0, 0, 0.3),
+            0 8px 32px rgba(0, 0, 0, 0.25),
+            0 16px 64px rgba(0, 0, 0, 0.15);
+    }
+}
+
+/* Animacja "oddychania" karty */
+@keyframes menuCardBreathe {
+    0%, 100% { 
+        transform: translateZ(8px) scale(1); 
+        box-shadow: 
+            0 4px 16px rgba(0, 0, 0, 0.1),
+            0 8px 32px rgba(0, 0, 0, 0.08),
+            0 16px 64px rgba(0, 0, 0, 0.05);
+    }
+    50% { 
+        transform: translateZ(12px) scale(1.002); 
+        box-shadow: 
+            0 6px 20px rgba(0, 0, 0, 0.12),
+            0 12px 40px rgba(0, 0, 0, 0.1),
+            0 20px 80px rgba(0, 0, 0, 0.07);
+    }
+}
+
+/* Hover effect na całej karcie menu - WYŁĄCZONY (powodował ciągłe animacje) */
+/*
+body.mas-v2-menu-floating #adminmenuwrap:hover {
+    transform: translateZ(16px) scale(1.008);
+    box-shadow: 
+        0 8px 24px rgba(0, 0, 0, 0.15),
+        0 16px 48px rgba(0, 0, 0, 0.12),
+        0 24px 96px rgba(0, 0, 0, 0.08);
+}
+*/
+
+/* ========================================
+   🎭 ADMIN BAR FLOATING ELEGANCE
+   ======================================== */
+
+body.mas-v2-admin-bar-floating #wpadminbar {
+    /* Minimalistyczna floating linia */
+    margin: 12px 16px 0 16px;
+    border-radius: 50px;
+    height: 52px !important;
+    
+    /* Subtelna głębia */
+    box-shadow: 
+        0 2px 12px rgba(0, 0, 0, 0.08),
+        0 4px 24px rgba(0, 0, 0, 0.05);
+    
+    /* Glassmorphism */
+    backdrop-filter: blur(16px) saturate(1.1);
+    background: var(--mas-glass-primary, rgba(255, 255, 255, 0.9)) !important;
+    border: 1px solid var(--mas-glass-border, rgba(255, 255, 255, 0.3));
+    
+    /* Smooth hover transition */
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    
+    /* Auto-hide animation setup */
+    transform: translateY(0);
+    opacity: 1;
+}
+
+/* Auto-hide when scrolling down */
+body.mas-scroll-down.mas-v2-admin-bar-floating #wpadminbar {
+    transform: translateY(-100%);
+    opacity: 0.7;
+}
+
+/* Show on hover near top - WYŁĄCZONY (scale może powodować ciągłe animacje) */
+/*
+body.mas-v2-admin-bar-floating #wpadminbar:hover {
+    transform: translateY(0) scale(1.02);
+    box-shadow: 
+        0 4px 16px rgba(0, 0, 0, 0.12),
+        0 8px 32px rgba(0, 0, 0, 0.08);
+}
+*/
+
+/* ========================================
+   ✨ MIKROANIMACJE IKON MENU
+   ======================================== */
+
+/* Kontener dla animowanych ikon */
+.mas-v2-menu-floating #adminmenu .wp-menu-image {
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transform-origin: center;
+}
+
+/* Mikroanimacja na hover - WYŁĄCZONA (może powodować ciągłe animacje) */
+/*
+.mas-v2-menu-floating #adminmenu li:hover .wp-menu-image {
+    transform: scale(1.1) rotate(2deg);
+    filter: brightness(1.2) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+*/
+
+/* Specjalne animacje dla konkretnych ikon */
+.mas-v2-menu-floating #adminmenu li.menu-posts:hover .wp-menu-image:before {
+    animation: penBounce 0.6s ease;
+}
+
+.mas-v2-menu-floating #adminmenu li.menu-settings:hover .wp-menu-image:before {
+    animation: gearRotate 0.8s ease;
+}
+
+.mas-v2-menu-floating #adminmenu li.menu-media:hover .wp-menu-image:before {
+    animation: mediaPulse 0.7s ease;
+}
+
+/* Animacje ikon */
+@keyframes penBounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+}
+
+@keyframes gearRotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(90deg); }
+}
+
+@keyframes mediaPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+/* ========================================
+   🌈 DYNAMICZNE WSKAŹNIKI AKTYWNOŚCI  
+   ======================================== */
+
+/* Aktywny element menu */
+.mas-v2-menu-floating #adminmenu .wp-has-current-submenu > a,
+.mas-v2-menu-floating #adminmenu .current > a {
+    position: relative;
+    background: linear-gradient(135deg, 
+        var(--mas-active-start, rgba(74, 144, 226, 0.1)), 
+        var(--mas-active-end, rgba(80, 201, 195, 0.1))) !important;
+    
+    /* Pulsujący efekt - WYŁĄCZONY (powodował ciągłe animacje) */
+    /* animation: activeItemPulse 2s ease-in-out infinite; */
+    
+    /* Border radius */
+    border-radius: 12px;
+    margin: 2px 8px;
+}
+
+/* Pulsująca linia aktywności z boku */
+.mas-v2-menu-floating #adminmenu .wp-has-current-submenu > a:before,
+.mas-v2-menu-floating #adminmenu .current > a:before {
+    content: '';
+    position: absolute;
+    left: -8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 60%;
+    background: linear-gradient(180deg, 
+        var(--mas-accent-start, #4A90E2), 
+        var(--mas-accent-end, #50C9C3));
+    border-radius: 2px;
+    
+    /* Animated glow - WYŁĄCZONY (powodował ciągłe animacje) */
+    box-shadow: 0 0 12px var(--mas-accent-glow, rgba(74, 144, 226, 0.6));
+    /* animation: sideGlow 1.5s ease-in-out infinite alternate; */
+}
+
+@keyframes activeItemPulse {
+    0%, 100% { 
+        background-position: 0% 50%; 
+        transform: scale(1);
+    }
+    50% { 
+        background-position: 100% 50%; 
+        transform: scale(1.005);
+    }
+}
+
+@keyframes sideGlow {
+    0% { box-shadow: 0 0 8px var(--mas-accent-glow, rgba(74, 144, 226, 0.4)); }
+    100% { box-shadow: 0 0 16px var(--mas-accent-glow, rgba(74, 144, 226, 0.8)); }
+}
+
+/* ========================================
+   🎢 PŁYNNE SUBMENU ROZWIJANIE
+   ======================================== */
+
+/* Base submenu styling */
+.mas-v2-menu-floating #adminmenu .wp-submenu {
+    /* Smooth reveal animation */
+    transform: translateY(-10px);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    
+    /* Glass effect dla submenu */
+    background: var(--mas-submenu-glass, rgba(255, 255, 255, 0.95)) !important;
+    backdrop-filter: blur(12px);
+    border-radius: 16px !important;
+    border: 1px solid var(--mas-glass-border, rgba(255, 255, 255, 0.2));
+    
+    /* Subtle shadow */
+    box-shadow: 
+        0 4px 16px rgba(0, 0, 0, 0.1),
+        0 8px 32px rgba(0, 0, 0, 0.05);
+    
+    /* Positioning */
+    margin-top: 8px !important;
+    margin-left: 12px !important;
+    margin-right: 12px !important;
+}
+
+/* Submenu visible state */
+.mas-v2-menu-floating #adminmenu li.opensub .wp-submenu,
+.mas-v2-menu-floating #adminmenu li:hover .wp-submenu {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Submenu items staggered animation */
+.mas-v2-menu-floating #adminmenu .wp-submenu li {
+    transform: translateX(-20px);
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.mas-v2-menu-floating #adminmenu .opensub .wp-submenu li,
+.mas-v2-menu-floating #adminmenu li:hover .wp-submenu li {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+/* Staggered delays for smooth reveal */
+.mas-v2-menu-floating #adminmenu .wp-submenu li:nth-child(1) { transition-delay: 0.05s; }
+.mas-v2-menu-floating #adminmenu .wp-submenu li:nth-child(2) { transition-delay: 0.1s; }
+.mas-v2-menu-floating #adminmenu .wp-submenu li:nth-child(3) { transition-delay: 0.15s; }
+.mas-v2-menu-floating #adminmenu .wp-submenu li:nth-child(4) { transition-delay: 0.2s; }
+.mas-v2-menu-floating #adminmenu .wp-submenu li:nth-child(5) { transition-delay: 0.25s; }
+
+/* ========================================
+   🎨 RESPONSIVE & MOTION PREFERENCES
+   ======================================== */
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+    body.mas-v2-menu-floating #adminmenuwrap {
+        margin: 8px;
+        border-radius: 16px;
+    }
+    
+    body.mas-v2-admin-bar-floating #wpadminbar {
+        margin: 8px;
+        border-radius: 40px;
+        height: 48px !important;
+    }
+}
+
+/* ========================================
+   💫 THEME TRANSITIONS
+   ======================================== */
+
+/* Smooth theme switching */
+body {
+    transition: background-color 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+#adminmenuwrap, #wpadminbar {
+    transition: 
+        background 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+        border-color 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+        box-shadow 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* ========================================
+   🌟 CSS CUSTOM PROPERTIES SYSTEM
+   ======================================== */
+
+:root {
+    /* Glass morphism colors */
+    --mas-glass-primary: rgba(255, 255, 255, 0.85);
+    --mas-glass-dark: rgba(20, 25, 30, 0.85);
+    --mas-glass-border: rgba(255, 255, 255, 0.2);
+    --mas-glass-border-dark: rgba(255, 255, 255, 0.1);
+    --mas-submenu-glass: rgba(255, 255, 255, 0.95);
+    
+    /* Accent gradients */
+    --mas-accent-start: #4A90E2;
+    --mas-accent-end: #50C9C3;
+    --mas-accent-glow: rgba(74, 144, 226, 0.6);
+    
+    /* Active states */
+    --mas-active-start: rgba(74, 144, 226, 0.1);
+    --mas-active-end: rgba(80, 201, 195, 0.1);
+    
+    /* Motion easing */
+    --mas-ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --mas-ease-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --mas-ease-elastic: cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+/* Dark theme overrides */
+[data-theme="dark"] {
+    --mas-glass-primary: var(--mas-glass-dark);
+    --mas-glass-border: var(--mas-glass-border-dark);
+    --mas-submenu-glass: rgba(30, 35, 40, 0.95);
+} 

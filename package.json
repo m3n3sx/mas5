@@ -1,0 +1,17 @@
+{
+  "name": "modern-admin-styler-v2-tests",
+  "version": "1.0.0",
+  "description": "🎨 WOW Effects Automated Tests for Modern Admin Styler V2",
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:debug": "playwright test --debug",
+    "test:ui": "playwright test --ui",
+    "install": "playwright install"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.40.0"
+  },
+  "author": "MAS Team",
+  "license": "GPL-2.0"
+} 

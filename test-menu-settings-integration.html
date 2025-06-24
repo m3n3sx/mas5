@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test: Menu Settings Integration - Modern Admin Styler V2</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f0f0f1;
+            color: #1d2327;
+        }
+        
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .test-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .test-header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        
+        .test-content {
+            padding: 30px;
+        }
+        
+        .test-section {
+            margin-bottom: 40px;
+            padding: 20px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+        }
+        
+        .test-section h2 {
+            color: #667eea;
+            margin-top: 0;
+        }
+        
+        .settings-display {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .css-variables-display {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .test-buttons {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .test-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .test-btn.primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .test-btn.primary:hover {
+            background: #5a67d8;
+        }
+        
+        .test-btn.secondary {
+            background: #e2e8f0;
+            color: #4a5568;
+        }
+        
+        .test-btn.secondary:hover {
+            background: #cbd5e0;
+        }
+        
+        .status {
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            font-weight: 500;
+        }
+        
+        .status.success {
+            background: #f0fff4;
+            color: #38a169;
+            border: 1px solid #9ae6b4;
+        }
+        
+        .status.error {
+            background: #fff5f5;
+            color: #e53e3e;
+            border: 1px solid #feb2b2;
+        }
+        
+        .status.info {
+            background: #ebf8ff;
+            color: #3182ce;
+            border: 1px solid #90cdf4;
+        }
+        
+        .menu-preview {
+            background: #23282d;
+            color: #eee;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            min-height: 200px;
+        }
+        
+        .menu-item {
+            padding: 8px 12px;
+            margin: 2px 4px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .menu-item:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translateX(2px);
+        }
+        
+        .submenu {
+            margin-left: 20px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+            padding: 8px;
+            margin-top: 4px;
+        }
+        
+        .submenu-item {
+            padding: 6px 12px;
+            margin: 2px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        
+        .submenu-item:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translateX(4px);
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="test-header">
+            <h1>🎯 Menu Settings Integration Test</h1>
+            <p>Sprawdzenie czy menu pobiera style z ustawień wtyczki</p>
+        </div>
+        
+        <div class="test-content">
+            <div class="test-section">
+                <h2>📋 Status Systemu</h2>
+                <div id="system-status"></div>
+                
+                <div class="test-buttons">
+                    <button class="test-btn primary" onclick="checkSystemStatus()">Sprawdź System</button>
+                    <button class="test-btn secondary" onclick="loadTestSettings()">Załaduj Test Settings</button>
+                    <button class="test-btn secondary" onclick="showCSSVariables()">Pokaż CSS Variables</button>
+                </div>
+            </div>
+            
+            <div class="test-section">
+                <h2>⚙️ Ustawienia PHP</h2>
+                <p>Ustawienia przekazane z PHP do JavaScript:</p>
+                <div id="php-settings" class="settings-display">Ładowanie ustawień...</div>
+            </div>
+            
+            <div class="test-section">
+                <h2>🎨 CSS Variables</h2>
+                <p>CSS Variables ustawione przez MenuManager:</p>
+                <div id="css-variables" class="css-variables-display">Kliknij "Pokaż CSS Variables" aby zobaczyć</div>
+            </div>
+            
+            <div class="test-section">
+                <h2>🎭 Podgląd Menu</h2>
+                <p>Podgląd jak menu wygląda z aktualnych ustawień:</p>
+                <div id="menu-preview" class="menu-preview">
+                    <div class="menu-item">📊 Dashboard</div>
+                    <div class="menu-item">📝 Posty
+                        <div class="submenu">
+                            <div class="submenu-item">Wszystkie posty</div>
+                            <div class="submenu-item">Dodaj nowy</div>
+                            <div class="submenu-item">Kategorie</div>
+                        </div>
+                    </div>
+                    <div class="menu-item">📄 Strony</div>
+                    <div class="menu-item">🔌 Wtyczki
+                        <div class="submenu">
+                            <div class="submenu-item">Zainstalowane wtyczki</div>
+                            <div class="submenu-item">Dodaj nową</div>
+                        </div>
+                    </div>
+                    <div class="menu-item">⚙️ Ustawienia</div>
+                </div>
+            </div>
+            
+            <div class="test-section">
+                <h2>🧪 Testy Funkcjonalności</h2>
+                <div class="test-buttons">
+                    <button class="test-btn primary" onclick="testColorSettings()">Test Kolorów</button>
+                    <button class="test-btn primary" onclick="testDimensionSettings()">Test Wymiarów</button>
+                    <button class="test-btn primary" onclick="testBorderRadius()">Test Border Radius</button>
+                    <button class="test-btn primary" onclick="testSubmenuSettings()">Test Submenu</button>
+                    <button class="test-btn secondary" onclick="runAllTests()">Uruchom Wszystkie Testy</button>
+                </div>
+                <div id="test-results"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Globalne zmienne
+        let currentSettings = {};
+        let testResults = [];
+        
+        // Sprawdź status systemu
+        function checkSystemStatus() {
+            const statusDiv = document.getElementById('system-status');
+            let status = '';
+            
+            // Sprawdź czy masV2Global jest dostępny
+            if (typeof masV2Global !== 'undefined') {
+                status += '<div class="status success">✅ masV2Global dostępny</div>';
+                currentSettings = masV2Global.settings || {};
+                displayPHPSettings();
+            } else {
+                status += '<div class="status error">❌ masV2Global niedostępny - nie jesteśmy w WordPress admin</div>';
+            }
+            
+            // Sprawdź czy MenuManager jest dostępny
+            if (typeof window.ModernAdminApp !== 'undefined') {
+                const app = window.ModernAdminApp.getInstance();
+                if (app && app.hasModule('menuManager')) {
+                    status += '<div class="status success">✅ MenuManager dostępny</div>';
+                } else {
+                    status += '<div class="status error">❌ MenuManager niedostępny</div>';
+                }
+            } else {
+                status += '<div class="status error">❌ ModernAdminApp niedostępny</div>';
+            }
+            
+            // Sprawdź CSS Variables
+            const root = document.documentElement;
+            const menuBgColor = getComputedStyle(root).getPropertyValue('--mas-menu-bg-color');
+            if (menuBgColor) {
+                status += '<div class="status success">✅ CSS Variables ustawione</div>';
+            } else {
+                status += '<div class="status info">ℹ️ CSS Variables nie ustawione (normalne poza WordPress)</div>';
+            }
+            
+            statusDiv.innerHTML = status;
+        }
+        
+        // Wyświetl ustawienia PHP
+        function displayPHPSettings() {
+            const settingsDiv = document.getElementById('php-settings');
+            
+            if (Object.keys(currentSettings).length === 0) {
+                settingsDiv.innerHTML = 'Brak ustawień lub nie załadowane';
+                return;
+            }
+            
+            // Filtruj tylko ustawienia menu
+            const menuSettings = {};
+            Object.keys(currentSettings).forEach(key => {
+                if (key.includes('menu_') || key.includes('submenu_')) {
+                    menuSettings[key] = currentSettings[key];
+                }
+            });
+            
+            settingsDiv.innerHTML = JSON.stringify(menuSettings, null, 2);
+        }
+        
+        // Pokaż CSS Variables
+        function showCSSVariables() {
+            const variablesDiv = document.getElementById('css-variables');
+            const root = document.documentElement;
+            const computedStyle = getComputedStyle(root);
+            
+            const menuVariables = [
+                '--mas-menu-bg-color',
+                '--mas-menu-text-color',
+                '--mas-menu-hover-color',
+                '--mas-menu-hover-text-color',
+                '--mas-menu-active-bg',
+                '--mas-menu-active-text-color',
+                '--mas-menu-width',
+                '--mas-menu-item-height',
+                '--mas-menu-border-radius',
+                '--mas-menu-floating-margin-top',
+                '--mas-menu-floating-margin-left',
+                '--mas-submenu-bg-color',
+                '--mas-submenu-text-color',
+                '--mas-submenu-hover-bg',
+                '--mas-submenu-border-radius',
+                '--mas-submenu-min-width',
+                '--mas-menu-transition-duration',
+                '--mas-menu-animation-enabled'
+            ];
+            
+            let cssText = '';
+            menuVariables.forEach(variable => {
+                const value = computedStyle.getPropertyValue(variable);
+                if (value) {
+                    cssText += `${variable}: ${value.trim()};\n`;
+                }
+            });
+            
+            if (cssText) {
+                variablesDiv.innerHTML = cssText;
+            } else {
+                variablesDiv.innerHTML = 'Brak CSS Variables - sprawdź czy MenuManager jest załadowany\n\nTo jest normalne gdy test jest uruchomiony poza WordPress admin.';
+            }
+        }
+        
+        // Załaduj testowe ustawienia
+        function loadTestSettings() {
+            const testSettings = {
+                menu_background: '#2c3e50',
+                menu_text_color: '#ecf0f1',
+                menu_hover_background: '#3498db',
+                menu_hover_text_color: '#ffffff',
+                menu_active_background: '#e74c3c',
+                menu_active_text_color: '#ffffff',
+                menu_width: 200,
+                menu_item_height: 40,
+                menu_border_radius_type: 'all',
+                menu_border_radius_all: 12,
+                submenu_background: '#34495e',
+                submenu_text_color: '#bdc3c7',
+                submenu_hover_background: '#3498db',
+                submenu_border_radius_all: 8,
+                submenu_min_width: 220,
+                animation_speed: 400,
+                enable_animations: true
+            };
+            
+            // Symuluj aktualizację ustawień
+            if (typeof window.ModernAdminApp !== 'undefined') {
+                const app = window.ModernAdminApp.getInstance();
+                if (app) {
+                    app.updateSettings(testSettings);
+                    setTimeout(() => {
+                        checkSystemStatus();
+                        showCSSVariables();
+                    }, 500);
+                }
+            } else {
+                // Symuluj ustawienia dla celów testowych
+                currentSettings = testSettings;
+                displayPHPSettings();
+            }
+            
+            document.getElementById('test-results').innerHTML = 
+                '<div class="status info">📝 Załadowano testowe ustawienia</div>';
+        }
+        
+        // Aktualizuj podgląd menu
+        function updateMenuPreview() {
+            const preview = document.getElementById('menu-preview');
+            const root = document.documentElement;
+            const computedStyle = getComputedStyle(root);
+            
+            // Zastosuj CSS Variables do podglądu
+            const bgColor = computedStyle.getPropertyValue('--mas-menu-bg-color') || '#23282d';
+            const textColor = computedStyle.getPropertyValue('--mas-menu-text-color') || '#eee';
+            const borderRadius = computedStyle.getPropertyValue('--mas-menu-border-radius') || '8px';
+            
+            preview.style.background = bgColor;
+            preview.style.color = textColor;
+            preview.style.borderRadius = borderRadius;
+        }
+        
+        // Testy funkcjonalności
+        function testColorSettings() {
+            const results = [];
+            const root = document.documentElement;
+            const computedStyle = getComputedStyle(root);
+            
+            const colorTests = [
+                { variable: '--mas-menu-bg-color', setting: 'menu_background' },
+                { variable: '--mas-menu-text-color', setting: 'menu_text_color' },
+                { variable: '--mas-menu-hover-color', setting: 'menu_hover_background' },
+                { variable: '--mas-submenu-bg-color', setting: 'submenu_background' }
+            ];
+            
+            colorTests.forEach(test => {
+                const cssValue = computedStyle.getPropertyValue(test.variable);
+                const settingValue = currentSettings[test.setting];
+                
+                if (cssValue && settingValue) {
+                    results.push(`✅ ${test.variable}: OK (${cssValue.trim()})`);
+                } else if (settingValue) {
+                    results.push(`⚠️ ${test.variable}: Setting exists (${settingValue}) but CSS Variable not set`);
+                } else {
+                    results.push(`❌ ${test.variable}: Brak wartości`);
+                }
+            });
+            
+            displayTestResults('Test Kolorów', results);
+        }
+        
+        function testDimensionSettings() {
+            const results = [];
+            const root = document.documentElement;
+            const computedStyle = getComputedStyle(root);
+            
+            const dimensionTests = [
+                { variable: '--mas-menu-width', setting: 'menu_width' },
+                { variable: '--mas-menu-item-height', setting: 'menu_item_height' },
+                { variable: '--mas-submenu-min-width', setting: 'submenu_min_width' }
+            ];
+            
+            dimensionTests.forEach(test => {
+                const cssValue = computedStyle.getPropertyValue(test.variable);
+                const settingValue = currentSettings[test.setting];
+                
+                if (cssValue && settingValue) {
+                    results.push(`✅ ${test.variable}: OK (${cssValue.trim()})`);
+                } else if (settingValue) {
+                    results.push(`⚠️ ${test.variable}: Setting exists (${settingValue}) but CSS Variable not set`);
+                } else {
+                    results.push(`❌ ${test.variable}: Brak wartości`);
+                }
+            });
+            
+            displayTestResults('Test Wymiarów', results);
+        }
+        
+        function testBorderRadius() {
+            const results = [];
+            const root = document.documentElement;
+            const computedStyle = getComputedStyle(root);
+            
+            const menuRadius = computedStyle.getPropertyValue('--mas-menu-border-radius');
+            const submenuRadius = computedStyle.getPropertyValue('--mas-submenu-border-radius');
+            
+            if (menuRadius) {
+                results.push(`✅ Menu border radius: ${menuRadius.trim()}`);
+            } else if (currentSettings.menu_border_radius_all) {
+                results.push(`⚠️ Menu border radius: Setting exists (${currentSettings.menu_border_radius_all}) but CSS Variable not set`);
+            } else {
+                results.push(`❌ Menu border radius: Nie ustawiony`);
+            }
+            
+            if (submenuRadius) {
+                results.push(`✅ Submenu border radius: ${submenuRadius.trim()}`);
+            } else if (currentSettings.submenu_border_radius_all) {
+                results.push(`⚠️ Submenu border radius: Setting exists (${currentSettings.submenu_border_radius_all}) but CSS Variable not set`);
+            } else {
+                results.push(`❌ Submenu border radius: Nie ustawiony`);
+            }
+            
+            displayTestResults('Test Border Radius', results);
+        }
+        
+        function testSubmenuSettings() {
+            const results = [];
+            const root = document.documentElement;
+            const computedStyle = getComputedStyle(root);
+            
+            const submenuTests = [
+                '--mas-submenu-bg-color',
+                '--mas-submenu-text-color',
+                '--mas-submenu-hover-bg',
+                '--mas-submenu-border-radius',
+                '--mas-submenu-min-width'
+            ];
+            
+            submenuTests.forEach(variable => {
+                const value = computedStyle.getPropertyValue(variable);
+                if (value) {
+                    results.push(`✅ ${variable}: ${value.trim()}`);
+                } else {
+                    results.push(`❌ ${variable}: Nie ustawiony`);
+                }
+            });
+            
+            displayTestResults('Test Submenu', results);
+        }
+        
+        function runAllTests() {
+            document.getElementById('test-results').innerHTML = '';
+            testColorSettings();
+            setTimeout(() => testDimensionSettings(), 100);
+            setTimeout(() => testBorderRadius(), 200);
+            setTimeout(() => testSubmenuSettings(), 300);
+        }
+        
+        function displayTestResults(testName, results) {
+            const resultsDiv = document.getElementById('test-results');
+            const resultHtml = `
+                <div class="status info">
+                    <strong>${testName}:</strong><br>
+                    ${results.join('<br>')}
+                </div>
+            `;
+            resultsDiv.innerHTML += resultHtml;
+        }
+        
+        // Inicjalizacja po załadowaniu strony
+        document.addEventListener('DOMContentLoaded', function() {
+            // Czekaj na załadowanie systemu
+            setTimeout(() => {
+                checkSystemStatus();
+                updateMenuPreview();
+            }, 1000);
+        });
+    </script>
+</body>
+</html> 
