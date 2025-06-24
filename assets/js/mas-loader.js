@@ -12,7 +12,7 @@
         core: [
             'modules/ThemeManager.js',
             'modules/BodyClassManager.js',
-            'modules/MenuManager.js',
+            'modules/MenuManagerFixed.js', // NOWY MENU MANAGER!
             'modules/NotificationManager.js', // Dodano NotificationManager
             'modules/PaletteManager.js',
             'modules/ModernAdminApp.js'

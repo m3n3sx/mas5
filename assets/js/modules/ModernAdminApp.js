@@ -61,7 +61,7 @@ class ModernAdminApp {
             },
             {
                 name: 'menuManager',
-                class: MenuManager,
+                class: typeof MenuManagerFixed !== 'undefined' ? MenuManagerFixed : MenuManager,
                 priority: 3,
                 global: true
             },

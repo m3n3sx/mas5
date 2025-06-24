@@ -1,0 +1,339 @@
+/**
+ * ADMIN MENU FIXED - Modern Admin Styler V2
+ * 
+ * 🎯 NOWA STRATEGIA:
+ * 1. Minimalne nadpisania WordPress
+ * 2. Czyste CSS bez !important gdzie to możliwe
+ * 3. Progresywne ulepszenia tylko gdy włączone
+ * 4. Zero konfliktów z natywnym WordPress
+ */
+
+/* ========================================
+   🎨 CSS VARIABLES
+   ======================================== */
+:root {
+    /* Kolory menu */
+    --mas-menu-bg: #1e1e1e;
+    --mas-menu-text: #e0e0e0;
+    --mas-menu-hover-bg: rgba(255, 255, 255, 0.1);
+    --mas-menu-hover-text: #ffffff;
+    --mas-menu-active-bg: #0073aa;
+    --mas-menu-active-text: #ffffff;
+    --mas-menu-icon-color: #a0a0a0;
+    
+    /* Kolory submenu */
+    --mas-submenu-bg: rgba(0, 0, 0, 0.3);
+    --mas-submenu-text: #b0b0b0;
+    --mas-submenu-hover-bg: rgba(255, 255, 255, 0.05);
+    --mas-submenu-hover-text: #ffffff;
+    
+    /* Wymiary */
+    --mas-menu-width: 160px;
+    --mas-menu-collapsed-width: 36px;
+    --mas-menu-item-height: 34px;
+    --mas-menu-padding: 8px;
+    --mas-menu-radius: 0px;
+    
+    /* Efekty */
+    --mas-transition-speed: 200ms;
+    --mas-transition-easing: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ========================================
+   🏗️ PODSTAWOWA STRUKTURA MENU
+   ======================================== */
+
+/* Menu wrapper - tylko podstawowe style */
+body.mas-v2-menu-enhanced #adminmenuwrap {
+    width: var(--mas-menu-width);
+    transition: width var(--mas-transition-speed) var(--mas-transition-easing);
+}
+
+body.mas-v2-menu-enhanced.folded #adminmenuwrap {
+    width: var(--mas-menu-collapsed-width);
+}
+
+/* Główne menu */
+body.mas-v2-menu-enhanced #adminmenu {
+    background: var(--mas-menu-bg);
+    width: 100%;
+}
+
+/* Reset margin dla wpbody */
+body.mas-v2-menu-enhanced #wpbody {
+    margin-left: var(--mas-menu-width);
+    transition: margin-left var(--mas-transition-speed) var(--mas-transition-easing);
+}
+
+body.mas-v2-menu-enhanced.folded #wpbody {
+    margin-left: var(--mas-menu-collapsed-width);
+}
+
+/* ========================================
+   📋 MENU ITEMS
+   ======================================== */
+
+/* Menu item link */
+body.mas-v2-menu-enhanced #adminmenu li.menu-top > a {
+    color: var(--mas-menu-text);
+    transition: all var(--mas-transition-speed) var(--mas-transition-easing);
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: var(--mas-menu-item-height);
+    padding: 0 var(--mas-menu-padding);
+}
+
+/* Ikona menu */
+body.mas-v2-menu-enhanced #adminmenu .wp-menu-image {
+    color: var(--mas-menu-icon-color);
+    transition: color var(--mas-transition-speed) var(--mas-transition-easing);
+}
+
+/* Hover state */
+body.mas-v2-menu-enhanced #adminmenu li.menu-top:hover > a,
+body.mas-v2-menu-enhanced #adminmenu li.opensub > a {
+    background-color: var(--mas-menu-hover-bg);
+    color: var(--mas-menu-hover-text);
+}
+
+body.mas-v2-menu-enhanced #adminmenu li.menu-top:hover .wp-menu-image,
+body.mas-v2-menu-enhanced #adminmenu li.opensub .wp-menu-image {
+    color: var(--mas-menu-hover-text);
+}
+
+/* Active/Current state */
+body.mas-v2-menu-enhanced #adminmenu li.current > a,
+body.mas-v2-menu-enhanced #adminmenu li.wp-has-current-submenu > a {
+    background-color: var(--mas-menu-active-bg);
+    color: var(--mas-menu-active-text);
+}
+
+body.mas-v2-menu-enhanced #adminmenu li.current .wp-menu-image,
+body.mas-v2-menu-enhanced #adminmenu li.wp-has-current-submenu .wp-menu-image {
+    color: var(--mas-menu-active-text);
+}
+
+/* ========================================
+   📂 SUBMENU
+   ======================================== */
+
+/* Submenu container */
+body.mas-v2-menu-enhanced #adminmenu .wp-submenu {
+    background: var(--mas-submenu-bg);
+    left: var(--mas-menu-width);
+    transition: all var(--mas-transition-speed) var(--mas-transition-easing);
+}
+
+/* Submenu w collapsed mode */
+body.mas-v2-menu-enhanced.folded #adminmenu .wp-submenu {
+    left: var(--mas-menu-collapsed-width);
+}
+
+/* Submenu links */
+body.mas-v2-menu-enhanced #adminmenu .wp-submenu a {
+    color: var(--mas-submenu-text);
+    padding: 6px 12px;
+    transition: all var(--mas-transition-speed) var(--mas-transition-easing);
+}
+
+body.mas-v2-menu-enhanced #adminmenu .wp-submenu a:hover {
+    background-color: var(--mas-submenu-hover-bg);
+    color: var(--mas-submenu-hover-text);
+}
+
+/* Current submenu item */
+body.mas-v2-menu-enhanced #adminmenu .wp-submenu li.current a {
+    color: var(--mas-menu-active-text);
+    font-weight: 600;
+}
+
+/* ========================================
+   🌊 FLOATING MODE (OPCJONALNE)
+   ======================================== */
+
+body.mas-v2-menu-floating #adminmenuwrap {
+    position: fixed;
+    top: 32px; /* height of admin bar */
+    left: 0;
+    bottom: 0;
+    z-index: 9998;
+}
+
+body.mas-v2-menu-floating #adminmenu {
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* Scrollbar styling dla floating menu */
+body.mas-v2-menu-floating #adminmenu::-webkit-scrollbar {
+    width: 6px;
+}
+
+body.mas-v2-menu-floating #adminmenu::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+body.mas-v2-menu-floating #adminmenu::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+}
+
+body.mas-v2-menu-floating #adminmenu::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Adjust content margin for floating menu */
+body.mas-v2-menu-floating #wpbody {
+    margin-left: var(--mas-menu-width);
+}
+
+body.mas-v2-menu-floating.folded #wpbody {
+    margin-left: var(--mas-menu-collapsed-width);
+}
+
+/* ========================================
+   💎 DETACHED MODE (OPCJONALNE)
+   ======================================== */
+
+body.mas-v2-menu-detached #adminmenuwrap {
+    margin: 10px;
+    height: calc(100vh - 52px); /* 32px admin bar + 20px margins */
+    border-radius: var(--mas-menu-radius);
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+body.mas-v2-menu-detached #adminmenu {
+    border-radius: var(--mas-menu-radius);
+}
+
+body.mas-v2-menu-detached #wpbody {
+    padding-left: 10px;
+}
+
+/* ========================================
+   ✨ EFEKTY DODATKOWE (OPCJONALNE)
+   ======================================== */
+
+/* Rounded corners */
+body.mas-v2-menu-rounded #adminmenu li.menu-top > a {
+    margin: 2px 4px;
+    border-radius: 6px;
+}
+
+body.mas-v2-menu-rounded #adminmenu .wp-submenu {
+    border-radius: 8px;
+    margin-top: 4px;
+}
+
+/* Shadow effect */
+body.mas-v2-menu-shadow #adminmenu {
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+body.mas-v2-menu-shadow #adminmenu .wp-submenu {
+    box-shadow: 2px 2px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Glassmorphism effect */
+body.mas-v2-menu-glass #adminmenu {
+    background: rgba(30, 30, 30, 0.8);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+body.mas-v2-menu-glass #adminmenu .wp-submenu {
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+/* Smooth hover effect */
+body.mas-v2-menu-smooth #adminmenu li.menu-top > a::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: var(--mas-menu-hover-bg);
+    opacity: 0;
+    transition: opacity var(--mas-transition-speed) var(--mas-transition-easing);
+    pointer-events: none;
+    border-radius: inherit;
+}
+
+body.mas-v2-menu-smooth #adminmenu li.menu-top:hover > a::before {
+    opacity: 1;
+}
+
+/* Active indicator */
+body.mas-v2-menu-indicators #adminmenu li.current > a::after,
+body.mas-v2-menu-indicators #adminmenu li.wp-has-current-submenu > a::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 24px;
+    background: var(--mas-menu-active-text);
+    border-radius: 0 3px 3px 0;
+}
+
+/* ========================================
+   📱 RESPONSIVE
+   ======================================== */
+
+@media screen and (max-width: 782px) {
+    body.mas-v2-menu-enhanced #adminmenuwrap,
+    body.mas-v2-menu-floating #adminmenuwrap,
+    body.mas-v2-menu-detached #adminmenuwrap {
+        position: static;
+        width: 100%;
+        margin: 0;
+        height: auto;
+        border-radius: 0;
+        box-shadow: none;
+    }
+    
+    body.mas-v2-menu-enhanced #wpbody,
+    body.mas-v2-menu-floating #wpbody,
+    body.mas-v2-menu-detached #wpbody {
+        margin-left: 0;
+        padding-left: 0;
+    }
+}
+
+/* ========================================
+   ♿ ACCESSIBILITY
+   ======================================== */
+
+/* Focus states */
+body.mas-v2-menu-enhanced #adminmenu a:focus {
+    outline: 2px solid var(--mas-menu-active-bg);
+    outline-offset: -2px;
+}
+
+/* Skip animation for prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+    body.mas-v2-menu-enhanced #adminmenu,
+    body.mas-v2-menu-enhanced #adminmenu * {
+        transition: none !important;
+        animation: none !important;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    :root {
+        --mas-menu-bg: #000000;
+        --mas-menu-text: #ffffff;
+        --mas-menu-hover-bg: #ffffff;
+        --mas-menu-hover-text: #000000;
+        --mas-menu-active-bg: #ffffff;
+        --mas-menu-active-text: #000000;
+    }
+} 

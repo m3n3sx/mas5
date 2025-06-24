@@ -366,10 +366,10 @@ class ModernAdminStylerV2 {
             return;
         }
         
-        // 🔄 MENU RESET - WordPress Default (ŁADUJ PIERWSZY!)
+        // 🔄 MENU FIXED - Nowa implementacja menu (ŁADUJ PIERWSZY!)
         wp_enqueue_style(
-            'mas-v2-menu-reset',
-            MAS_V2_PLUGIN_URL . 'assets/css/admin-menu-reset.css',
+            'mas-v2-menu-fixed',
+            MAS_V2_PLUGIN_URL . 'assets/css/admin-menu-fixed.css',
             [],
             MAS_V2_VERSION
         );
@@ -378,7 +378,7 @@ class ModernAdminStylerV2 {
         wp_enqueue_style(
             'mas-v2-global',
             MAS_V2_PLUGIN_URL . 'assets/css/admin-modern.css',
-            ['mas-v2-menu-reset'],
+            ['mas-v2-menu-fixed'],
             MAS_V2_VERSION
         );
         
