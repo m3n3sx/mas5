@@ -412,13 +412,13 @@ class ModernAdminStylerV2 {
         //     MAS_V2_VERSION
         // );
         
-        // 🚀 QUICK FIX CSS - FORCE FLOATING EFFECTS
-        wp_enqueue_style(
-            'mas-v2-quick-fix',
-            MAS_V2_PLUGIN_URL . 'assets/css/quick-fix.css',
-            array('mas-v2-global', 'mas-v2-menu-modern'),
-            MAS_V2_VERSION . '-' . time() // Force reload
-        );
+        // 🚀 QUICK FIX CSS - WYŁĄCZONE (powodowało konflikty)
+        // wp_enqueue_style(
+        //     'mas-v2-quick-fix',
+        //     MAS_V2_PLUGIN_URL . 'assets/css/quick-fix.css',
+        //     array('mas-v2-global'),
+        //     MAS_V2_VERSION . '-' . time() // Force reload
+        // );
         
         // Uproszczony CSS dla menu - nadpisuje style z admin-modern.css
         // WYŁĄCZONE - testujemy czy submenu działa bez żadnego custom CSS
@@ -2291,3 +2291,93 @@ class ModernAdminStylerV2 {
 
 // Inicjalizuj wtyczkę
 ModernAdminStylerV2::getInstance();
+
+// Włącz diagnostykę menu (tylko dla adminów z WP_DEBUG)
+if (defined('WP_DEBUG') && WP_DEBUG) {
+    add_action('admin_footer', function() {
+        if (isset($_GET['mas_diagnostic']) && current_user_can('manage_options')) {
+            ?>
+            <div id="mas-diagnostic-panel" style="position: fixed; bottom: 20px; right: 20px; background: #fff; border: 2px solid #0073aa; padding: 15px; max-width: 400px; z-index: 999999; box-shadow: 0 4px 20px rgba(0,0,0,0.2); border-radius: 8px;">
+                <h3 style="margin: 0 0 10px 0; color: #0073aa;">🔍 MAS Menu Diagnostic</h3>
+                
+                <div style="margin-bottom: 15px;">
+                    <strong>CSS Files:</strong><br>
+                    <span id="diag-css-status">Checking...</span>
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <strong>Body Classes:</strong><br>
+                    <code id="diag-body-classes" style="font-size: 11px;">Checking...</code>
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <strong>CSS Variables:</strong><br>
+                    <code id="diag-css-vars" style="font-size: 11px;">Checking...</code>
+                </div>
+                
+                <div style="margin-bottom: 15px;">
+                    <strong>JavaScript:</strong><br>
+                    <span id="diag-js-status">Checking...</span>
+                </div>
+                
+                <button onclick="runMasDiagnostic()" style="background: #0073aa; color: white; border: none; padding: 8px 16px; cursor: pointer; border-radius: 4px;">
+                    🔄 Refresh Diagnostic
+                </button>
+            </div>
+            
+            <script>
+            function runMasDiagnostic() {
+                // Check CSS files
+                const stylesheets = Array.from(document.styleSheets);
+                const resetCSS = stylesheets.find(s => s.href && s.href.includes('admin-menu-reset.css'));
+                const modernCSS = stylesheets.find(s => s.href && s.href.includes('admin-modern.css'));
+                const menuModernCSS = stylesheets.find(s => s.href && s.href.includes('admin-menu-modern.css'));
+                const quickfixCSS = stylesheets.find(s => s.href && s.href.includes('quick-fix.css'));
+                
+                let cssStatus = '';
+                cssStatus += resetCSS ? '✅ admin-menu-reset.css<br>' : '❌ admin-menu-reset.css<br>';
+                cssStatus += modernCSS ? '✅ admin-modern.css<br>' : '❌ admin-modern.css<br>';
+                cssStatus += menuModernCSS ? '⚠️ admin-menu-modern.css (should be disabled)<br>' : '✅ admin-menu-modern.css (disabled)<br>';
+                cssStatus += quickfixCSS ? '⚠️ quick-fix.css (should be disabled)' : '✅ quick-fix.css (disabled)';
+                
+                document.getElementById('diag-css-status').innerHTML = cssStatus;
+                
+                // Check body classes
+                const bodyClasses = document.body.className;
+                document.getElementById('diag-body-classes').textContent = bodyClasses || 'No classes';
+                
+                // Check CSS variables
+                const root = document.documentElement;
+                const menuEnabled = getComputedStyle(root).getPropertyValue('--mas-menu-enabled').trim();
+                const menuBg = getComputedStyle(root).getPropertyValue('--mas-menu-bg-color').trim();
+                const floatingEnabled = getComputedStyle(root).getPropertyValue('--mas-menu-floating-enabled').trim();
+                
+                let varsStatus = '';
+                varsStatus += '--mas-menu-enabled: ' + (menuEnabled || 'not set') + '<br>';
+                varsStatus += '--mas-menu-bg-color: ' + (menuBg || 'not set') + '<br>';
+                varsStatus += '--mas-menu-floating-enabled: ' + (floatingEnabled || 'not set');
+                
+                document.getElementById('diag-css-vars').innerHTML = varsStatus;
+                
+                // Check JavaScript
+                let jsStatus = '';
+                jsStatus += (typeof MenuManager !== 'undefined' || typeof window.MenuManager !== 'undefined') ? '✅ MenuManager loaded<br>' : '❌ MenuManager not loaded<br>';
+                jsStatus += (typeof masV2Global !== 'undefined') ? '✅ masV2Global available' : '❌ masV2Global not available';
+                
+                document.getElementById('diag-js-status').innerHTML = jsStatus;
+                
+                console.log('🔍 MAS Diagnostic complete', {
+                    css: { resetCSS: !!resetCSS, modernCSS: !!modernCSS, menuModernCSS: !!menuModernCSS, quickfixCSS: !!quickfixCSS },
+                    bodyClasses,
+                    cssVariables: { menuEnabled, menuBg, floatingEnabled },
+                    javascript: { MenuManager: typeof MenuManager !== 'undefined', masV2Global: typeof masV2Global !== 'undefined' }
+                });
+            }
+            
+            // Auto-run on load
+            setTimeout(runMasDiagnostic, 1000);
+            </script>
+            <?php
+        }
+    });
+}
