@@ -166,6 +166,46 @@ modern-admin-styler-v2/
 
 ---
 
+## 📚 **DOCUMENTATION**
+
+### For Users
+- **Quick Start Guide**: See installation steps above
+- **Troubleshooting**: Check `TROUBLESHOOTING.md` for common issues
+- **Testing Tools**: Use `test-current-save-status.php` for diagnostics
+
+### For Developers
+- **📖 Settings Save System**: `DOCUMENTATION_SETTINGS_SAVE_SYSTEM.md`
+  - Complete architecture overview
+  - Data flow diagrams
+  - Security implementation
+  - Debugging guide
+
+- **🧪 Testing Procedures**: `TESTING_PROCEDURES.md`
+  - Functional tests
+  - Security tests
+  - Performance tests
+  - Pre-deployment checklist
+
+- **🔧 Maintenance Guide**: `MAINTENANCE_GUIDE.md`
+  - Adding new settings
+  - Modifying CSS
+  - Creating AJAX endpoints
+  - Best practices
+
+- **🐛 Troubleshooting**: `TROUBLESHOOTING.md`
+  - Common problems and solutions
+  - Diagnostic tools
+  - Known issues
+
+### Quick Links
+- **Test Diagnostics**: `test-current-save-status.php`
+- **AJAX Data Format Test**: `test-ajax-data-format.php`
+- **All Settings Save Fix**: `FIX_ALL_SETTINGS_SAVE.md`
+- **Final Fix Summary**: `FINAL_FIX_SUMMARY.md`
+- **Refactoring Plan**: `REFACTORING_PLAN.md`
+
+---
+
 ## 🎯 **DEVELOPMENT STATUS**
 
 - ✅ **Core Development**: 100% Complete

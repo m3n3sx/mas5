@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task 9: Module Communication System Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        .warning { background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
+        button {
+            background: #007cba;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #005a87; }
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .metric-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #007cba;
+        }
+        .metric-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #007cba;
+        }
+        .metric-label {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+        pre {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔄 Task 9: Module Communication System Test</h1>
+    <p>Testing enhanced module-to-module communication, dependency resolution, and health checking.</p>
+
+    <div class="test-section">
+        <h2>📊 System Status</h2>
+        <div id="system-status" class="metrics">
+            <div class="metric-card">
+                <div class="metric-value" id="module-count">-</div>
+                <div class="metric-label">Active Modules</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value" id="event-listeners">-</div>
+                <div class="metric-label">Event Listeners</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value" id="system-health">-</div>
+                <div class="metric-label">System Health</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value" id="recovery-attempts">-</div>
+                <div class="metric-label">Recovery Attempts</div>
+            </div>
+        </div>
+        <button onclick="updateSystemStatus()">🔄 Refresh Status</button>
+    </div>
+
+    <div class="test-section">
+        <h2>🔗 Event Communication Tests</h2>
+        <div id="event-tests"></div>
+        <button onclick="testEventCommunication()">🧪 Test Event System</button>
+        <button onclick="testModuleBroadcast()">📢 Test Module Broadcast</button>
+        <button onclick="testEventPriorities()">⚡ Test Event Priorities</button>
+    </div>
+
+    <div class="test-section">
+        <h2>🔍 Dependency Resolution Tests</h2>
+        <div id="dependency-tests"></div>
+        <button onclick="testDependencyResolution()">🧪 Test Dependencies</button>
+        <button onclick="testCircularDependencies()">🔄 Test Circular Dependencies</button>
+        <button onclick="testDependencyDeadlock()">⚠️ Test Deadlock Resolution</button>
+    </div>
+
+    <div class="test-section">
+        <h2>🏥 Health Checking Tests</h2>
+        <div id="health-tests"></div>
+        <button onclick="testHealthChecking()">🧪 Test Health Checks</button>
+        <button onclick="testAutoRecovery()">🔧 Test Auto Recovery</button>
+        <button onclick="testEmergencyRecovery()">🚨 Test Emergency Recovery</button>
+    </div>
+
+    <div class="test-section">
+        <h2>📈 Performance Metrics</h2>
+        <div id="performance-metrics"></div>
+        <button onclick="showPerformanceMetrics()">📊 Show Metrics</button>
+        <button onclick="showEventStatistics()">📈 Show Event Stats</button>
+    </div>
+
+    <div class="test-section">
+        <h2>🐛 Debug Information</h2>
+        <div id="debug-info"></div>
+        <button onclick="showDebugInfo()">🔍 Show Debug Info</button>
+        <button onclick="showModuleDetails()">📋 Show Module Details</button>
+    </div>
+
+    <script>
+        // Global test state
+        let app = null;
+        let testResults = [];
+
+        // Initialize when DOM is ready
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeTests();
+        });
+
+        function initializeTests() {
+            log('🚀 Initializing Module Communication System Tests...', 'info');
+            
+            // Wait for ModernAdminApp to be available
+            if (typeof window.ModernAdminApp !== 'undefined') {
+                app = window.ModernAdminApp.getInstance();
+                log('✅ ModernAdminApp instance obtained', 'success');
+                updateSystemStatus();
+            } else {
+                log('⚠️ ModernAdminApp not available, waiting...', 'warning');
+                setTimeout(initializeTests, 1000);
+            }
+        }
+
+        function log(message, type = 'info', targetId = null) {
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = `[${timestamp}] ${message}`;
+            
+            console.log(logEntry);
+            
+            if (targetId) {
+                const element = document.getElementById(targetId);
+                if (element) {
+                    const div = document.createElement('div');
+                    div.className = `test-result ${type}`;
+                    div.textContent = logEntry;
+                    element.appendChild(div);
+                    element.scrollTop = element.scrollHeight;
+                }
+            }
+        }
+
+        function updateSystemStatus() {
+            if (!app) {
+                log('❌ App not available for status update', 'error');
+                return;
+            }
+
+            try {
+                const status = app.getSystemStatus();
+                const performance = app.getPerformanceMetrics();
+                
+                document.getElementById('module-count').textContent = status.totalModules;
+                document.getElementById('event-listeners').textContent = 
+                    status.eventListeners.reduce((sum, el) => sum + el.count, 0);
+                
+                // Get system health from last health check
+                if (app.recoveryStats && app.recoveryStats.lastHealthReport) {
+                    document.getElementById('system-health').textContent = 
+                        app.recoveryStats.lastHealthReport.systemHealth || 'Unknown';
+                } else {
+                    document.getElementById('system-health').textContent = 'Not Checked';
+                }
+                
+                document.getElementById('recovery-attempts').textContent = 
+                    status.recoveryStats ? status.recoveryStats.recoveryAttempts : 0;
+                
+                log('✅ System status updated', 'success');
+                
+            } catch (error) {
+                log(`❌ Error updating system status: ${error.message}`, 'error');
+            }
+        }
+
+        async function testEventCommunication() {
+            log('🧪 Testing Event Communication System...', 'info', 'event-tests');
+            
+            if (!app) {
+                log('❌ App not available', 'error', 'event-tests');
+                return;
+            }
+
+            try {
+                // Test 1: Basic event listening and dispatching
+                let eventReceived = false;
+                const listenerId = app.addEventListener('test-event', (event) => {
+                    eventReceived = true;
+                    log(`✅ Event received: ${event.type} with data: ${JSON.stringify(event.data)}`, 'success', 'event-tests');
+                });
+
+                app.dispatchModuleEvent('test-event', { test: 'data', timestamp: Date.now() });
+                
+                setTimeout(() => {
+                    if (eventReceived) {
+                        log('✅ Basic event communication test passed', 'success', 'event-tests');
+                    } else {
+                        log('❌ Basic event communication test failed', 'error', 'event-tests');
+                    }
+                    app.removeEventListener('test-event', listenerId);
+                }, 100);
+
+                // Test 2: Module-specific event targeting
+                const moduleListenerId = app.addEventListenerWithOptions('module-specific-event', (event) => {
+                    log(`✅ Module-specific event received by test-module`, 'success', 'event-tests');
+                }, { moduleContext: 'test-module' });
+
+                const otherListenerId = app.addEventListenerWithOptions('module-specific-event', (event) => {
+                    log(`❌ This should not be called for test-module event`, 'error', 'event-tests');
+                }, { moduleContext: 'other-module' });
+
+                app.dispatchModuleEvent('module-specific-event', { test: true }, 'test-module');
+
+                setTimeout(() => {
+                    app.removeEventListener('module-specific-event', moduleListenerId);
+                    app.removeEventListener('module-specific-event', otherListenerId);
+                }, 200);
+
+                // Test 3: Once listeners
+                let onceCallCount = 0;
+                const onceListenerId = app.addEventListenerWithOptions('once-event', (event) => {
+                    onceCallCount++;
+                    log(`✅ Once listener called (count: ${onceCallCount})`, 'success', 'event-tests');
+                }, { once: true });
+
+                app.dispatchModuleEvent('once-event', { test: 1 });
+                app.dispatchModuleEvent('once-event', { test: 2 });
+
+                setTimeout(() => {
+                    if (onceCallCount === 1) {
+                        log('✅ Once listener test passed', 'success', 'event-tests');
+                    } else {
+                        log(`❌ Once listener test failed (called ${onceCallCount} times)`, 'error', 'event-tests');
+                    }
+                }, 300);
+
+            } catch (error) {
+                log(`❌ Event communication test error: ${error.message}`, 'error', 'event-tests');
+            }
+        }
+
+        async function testModuleBroadcast() {
+            log('📢 Testing Module Broadcast...', 'info', 'event-tests');
+            
+            if (!app) {
+                log('❌ App not available', 'error', 'event-tests');
+                return;
+            }
+
+            try {
+                // Test broadcasting a method to all modules
+                const results = app.broadcastToModules('getCurrentState');
+                
+                log(`📢 Broadcast sent to ${results.size} modules`, 'info', 'event-tests');
+                
+                let successCount = 0;
+                let errorCount = 0;
+                
+                for (const [moduleName, result] of results) {
+                    if (result.success) {
+                        successCount++;
+                        log(`✅ ${moduleName}: Success`, 'success', 'event-tests');
+                    } else {
+                        errorCount++;
+                        log(`⚠️ ${moduleName}: ${result.error}`, 'warning', 'event-tests');
+                    }
+                }
+                
+                log(`📊 Broadcast results: ${successCount} success, ${errorCount} errors`, 'info', 'event-tests');
+                
+            } catch (error) {
+                log(`❌ Module broadcast test error: ${error.message}`, 'error', 'event-tests');
+            }
+        }
+
+        async function testEventPriorities() {
+            log('⚡ Testing Event Priorities...', 'info', 'event-tests');
+            
+            if (!app) {
+                log('❌ App not available', 'error', 'event-tests');
+                return;
+            }
+
+            try {
+                const executionOrder = [];
+                
+                // Add listeners with different priorities
+                const lowPriorityId = app.addEventListenerWithOptions('priority-test', (event) => {
+                    executionOrder.push('low');
+                    log('🔹 Low priority listener executed', 'info', 'event-tests');
+                }, { priority: 1 });
+
+                const highPriorityId = app.addEventListenerWithOptions('priority-test', (event) => {
+                    executionOrder.push('high');
+                    log('🔸 High priority listener executed', 'info', 'event-tests');
+                }, { priority: 10 });
+
+                const mediumPriorityId = app.addEventListenerWithOptions('priority-test', (event) => {
+                    executionOrder.push('medium');
+                    log('🔹 Medium priority listener executed', 'info', 'event-tests');
+                }, { priority: 5 });
+
+                app.dispatchModuleEvent('priority-test', { test: true });
+
+                setTimeout(() => {
+                    const expectedOrder = ['high', 'medium', 'low'];
+                    const orderCorrect = JSON.stringify(executionOrder) === JSON.stringify(expectedOrder);
+                    
+                    if (orderCorrect) {
+                        log('✅ Event priority test passed', 'success', 'event-tests');
+                    } else {
+                        log(`❌ Event priority test failed. Expected: ${expectedOrder.join(', ')}, Got: ${executionOrder.join(', ')}`, 'error', 'event-tests');
+                    }
+                    
+                    // Cleanup
+                    app.removeEventListener('priority-test', lowPriorityId);
+                    app.removeEventListener('priority-test', highPriorityId);
+                    app.removeEventListener('priority-test', mediumPriorityId);
+                }, 100);
+
+            } catch (error) {
+                log(`❌ Event priority test error: ${error.message}`, 'error', 'event-tests');
+            }
+        }
+
+        async function testDependencyResolution() {
+            log('🧪 Testing Dependency Resolution...', 'info', 'dependency-tests');
+            
+            if (!app) {
+                log('❌ App not available', 'error', 'dependency-tests');
+                return;
+            }
+
+            try {
+                // Test dependency graph building
+                const testModules = [
+                    { name: 'moduleA', dependencies: [] },
+                    { name: 'moduleB', dependencies: ['moduleA'] },
+                    { name: 'moduleC', dependencies: ['moduleA', 'moduleB'] }
+                ];
+                
+                const dependencyGraph = app.buildDependencyGraph(testModules);
+                
+                log(`📊 Built dependency graph with ${dependencyGraph.size} modules`, 'info', 'dependency-tests');
+                
+                // Check if dependencies are correctly mapped
+                const moduleC = dependencyGraph.get('moduleC');
+                if (moduleC && moduleC.dependencies.length === 2) {
+                    log('✅ Dependency mapping test passed', 'success', 'dependency-tests');
+                } else {
+                    log('❌ Dependency mapping test failed', 'error', 'dependency-tests');
+                }
+                
+                // Test dependency status checking
+                const mockConfig = { name: 'testModule', dependencies: ['notificationManager'] };
+                const depStatus = app.checkModuleDependencies(mockConfig);
+                
+                log(`📋 Dependency status: ${depStatus.loadedDependencies.length} loaded, ${depStatus.missingDependencies.length} missing`, 'info', 'dependency-tests');
+                
+                if (depStatus.loadedDependencies.includes('notificationManager')) {
+                    log('✅ Dependency status check passed', 'success', 'dependency-tests');
+                } else {
+                    log('⚠️ NotificationManager dependency not found', 'warning', 'dependency-tests');
+                }
+                
+            } catch (error) {
+                log(`❌ Dependency resolution test error: ${error.message}`, 'error', 'dependency-tests');
+            }
+        }
+
+        async function testCircularDependencies() {
+            log('🔄 Testing Circular Dependency Detection...', 'info', 'dependency-tests');
+            
+            if (!app) {
+                log('❌ App not available', 'error', 'dependency-tests');
+                return;
+            }
+
+            try {
+                // Create modules with circular dependencies
+                const circularModules = [
+                    { name: 'moduleX', dependencies: ['moduleY'] },
+                    { name: 'moduleY', dependencies: ['moduleZ'] },
+                    { name: 'moduleZ', dependencies: ['moduleX'] }
+                ];
+                
+                const dependencyGraph = app.buildDependencyGraph(circularModules);
+                const cycles = app.detectCircularDependencies(dependencyGraph);
+                
+                if (cycles.length > 0) {
+                    log(`✅ Circular dependency detected: ${cycles[0].join(' -> ')}`, 'success', 'dependency-tests');
+                    log('✅ Circular dependency detection test passed', 'success', 'dependency-tests');
+                } else {
+                    log('❌ Circular dependency detection test failed', 'error', 'dependency-tests');
+                }
+                
+            } catch (error) {
+                log(`❌ Circular dependency test error: ${error.message}`, 'error', 'dependency-tests');
+            }
+        }
+
+        async function testDependencyDeadlock() {
+            log('⚠️ Testing Dependency Deadlock Resolution...', 'info', 'dependency-tests');
+            
+            if (!app) {
+                log('❌ App not available', 'error', 'dependency-tests');
+                return;
+            }
+
+            try {
+                // Simulate deadlock scenario
+                const deadlockedModules = [
+                    { name: 'deadlockA', dependencies: ['nonExistentModule'] },
+                    { name: 'deadlockB', dependencies: ['deadlockA'] }
+                ];
+                
+                log('🔧 Attempting deadlock resolution...', 'info', 'dependency-tests');
+                
+                const results = await app.resolveDependencyDeadlock(deadlockedModules);
+                
+                log(`📊 Deadlock resolution attempted on ${results.length} modules`, 'info', 'dependency-tests');
+                
+                const successful = results.filter(r => r.success).length;
+                const failed = results.length - successful;
+                
+                log(`📈 Deadlock resolution results: ${successful} successful, ${failed} failed`, 'info', 'dependency-tests');
+                
+                if (results.length > 0) {
+                    log('✅ Deadlock resolution test completed', 'success', 'dependency-tests');
+                } else {
+                    log('⚠️ No deadlock resolution attempted', 'warning', 'dependency-tests');
+                }
+                
+            } catch (error) {
+                log(`❌ Dependency deadlock test error: ${error.message}`, 'error', 'dependency-tests');
+            }
+        }
+
+        async function testHealthChecking() {
+            log('🧪 Testing Health Checking System...', 'info', 'health-tests');
+            
+            if (!app) {
+                log('❌ App not available', 'error', 'health-tests');
+                return;
+            }
+
+            try {
+                // Perform comprehensive health check
+                const healthReport = await app.performHealthCheck();
+                
+                log(`🏥 Health check completed for ${healthReport.totalModules} modules`, 'info', 'health-tests');
+                log(`📊 Health summary: ${healthReport.healthyModules} healthy, ${healthReport.unhealthyModules} unhealthy, ${healthReport.criticalModules} critical`, 'info', 'health-tests');
+                log(`🎯 System health: ${healthReport.systemHealth}`, 'info', 'health-tests');
+                
+                // Test individual module health check
+                const moduleNames = Array.from(app.modules.keys());
+                if (moduleNames.length > 0) {
+                    const testModuleName = moduleNames[0];
+                    const moduleHealth = await app.checkModuleHealth(testModuleName, app.modules.get(testModuleName));
+                    
+                    log(`🔍 Individual health check for ${testModuleName}: ${moduleHealth.status}`, 'info', 'health-tests');
+                    
+                    if (moduleHealth.issues && moduleHealth.issues.length > 0) {
+                        log(`⚠️ Issues found: ${moduleHealth.issues.join(', ')}`, 'warning', 'health-tests');
+                    }
+                }
+                
+                log('✅ Health checking test completed', 'success', 'health-tests');
+                
+                // Update system status after health check
+                updateSystemStatus();
+                
+            } catch (error) {
+                log(`❌ Health checking test error: ${error.message}`, 'error', 'health-tests');
+            }
+        }
+
+        async function testAutoRecovery() {
+            log('🔧 Testing Auto Recovery System...', 'info', 'health-tests');
+            
+            if (!app) {
+                log('❌ App not available', 'error', 'health-tests');
+                return;
+            }
+
+            try {
+                // Check if auto-recovery is running
+                if (app.autoRecoveryInterval) {
+                    log('✅ Auto-recovery system is active', 'success', 'health-tests');
+                } else {
+                    log('⚠️ Auto-recovery system is not active', 'warning', 'health-tests');
+                }
+                
+                // Test recovery assessment
+                const mockHealthReport = {
+                    totalModules: 5,
+                    healthyModules: 2,
+                    unhealthyModules: 2,
+                    criticalModules: 1,
+                    systemHealth: 'poor',
+                    modules: {
+                        'testModule1': { status: 'healthy' },
+                        'testModule2': { status: 'degraded' },
+                        'testModule3': { status: 'unhealthy' },
+                        'testModule4': { status: 'critical' },
+                        'testModule5': { status: 'healthy' }
+                    }
+                };
+                
+                const assessment = app.assessRecoveryNeed(mockHealthReport);
+                
+                log(`🎯 Recovery assessment: ${assessment.required ? 'Required' : 'Not required'}`, 'info', 'health-tests');
+                log(`📋 Reason: ${assessment.reason}`, 'info', 'health-tests');
+                log(`⚡ Priority: ${assessment.priority}`, 'info', 'health-tests');
+                log(`🔧 Strategy: ${assessment.strategy}`, 'info', 'health-tests');
+                
+                if (assessment.required) {
+                    log('✅ Recovery assessment test passed', 'success', 'health-tests');
+                } else {
+                    log('⚠️ Recovery assessment indicates no recovery needed', 'warning', 'health-tests');
+                }
+                
+                // Test recovery statistics
+                if (app.recoveryStats) {
+                    log(`📈 Recovery stats: ${app.recoveryStats.totalChecks} checks, ${app.recoveryStats.recoveryAttempts} attempts`, 'info', 'health-tests');
+                }
+                
+            } catch (error) {
+                log(`❌ Auto recovery test error: ${error.message}`, 'error', 'health-tests');
+            }
+        }
+
+        async function testEmergencyRecovery() {
+            log('🚨 Testing Emergency Recovery...', 'info', 'health-tests');
+            
+            if (!app) {
+                log('❌ App not available', 'error', 'health-tests');
+                return;
+            }
+
+            try {
+                // Test emergency recovery methods
+                const criticalModules = app.getCriticalModules();
+                log(`🎯 Critical modules identified: ${criticalModules.join(', ')}`, 'info', 'health-tests');
+                
+                const recentlyFailed = app.getRecentlyFailedModules();
+                log(`⚠️ Recently failed modules: ${recentlyFailed.length > 0 ? recentlyFailed.join(', ') : 'None'}`, 'info', 'health-tests');
+                
+                // Test module priority calculation
+                const mockHealthReport = {
+                    modules: {
+                        'notificationManager': { status: 'critical' },
+                        'themeManager': { status: 'healthy' },
+                        'menuManager': { status: 'degraded' }
+                    }
+                };
+                
+                const priorities = app.calculateModulePriorities(mockHealthReport);
+                log(`📊 Module priorities calculated for ${priorities.length} modules`, 'info', 'health-tests');
+                
+                priorities.forEach(([name, priority]) => {
+                    log(`  ${name}: ${priority}`, 'info', 'health-tests');
+                });
+                
+                log('✅ Emergency recovery test completed', 'success', 'health-tests');
+                
+            } catch (error) {
+                log(`❌ Emergency recovery test error: ${error.message}`, 'error', 'health-tests');
+            }
+        }
+
+        function showPerformanceMetrics() {
+            log('📊 Showing Performance Metrics...', 'info', 'performance-metrics');
+            
+            if (!app) {
+                log('❌ App not available', 'error', 'performance-metrics');
+                return;
+            }
+
+            try {
+                const metrics = app.getPerformanceMetrics();
+                
+                const metricsHtml = `
+                    <pre>${JSON.stringify(metrics, null, 2)}</pre>
+                `;
+                
+                document.getElementById('performance-metrics').innerHTML = metricsHtml;
+                log('✅ Performance metrics displayed', 'success', 'performance-metrics');
+                
+            } catch (error) {
+                log(`❌ Performance metrics error: ${error.message}`, 'error', 'performance-metrics');
+            }
+        }
+
+        function showEventStatistics() {
+            log('📈 Showing Event Statistics...', 'info', 'performance-metrics');
+            
+            if (!app) {
+                log('❌ App not available', 'error', 'performance-metrics');
+                return;
+            }
+
+            try {
+                const stats = app.getEventStatistics();
+                
+                const statsHtml = `
+                    <pre>${JSON.stringify(stats, null, 2)}</pre>
+                `;
+                
+                document.getElementById('performance-metrics').innerHTML += statsHtml;
+                log('✅ Event statistics displayed', 'success', 'performance-metrics');
+                
+            } catch (error) {
+                log(`❌ Event statistics error: ${error.message}`, 'error', 'performance-metrics');
+            }
+        }
+
+        function showDebugInfo() {
+            log('🔍 Showing Debug Information...', 'info', 'debug-info');
+            
+            if (!app) {
+                log('❌ App not available', 'error', 'debug-info');
+                return;
+            }
+
+            try {
+                const systemStatus = app.getSystemStatus();
+                
+                const debugHtml = `
+                    <h3>System Status</h3>
+                    <pre>${JSON.stringify(systemStatus, null, 2)}</pre>
+                `;
+                
+                document.getElementById('debug-info').innerHTML = debugHtml;
+                log('✅ Debug information displayed', 'success', 'debug-info');
+                
+            } catch (error) {
+                log(`❌ Debug info error: ${error.message}`, 'error', 'debug-info');
+            }
+        }
+
+        function showModuleDetails() {
+            log('📋 Showing Module Details...', 'info', 'debug-info');
+            
+            if (!app) {
+                log('❌ App not available', 'error', 'debug-info');
+                return;
+            }
+
+            try {
+                const modulesInfo = app.getAllModulesInfo();
+                
+                const moduleHtml = `
+                    <h3>All Modules Information</h3>
+                    <pre>${JSON.stringify(modulesInfo, null, 2)}</pre>
+                `;
+                
+                document.getElementById('debug-info').innerHTML += moduleHtml;
+                log('✅ Module details displayed', 'success', 'debug-info');
+                
+            } catch (error) {
+                log(`❌ Module details error: ${error.message}`, 'error', 'debug-info');
+            }
+        }
+
+        // Auto-refresh system status every 30 seconds
+        setInterval(updateSystemStatus, 30000);
+    </script>
+</body>
+</html>

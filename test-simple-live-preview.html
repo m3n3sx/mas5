@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Simple Live Preview</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f0f0f0; }
+        .test-container { background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
+        h1 { color: #333; }
+        h2 { color: #666; margin-top: 30px; }
+        .status { padding: 10px; border-radius: 4px; margin: 10px 0; }
+        .pass { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .fail { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 4px; overflow-x: auto; }
+        button { background: #007cba; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; margin: 5px; }
+        button:hover { background: #005a87; }
+        input[type="color"] { width: 100px; height: 40px; border: 1px solid #ccc; border-radius: 4px; }
+        input[type="number"] { width: 100px; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+        label { display: inline-block; width: 200px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>🎨 Simple Live Preview Test</h1>
+    
+    <div class="test-container">
+        <h2>1. Prerequisites Check</h2>
+        <div id="prereq-results"></div>
+    </div>
+    
+    <div class="test-container">
+        <h2>2. AJAX Handler Test</h2>
+        <div id="ajax-results"></div>
+        <button onclick="testAjaxHandler()">Test AJAX Handler</button>
+    </div>
+    
+    <div class="test-container">
+        <h2>3. Live Preview Simulation</h2>
+        <div style="margin: 20px 0;">
+            <label>Menu Background:</label>
+            <input type="color" id="test-menu-bg" value="#23282d">
+            <button onclick="testLivePreview('menu_background', document.getElementById('test-menu-bg').value)">Apply</button>
+        </div>
+        <div style="margin: 20px 0;">
+            <label>Menu Width:</label>
+            <input type="number" id="test-menu-width" value="160" min="100" max="400">
+            <button onclick="testLivePreview('menu_width', document.getElementById('test-menu-width').value)">Apply</button>
+        </div>
+        <div id="preview-results"></div>
+    </div>
+    
+    <div class="test-container">
+        <h2>4. Generated CSS</h2>
+        <pre id="generated-css">No CSS generated yet</pre>
+    </div>
+    
+    <script>
+        // Check prerequisites
+        function checkPrerequisites() {
+            const results = document.getElementById('prereq-results');
+            let html = '';
+            
+            // Check jQuery
+            if (typeof jQuery !== 'undefined') {
+                html += '<div class="status pass">✓ jQuery is loaded (v' + jQuery.fn.jquery + ')</div>';
+            } else {
+                html += '<div class="status fail">✗ jQuery is NOT loaded</div>';
+            }
+            
+            // Check masV2Global
+            if (typeof masV2Global !== 'undefined') {
+                html += '<div class="status pass">✓ masV2Global is available</div>';
+                html += '<div class="status info">AJAX URL: ' + masV2Global.ajaxUrl + '</div>';
+                html += '<div class="status info">Nonce: ' + masV2Global.nonce.substring(0, 10) + '...</div>';
+            } else {
+                html += '<div class="status fail">✗ masV2Global is NOT available</div>';
+            }
+            
+            // Check simple-live-preview.js
+            const scripts = document.querySelectorAll('script[src*="simple-live-preview"]');
+            if (scripts.length > 0) {
+                html += '<div class="status pass">✓ simple-live-preview.js is loaded</div>';
+            } else {
+                html += '<div class="status fail">✗ simple-live-preview.js is NOT loaded</div>';
+            }
+            
+            results.innerHTML = html;
+        }
+        
+        // Test AJAX handler
+        function testAjaxHandler() {
+            const results = document.getElementById('ajax-results');
+            results.innerHTML = '<div class="status info">Testing AJAX handler...</div>';
+            
+            if (typeof jQuery === 'undefined' || typeof masV2Global === 'undefined') {
+                results.innerHTML = '<div class="status fail">✗ Prerequisites not met</div>';
+                return;
+            }
+            
+            jQuery.post(masV2Global.ajaxUrl, {
+                action: 'mas_v2_get_preview_css',
+                nonce: masV2Global.nonce,
+                setting: 'menu_background',
+                value: '#ff0000'
+            })
+            .done(function(response) {
+                console.log('AJAX Response:', response);
+                
+                if (response.success) {
+                    results.innerHTML = '<div class="status pass">✓ AJAX handler works!</div>';
+                    results.innerHTML += '<div class="status info">CSS length: ' + response.data.css.length + ' characters</div>';
+                    if (response.data.performance) {
+                        results.innerHTML += '<div class="status info">Execution time: ' + response.data.performance.execution_time_ms + 'ms</div>';
+                    }
+                    document.getElementById('generated-css').textContent = response.data.css;
+                } else {
+                    results.innerHTML = '<div class="status fail">✗ AJAX returned error: ' + (response.data ? response.data.message : 'Unknown error') + '</div>';
+                }
+            })
+            .fail(function(jqXHR, textStatus, errorThrown) {
+                results.innerHTML = '<div class="status fail">✗ AJAX failed: ' + textStatus + ' - ' + errorThrown + '</div>';
+                results.innerHTML += '<div class="status info">Status: ' + jqXHR.status + '</div>';
+                results.innerHTML += '<div class="status info">Response: ' + jqXHR.responseText.substring(0, 200) + '</div>';
+            });
+        }
+        
+        // Test live preview
+        function testLivePreview(setting, value) {
+            const results = document.getElementById('preview-results');
+            results.innerHTML = '<div class="status info">Applying ' + setting + ' = ' + value + '...</div>';
+            
+            if (typeof jQuery === 'undefined' || typeof masV2Global === 'undefined') {
+                results.innerHTML = '<div class="status fail">✗ Prerequisites not met</div>';
+                return;
+            }
+            
+            jQuery.post(masV2Global.ajaxUrl, {
+                action: 'mas_v2_get_preview_css',
+                nonce: masV2Global.nonce,
+                setting: setting,
+                value: value
+            })
+            .done(function(response) {
+                if (response.success && response.data && response.data.css) {
+                    // Remove old styles
+                    jQuery('#mas-preview-styles').remove();
+                    
+                    // Add new styles
+                    if (response.data.css.trim()) {
+                        jQuery('<style id="mas-preview-styles">' + response.data.css + '</style>').appendTo('head');
+                        results.innerHTML = '<div class="status pass">✓ CSS applied successfully!</div>';
+                        document.getElementById('generated-css').textContent = response.data.css;
+                    }
+                } else {
+                    results.innerHTML = '<div class="status fail">✗ Failed to apply CSS</div>';
+                }
+            })
+            .fail(function(jqXHR, textStatus, errorThrown) {
+                results.innerHTML = '<div class="status fail">✗ AJAX failed: ' + textStatus + '</div>';
+            });
+        }
+        
+        // Run checks on load
+        window.addEventListener('load', function() {
+            checkPrerequisites();
+        });
+    </script>
+</body>
+</html>

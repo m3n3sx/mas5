@@ -1,12 +1,40 @@
 /*
  * Modern Admin Styler V2 - Advanced Visual Effects
- * MASTERPIECE UX/UI SYSTEM 🎨
+ * Task 10: Advanced Effects System Implementation
  * 
- * Efekty "WOW!" - Głębokość, Warstwy, Mikroanimacje
+ * Enhanced effects with performance optimization and reduced-motion support
  */
 
 /* ========================================
-   🌊 FLOATING CARDS SYSTEM
+   🎨 CSS CUSTOM PROPERTIES SYSTEM
+   ======================================== */
+
+:root {
+    /* Advanced Effects Variables - Controlled by PHP */
+    --mas-glass-primary: rgba(255, 255, 255, 0.85);
+    --mas-glass-dark: rgba(20, 25, 30, 0.85);
+    --mas-glass-border: rgba(255, 255, 255, 0.2);
+    --mas-glass-border-dark: rgba(255, 255, 255, 0.1);
+    --mas-submenu-glass: rgba(255, 255, 255, 0.95);
+    
+    /* Animation Variables */
+    --mas-animation-speed: 300ms;
+    --mas-ease-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --mas-ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    --mas-ease-elastic: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    
+    /* Shadow Variables */
+    --mas-shadow-color: rgba(0, 0, 0, 0.1);
+    --mas-shadow-hover: rgba(0, 0, 0, 0.15);
+    
+    /* Glassmorphism Variables */
+    --mas-glass-blur: 10px;
+    --mas-glass-opacity: 0.1;
+    --mas-glass-border-opacity: 0.2;
+}
+
+/* ========================================
+   🌊 FLOATING CARDS SYSTEM - OPTIMIZED
    ======================================== */
 
 /* Menu boczne jako elegancka floating card */
@@ -16,74 +44,34 @@ body.mas-v2-menu-floating #adminmenuwrap {
     margin-right: 0;
     border-radius: 20px;
     
-    /* Wielowarstwowe cienie dla głębi */
-    box-shadow: 
-        0 4px 16px rgba(0, 0, 0, 0.1),
-        0 8px 32px rgba(0, 0, 0, 0.08),
-        0 16px 64px rgba(0, 0, 0, 0.05);
+    /* Optimized shadows - single shadow for performance */
+    box-shadow: 0 8px 32px var(--mas-shadow-color);
     
-    /* Glassmorphism effect */
-    backdrop-filter: blur(20px) saturate(1.2);
-    background: var(--mas-glass-primary, rgba(255, 255, 255, 0.85));
-    border: 1px solid var(--mas-glass-border, rgba(255, 255, 255, 0.2));
-    
-    /* Delikatna animacja breathe - WYŁĄCZONA (powodowała ciągłe animacje) */
-    /* animation: menuCardBreathe 4s ease-in-out infinite; */
-    
-    /* Overflow dla smooth edges */
+    /* Glassmorphism effect - only when enabled */
     overflow: hidden;
     
-    /* Transformacja 3D dla dodatkowej głębi - WYŁĄCZONA (powodowała ciągłe animacje) */
-    /* transform-style: preserve-3d; */
-    /* transform: translateZ(8px); */
+    /* Smooth transitions - performance optimized */
+    transition: box-shadow var(--mas-animation-speed) var(--mas-ease-smooth);
     
-    /* Smooth transitions */
-    transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+    /* GPU acceleration */
+    transform: translateZ(0);
+    will-change: box-shadow;
 }
 
-/* Dynamiczne cienie zależne od pory dnia */
+/* Dark theme support */
 @media (prefers-color-scheme: dark) {
     body.mas-v2-menu-floating #adminmenuwrap {
-        background: var(--mas-glass-dark, rgba(20, 25, 30, 0.85));
-        border-color: var(--mas-glass-border-dark, rgba(255, 255, 255, 0.1));
-        box-shadow: 
-            0 4px 16px rgba(0, 0, 0, 0.3),
-            0 8px 32px rgba(0, 0, 0, 0.25),
-            0 16px 64px rgba(0, 0, 0, 0.15);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     }
 }
 
-/* Animacja "oddychania" karty */
-@keyframes menuCardBreathe {
-    0%, 100% { 
-        transform: translateZ(8px) scale(1); 
-        box-shadow: 
-            0 4px 16px rgba(0, 0, 0, 0.1),
-            0 8px 32px rgba(0, 0, 0, 0.08),
-            0 16px 64px rgba(0, 0, 0, 0.05);
-    }
-    50% { 
-        transform: translateZ(12px) scale(1.002); 
-        box-shadow: 
-            0 6px 20px rgba(0, 0, 0, 0.12),
-            0 12px 40px rgba(0, 0, 0, 0.1),
-            0 20px 80px rgba(0, 0, 0, 0.07);
-    }
-}
-
-/* Hover effect na całej karcie menu - WYŁĄCZONY (powodował ciągłe animacje) */
-/*
+/* Hover effect - performance optimized */
 body.mas-v2-menu-floating #adminmenuwrap:hover {
-    transform: translateZ(16px) scale(1.008);
-    box-shadow: 
-        0 8px 24px rgba(0, 0, 0, 0.15),
-        0 16px 48px rgba(0, 0, 0, 0.12),
-        0 24px 96px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 12px 48px var(--mas-shadow-hover);
 }
-*/
 
 /* ========================================
-   🎭 ADMIN BAR FLOATING ELEGANCE
+   🎭 ADMIN BAR FLOATING ELEGANCE - OPTIMIZED
    ======================================== */
 
 body.mas-v2-admin-bar-floating #wpadminbar {
@@ -92,92 +80,83 @@ body.mas-v2-admin-bar-floating #wpadminbar {
     border-radius: 50px;
     height: 52px !important;
     
-    /* Subtelna głębia */
-    box-shadow: 
-        0 2px 12px rgba(0, 0, 0, 0.08),
-        0 4px 24px rgba(0, 0, 0, 0.05);
+    /* Optimized shadow */
+    box-shadow: 0 4px 20px var(--mas-shadow-color);
     
-    /* Glassmorphism */
-    backdrop-filter: blur(16px) saturate(1.1);
-    background: var(--mas-glass-primary, rgba(255, 255, 255, 0.9)) !important;
-    border: 1px solid var(--mas-glass-border, rgba(255, 255, 255, 0.3));
-    
-    /* Smooth hover transition */
-    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    /* Smooth transitions */
+    transition: all var(--mas-animation-speed) var(--mas-ease-smooth);
     
     /* Auto-hide animation setup */
-    transform: translateY(0);
+    transform: translateY(0) translateZ(0);
     opacity: 1;
+    
+    /* GPU acceleration */
+    will-change: transform, opacity;
 }
 
 /* Auto-hide when scrolling down */
 body.mas-scroll-down.mas-v2-admin-bar-floating #wpadminbar {
-    transform: translateY(-100%);
+    transform: translateY(-100%) translateZ(0);
     opacity: 0.7;
 }
 
-/* Show on hover near top - WYŁĄCZONY (scale może powodować ciągłe animacje) */
-/*
+/* Hover effect - performance optimized */
 body.mas-v2-admin-bar-floating #wpadminbar:hover {
-    transform: translateY(0) scale(1.02);
-    box-shadow: 
-        0 4px 16px rgba(0, 0, 0, 0.12),
-        0 8px 32px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 6px 24px var(--mas-shadow-hover);
 }
-*/
 
 /* ========================================
-   ✨ MIKROANIMACJE IKON MENU
+   ✨ OPTIMIZED MENU ICON ANIMATIONS
    ======================================== */
 
-/* Kontener dla animowanych ikon */
+/* Kontener dla animowanych ikon - performance optimized */
 .mas-v2-menu-floating #adminmenu .wp-menu-image {
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: transform var(--mas-animation-speed) var(--mas-ease-smooth);
     transform-origin: center;
+    will-change: transform;
 }
 
-/* Mikroanimacja na hover - WYŁĄCZONA (może powodować ciągłe animacje) */
-/*
-.mas-v2-menu-floating #adminmenu li:hover .wp-menu-image {
-    transform: scale(1.1) rotate(2deg);
-    filter: brightness(1.2) drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
-}
-*/
-
-/* Specjalne animacje dla konkretnych ikon */
-.mas-v2-menu-floating #adminmenu li.menu-posts:hover .wp-menu-image:before {
-    animation: penBounce 0.6s ease;
+/* Subtle hover animation - only when animations are enabled */
+body:not(.mas-reduced-motion) .mas-v2-menu-floating #adminmenu li:hover .wp-menu-image {
+    transform: scale(1.05) translateZ(0);
 }
 
-.mas-v2-menu-floating #adminmenu li.menu-settings:hover .wp-menu-image:before {
-    animation: gearRotate 0.8s ease;
+/* Optimized keyframe animations - only trigger on user interaction */
+@keyframes subtleBounce {
+    0%, 100% { transform: translateY(0) translateZ(0); }
+    50% { transform: translateY(-2px) translateZ(0); }
 }
 
-.mas-v2-menu-floating #adminmenu li.menu-media:hover .wp-menu-image:before {
-    animation: mediaPulse 0.7s ease;
+@keyframes subtleRotate {
+    0% { transform: rotate(0deg) translateZ(0); }
+    100% { transform: rotate(45deg) translateZ(0); }
 }
 
-/* Animacje ikon */
-@keyframes penBounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-3px); }
+@keyframes subtlePulse {
+    0%, 100% { transform: scale(1) translateZ(0); }
+    50% { transform: scale(1.05) translateZ(0); }
 }
 
-@keyframes gearRotate {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(90deg); }
-}
+/* Apply animations only when not in reduced motion mode */
+@media (prefers-reduced-motion: no-preference) {
+    .mas-v2-menu-floating #adminmenu li.menu-posts:hover .wp-menu-image:before {
+        animation: subtleBounce 0.4s ease;
+    }
 
-@keyframes mediaPulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.1); }
+    .mas-v2-menu-floating #adminmenu li.menu-settings:hover .wp-menu-image:before {
+        animation: subtleRotate 0.4s ease;
+    }
+
+    .mas-v2-menu-floating #adminmenu li.menu-media:hover .wp-menu-image:before {
+        animation: subtlePulse 0.4s ease;
+    }
 }
 
 /* ========================================
-   🌈 DYNAMICZNE WSKAŹNIKI AKTYWNOŚCI  
+   🌈 OPTIMIZED ACTIVE STATE INDICATORS
    ======================================== */
 
-/* Aktywny element menu */
+/* Aktywny element menu - static styling for performance */
 .mas-v2-menu-floating #adminmenu .wp-has-current-submenu > a,
 .mas-v2-menu-floating #adminmenu .current > a {
     position: relative;
@@ -185,117 +164,114 @@ body.mas-v2-admin-bar-floating #wpadminbar:hover {
         var(--mas-active-start, rgba(74, 144, 226, 0.1)), 
         var(--mas-active-end, rgba(80, 201, 195, 0.1))) !important;
     
-    /* Pulsujący efekt - WYŁĄCZONY (powodował ciągłe animacje) */
-    /* animation: activeItemPulse 2s ease-in-out infinite; */
-    
     /* Border radius */
     border-radius: 12px;
     margin: 2px 8px;
+    
+    /* Smooth transition */
+    transition: background var(--mas-animation-speed) var(--mas-ease-smooth);
 }
 
-/* Pulsująca linia aktywności z boku */
+/* Static active indicator line */
 .mas-v2-menu-floating #adminmenu .wp-has-current-submenu > a:before,
 .mas-v2-menu-floating #adminmenu .current > a:before {
     content: '';
     position: absolute;
     left: -8px;
     top: 50%;
-    transform: translateY(-50%);
+    transform: translateY(-50%) translateZ(0);
     width: 4px;
     height: 60%;
     background: linear-gradient(180deg, 
         var(--mas-accent-start, #4A90E2), 
         var(--mas-accent-end, #50C9C3));
     border-radius: 2px;
+    box-shadow: 0 0 8px var(--mas-accent-glow, rgba(74, 144, 226, 0.4));
     
-    /* Animated glow - WYŁĄCZONY (powodował ciągłe animacje) */
-    box-shadow: 0 0 12px var(--mas-accent-glow, rgba(74, 144, 226, 0.6));
-    /* animation: sideGlow 1.5s ease-in-out infinite alternate; */
+    /* GPU acceleration */
+    will-change: box-shadow;
+    transition: box-shadow var(--mas-animation-speed) var(--mas-ease-smooth);
 }
 
-@keyframes activeItemPulse {
-    0%, 100% { 
-        background-position: 0% 50%; 
-        transform: scale(1);
+/* Subtle glow on hover - only when not reduced motion */
+@media (prefers-reduced-motion: no-preference) {
+    .mas-v2-menu-floating #adminmenu .wp-has-current-submenu > a:hover:before,
+    .mas-v2-menu-floating #adminmenu .current > a:hover:before {
+        box-shadow: 0 0 12px var(--mas-accent-glow, rgba(74, 144, 226, 0.6));
     }
-    50% { 
-        background-position: 100% 50%; 
-        transform: scale(1.005);
-    }
-}
-
-@keyframes sideGlow {
-    0% { box-shadow: 0 0 8px var(--mas-accent-glow, rgba(74, 144, 226, 0.4)); }
-    100% { box-shadow: 0 0 16px var(--mas-accent-glow, rgba(74, 144, 226, 0.8)); }
 }
 
 /* ========================================
-   🎢 PŁYNNE SUBMENU ROZWIJANIE
+   🎢 OPTIMIZED SUBMENU ANIMATIONS
    ======================================== */
 
-/* Base submenu styling */
+/* Base submenu styling - performance optimized */
 .mas-v2-menu-floating #adminmenu .wp-submenu {
-    /* Smooth reveal animation */
-    transform: translateY(-10px);
+    /* Optimized reveal animation */
+    transform: translateY(-5px) translateZ(0);
     opacity: 0;
     visibility: hidden;
-    transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition: all var(--mas-animation-speed) var(--mas-ease-smooth);
     
-    /* Glass effect dla submenu */
-    background: var(--mas-submenu-glass, rgba(255, 255, 255, 0.95)) !important;
-    backdrop-filter: blur(12px);
-    border-radius: 16px !important;
-    border: 1px solid var(--mas-glass-border, rgba(255, 255, 255, 0.2));
-    
-    /* Subtle shadow */
-    box-shadow: 
-        0 4px 16px rgba(0, 0, 0, 0.1),
-        0 8px 32px rgba(0, 0, 0, 0.05);
+    /* Optimized shadow */
+    box-shadow: 0 8px 24px var(--mas-shadow-color);
     
     /* Positioning */
     margin-top: 8px !important;
     margin-left: 12px !important;
     margin-right: 12px !important;
+    
+    /* GPU acceleration */
+    will-change: transform, opacity, visibility;
 }
 
 /* Submenu visible state */
 .mas-v2-menu-floating #adminmenu li.opensub .wp-submenu,
 .mas-v2-menu-floating #adminmenu li:hover .wp-submenu {
-    transform: translateY(0);
+    transform: translateY(0) translateZ(0);
     opacity: 1;
     visibility: visible;
 }
 
-/* Submenu items staggered animation */
-.mas-v2-menu-floating #adminmenu .wp-submenu li {
-    transform: translateX(-20px);
-    opacity: 0;
-    transition: all 0.3s ease;
-}
+/* Simplified submenu items animation - only when not reduced motion */
+@media (prefers-reduced-motion: no-preference) {
+    .mas-v2-menu-floating #adminmenu .wp-submenu li {
+        transform: translateX(-10px) translateZ(0);
+        opacity: 0;
+        transition: all calc(var(--mas-animation-speed) * 0.8) var(--mas-ease-smooth);
+    }
 
-.mas-v2-menu-floating #adminmenu .opensub .wp-submenu li,
-.mas-v2-menu-floating #adminmenu li:hover .wp-submenu li {
-    transform: translateX(0);
-    opacity: 1;
-}
+    .mas-v2-menu-floating #adminmenu .opensub .wp-submenu li,
+    .mas-v2-menu-floating #adminmenu li:hover .wp-submenu li {
+        transform: translateX(0) translateZ(0);
+        opacity: 1;
+    }
 
-/* Staggered delays for smooth reveal */
-.mas-v2-menu-floating #adminmenu .wp-submenu li:nth-child(1) { transition-delay: 0.05s; }
-.mas-v2-menu-floating #adminmenu .wp-submenu li:nth-child(2) { transition-delay: 0.1s; }
-.mas-v2-menu-floating #adminmenu .wp-submenu li:nth-child(3) { transition-delay: 0.15s; }
-.mas-v2-menu-floating #adminmenu .wp-submenu li:nth-child(4) { transition-delay: 0.2s; }
-.mas-v2-menu-floating #adminmenu .wp-submenu li:nth-child(5) { transition-delay: 0.25s; }
+    /* Reduced staggered delays for better performance */
+    .mas-v2-menu-floating #adminmenu .wp-submenu li:nth-child(1) { transition-delay: 0.02s; }
+    .mas-v2-menu-floating #adminmenu .wp-submenu li:nth-child(2) { transition-delay: 0.04s; }
+    .mas-v2-menu-floating #adminmenu .wp-submenu li:nth-child(3) { transition-delay: 0.06s; }
+    .mas-v2-menu-floating #adminmenu .wp-submenu li:nth-child(4) { transition-delay: 0.08s; }
+    .mas-v2-menu-floating #adminmenu .wp-submenu li:nth-child(5) { transition-delay: 0.1s; }
+}
 
 /* ========================================
    🎨 RESPONSIVE & MOTION PREFERENCES
    ======================================== */
 
-/* Respect user's motion preferences */
+/* Respect user's motion preferences - Enhanced */
 @media (prefers-reduced-motion: reduce) {
-    * {
+    *, *::before, *::after {
         animation-duration: 0.01ms !important;
         animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
+        transition-delay: 0s !important;
+        scroll-behavior: auto !important;
+    }
+    
+    /* Add class to body for JavaScript detection */
+    body {
+        --mas-reduced-motion: 1;
     }
 }
 
@@ -311,49 +287,123 @@ body.mas-v2-admin-bar-floating #wpadminbar:hover {
         border-radius: 40px;
         height: 48px !important;
     }
+    
+    /* Reduce animation complexity on mobile */
+    .mas-v2-menu-floating #adminmenu .wp-submenu li {
+        transition-delay: 0s !important;
+    }
 }
 
 /* ========================================
-   💫 THEME TRANSITIONS
+   💫 OPTIMIZED THEME TRANSITIONS
    ======================================== */
 
-/* Smooth theme switching */
+/* Smooth theme switching - performance optimized */
 body {
-    transition: background-color 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    transition: background-color calc(var(--mas-animation-speed) * 2) var(--mas-ease-smooth);
 }
 
 #adminmenuwrap, #wpadminbar {
     transition: 
-        background 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-        border-color 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
-        box-shadow 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        background calc(var(--mas-animation-speed) * 2) var(--mas-ease-smooth),
+        border-color calc(var(--mas-animation-speed) * 2) var(--mas-ease-smooth),
+        box-shadow var(--mas-animation-speed) var(--mas-ease-smooth);
 }
 
 /* ========================================
-   🌟 CSS CUSTOM PROPERTIES SYSTEM
+   🌟 ENHANCED GLASSMORPHISM SYSTEM
    ======================================== */
 
-:root {
-    /* Glass morphism colors */
-    --mas-glass-primary: rgba(255, 255, 255, 0.85);
-    --mas-glass-dark: rgba(20, 25, 30, 0.85);
-    --mas-glass-border: rgba(255, 255, 255, 0.2);
-    --mas-glass-border-dark: rgba(255, 255, 255, 0.1);
-    --mas-submenu-glass: rgba(255, 255, 255, 0.95);
-    
-    /* Accent gradients */
-    --mas-accent-start: #4A90E2;
-    --mas-accent-end: #50C9C3;
-    --mas-accent-glow: rgba(74, 144, 226, 0.6);
-    
-    /* Active states */
-    --mas-active-start: rgba(74, 144, 226, 0.1);
-    --mas-active-end: rgba(80, 201, 195, 0.1);
-    
-    /* Motion easing */
-    --mas-ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
-    --mas-ease-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    --mas-ease-elastic: cubic-bezier(0.165, 0.84, 0.44, 1);
+/* Glassmorphism effects - only applied when enabled via settings */
+.mas-glassmorphism-enabled .postbox,
+.mas-glassmorphism-enabled .meta-box-sortables .postbox,
+.mas-glassmorphism-enabled .mas-v2-card {
+    background: rgba(255, 255, 255, var(--mas-glass-opacity, 0.1)) !important;
+    backdrop-filter: blur(var(--mas-glass-blur, 10px)) saturate(1.2) !important;
+    -webkit-backdrop-filter: blur(var(--mas-glass-blur, 10px)) saturate(1.2) !important;
+    border: 1px solid rgba(255, 255, 255, var(--mas-glass-border-opacity, 0.2)) !important;
+}
+
+/* Dark theme glassmorphism */
+@media (prefers-color-scheme: dark) {
+    .mas-glassmorphism-enabled .postbox,
+    .mas-glassmorphism-enabled .meta-box-sortables .postbox,
+    .mas-glassmorphism-enabled .mas-v2-card {
+        background: rgba(20, 25, 30, var(--mas-glass-opacity, 0.1)) !important;
+        border-color: rgba(255, 255, 255, 0.1) !important;
+    }
+}
+
+/* Menu glassmorphism - controlled by settings */
+.mas-menu-glassmorphism-enabled #adminmenuwrap {
+    background: rgba(35, 40, 45, 0.85) !important;
+    backdrop-filter: blur(var(--mas-glass-blur, 10px)) saturate(1.1) !important;
+    -webkit-backdrop-filter: blur(var(--mas-glass-blur, 10px)) saturate(1.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.mas-menu-glassmorphism-enabled #adminmenu .wp-submenu {
+    background: rgba(44, 51, 56, 0.9) !important;
+    backdrop-filter: blur(calc(var(--mas-glass-blur, 10px) * 0.8)) !important;
+    -webkit-backdrop-filter: blur(calc(var(--mas-glass-blur, 10px) * 0.8)) !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Admin bar glassmorphism - controlled by settings */
+.mas-admin-bar-glassmorphism-enabled #wpadminbar {
+    background: rgba(35, 40, 45, 0.9) !important;
+    backdrop-filter: blur(var(--mas-glass-blur, 10px)) saturate(1.1) !important;
+    -webkit-backdrop-filter: blur(var(--mas-glass-blur, 10px)) saturate(1.1) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* ========================================
+   🎯 PERFORMANCE OPTIMIZATIONS
+   ======================================== */
+
+/* GPU acceleration for animated elements */
+.mas-v2-menu-floating #adminmenuwrap,
+.mas-v2-admin-bar-floating #wpadminbar,
+.postbox, .mas-v2-card, .button,
+#adminmenu .wp-submenu {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+/* Optimize will-change for better performance */
+.mas-v2-menu-floating #adminmenu .wp-submenu {
+    will-change: transform, opacity, visibility;
+}
+
+.mas-v2-menu-floating #adminmenu .wp-menu-image {
+    will-change: transform;
+}
+
+/* Remove will-change after animations complete */
+.mas-v2-menu-floating #adminmenu li:not(:hover) .wp-submenu {
+    will-change: auto;
+}
+
+/* ========================================
+   🎨 ACCESSIBILITY ENHANCEMENTS
+   ======================================== */
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .mas-v2-menu-floating #adminmenuwrap,
+    .mas-v2-admin-bar-floating #wpadminbar {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        background: var(--mas-bg-primary, #ffffff) !important;
+        border: 2px solid var(--mas-border-color, #000000) !important;
+    }
+}
+
+/* Focus indicators for keyboard navigation */
+.mas-v2-menu-floating #adminmenu a:focus,
+.mas-v2-admin-bar-floating #wpadminbar a:focus {
+    outline: 2px solid var(--mas-accent-start, #4A90E2) !important;
+    outline-offset: 2px !important;
 }
 
 /* Dark theme overrides */

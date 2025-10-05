@@ -372,6 +372,295 @@
 }
 
 /* ========================================
+   🎨 CUSTOM PALETTE ENHANCEMENTS
+   ======================================== */
+
+.mas-palette-section-divider {
+    grid-column: 1 / -1;
+    padding: 8px 0;
+    margin: 8px 0;
+    border-top: 1px solid var(--mas-glass-border, rgba(255, 255, 255, 0.1));
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--mas-text-secondary, #64748b);
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.mas-palette-card.custom {
+    position: relative;
+}
+
+.mas-palette-card.custom::before {
+    content: '✨';
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    font-size: 10px;
+    opacity: 0.7;
+}
+
+.mas-palette-actions {
+    display: flex;
+    gap: 4px;
+    margin-top: 4px;
+}
+
+.mas-palette-edit,
+.mas-palette-delete {
+    background: none;
+    border: none;
+    padding: 2px 4px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 10px;
+    opacity: 0.6;
+    transition: all 0.2s ease;
+}
+
+.mas-palette-edit:hover {
+    background: var(--mas-accent-start, #3b82f6);
+    opacity: 1;
+}
+
+.mas-palette-delete:hover {
+    background: #dc3545;
+    opacity: 1;
+}
+
+.mas-palette-card.create-new {
+    border: 2px dashed var(--mas-glass-border, rgba(255, 255, 255, 0.3));
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.mas-palette-card.create-new:hover {
+    border-color: var(--mas-accent-start, #3b82f6);
+    background: rgba(var(--mas-accent-start-rgb, 59, 130, 246), 0.1);
+}
+
+.mas-palette-preview.create {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--mas-glass-border, rgba(255, 255, 255, 0.2));
+    border: 2px dashed var(--mas-accent-start, #3b82f6);
+}
+
+.create-icon {
+    font-size: 18px;
+    color: var(--mas-accent-start, #3b82f6);
+    font-weight: bold;
+}
+
+/* ========================================
+   📝 PALETTE DIALOG
+   ======================================== */
+
+.mas-palette-dialog-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(8px);
+    z-index: 999999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.mas-palette-dialog {
+    background: var(--mas-glass-primary, rgba(255, 255, 255, 0.95));
+    border: 1px solid var(--mas-glass-border, rgba(255, 255, 255, 0.2));
+    border-radius: 16px;
+    backdrop-filter: blur(20px) saturate(1.2);
+    box-shadow: 
+        0 16px 64px rgba(0, 0, 0, 0.15),
+        0 8px 32px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: slideIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes slideIn {
+    from { 
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+    to { 
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.mas-palette-dialog-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--mas-glass-border, rgba(255, 255, 255, 0.1));
+}
+
+.mas-palette-dialog-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--mas-text-primary, #1e293b);
+}
+
+.mas-palette-dialog-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--mas-text-secondary, #64748b);
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.mas-palette-dialog-close:hover {
+    background: rgba(0, 0, 0, 0.1);
+    color: var(--mas-text-primary, #1e293b);
+}
+
+.mas-palette-dialog-form {
+    padding: 20px 24px;
+}
+
+.mas-form-group {
+    margin-bottom: 20px;
+}
+
+.mas-form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--mas-text-primary, #1e293b);
+}
+
+.mas-form-group input[type="text"] {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--mas-glass-border, rgba(255, 255, 255, 0.3));
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.5);
+    font-size: 14px;
+    color: var(--mas-text-primary, #1e293b);
+    transition: all 0.2s ease;
+}
+
+.mas-form-group input[type="text"]:focus {
+    outline: none;
+    border-color: var(--mas-accent-start, #3b82f6);
+    box-shadow: 0 0 0 3px rgba(var(--mas-accent-start-rgb, 59, 130, 246), 0.1);
+}
+
+.mas-color-input {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.mas-color-input input[type="color"] {
+    width: 50px;
+    height: 40px;
+    border: 1px solid var(--mas-glass-border, rgba(255, 255, 255, 0.3));
+    border-radius: 8px;
+    cursor: pointer;
+    background: none;
+}
+
+.mas-color-input input[type="text"] {
+    flex: 1;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    text-transform: uppercase;
+}
+
+.mas-palette-preview-area {
+    margin: 20px 0;
+    padding: 16px;
+    border: 1px solid var(--mas-glass-border, rgba(255, 255, 255, 0.2));
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.mas-palette-live-preview {
+    border-radius: 8px;
+    padding: 16px;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.preview-header {
+    font-weight: 600;
+    margin-bottom: 8px;
+    opacity: 0.9;
+}
+
+.preview-content {
+    padding: 12px;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.mas-form-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid var(--mas-glass-border, rgba(255, 255, 255, 0.1));
+}
+
+.mas-btn-primary,
+.mas-btn-secondary {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.mas-btn-primary {
+    background: var(--mas-accent-start, #3b82f6);
+    color: white;
+}
+
+.mas-btn-primary:hover {
+    background: var(--mas-accent-end, #1e40af);
+    transform: translateY(-1px);
+}
+
+.mas-btn-secondary {
+    background: rgba(255, 255, 255, 0.5);
+    color: var(--mas-text-primary, #1e293b);
+    border: 1px solid var(--mas-glass-border, rgba(255, 255, 255, 0.3));
+}
+
+.mas-btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.7);
+}
+
+/* ========================================
    ✨ SMOOTH TRANSITIONS
    ======================================== */
 

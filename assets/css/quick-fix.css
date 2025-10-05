@@ -194,3 +194,79 @@ body.mas-v2-menu-floating #adminmenu .wp-submenu {
     transition: opacity 0.2s ease, visibility 0.2s ease !important;
     animation: none !important;
 }
+
+/* === EMERGENCY SUBMENU VISIBILITY FIXES === */
+/* Critical fixes for submenu visibility issues */
+
+/* Ensure submenus are never completely hidden */
+#adminmenu .wp-submenu {
+    max-height: none !important;
+    overflow: visible !important;
+}
+
+/* Normal menu mode - submenus visible when parent is active */
+#adminmenu li.wp-has-current-submenu .wp-submenu,
+#adminmenu li.current .wp-submenu {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: static !important;
+}
+
+/* Floating mode submenu positioning and visibility */
+body.mas-v2-menu-floating #adminmenu li.menu-top .wp-submenu {
+    position: absolute !important;
+    left: 100% !important;
+    top: 0 !important;
+    z-index: 99999 !important;
+    min-width: 200px !important;
+    display: none !important;
+}
+
+/* Show submenus on hover in floating mode */
+body.mas-v2-menu-floating #adminmenu li.menu-top:hover .wp-submenu,
+body.mas-v2-menu-floating #adminmenu li.menu-top.opensub .wp-submenu {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Fallback for when CSS variables are not available */
+@supports not (color: var(--color)) {
+    #adminmenu {
+        background-color: #23282d !important;
+    }
+    
+    #adminmenu .wp-submenu {
+        background-color: rgba(0, 0, 0, 0.2) !important;
+        display: block !important;
+        visibility: visible !important;
+    }
+    
+    body.mas-v2-menu-floating #adminmenu li.menu-top:hover .wp-submenu {
+        display: block !important;
+        position: absolute !important;
+        left: 100% !important;
+        top: 0 !important;
+    }
+}
+
+/* High specificity emergency override */
+html body.wp-admin #adminmenu li.menu-top:hover .wp-submenu,
+html body.wp-admin #adminmenu li.wp-has-current-submenu .wp-submenu,
+html body.wp-admin #adminmenu li.current .wp-submenu {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Mobile responsiveness for submenus */
+@media screen and (max-width: 782px) {
+    body.mas-v2-menu-floating #adminmenu .wp-submenu {
+        position: static !important;
+        left: auto !important;
+        top: auto !important;
+        width: 100% !important;
+        display: block !important;
+    }
+}

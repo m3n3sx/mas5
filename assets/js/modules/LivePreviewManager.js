@@ -18,61 +18,111 @@ class LivePreviewManager {
     init() {
         if (this.isInitialized) {
             console.warn('LivePreviewManager już został zainicjalizowany');
-            return;
+            return Promise.resolve();
         }
         
-        this.setupEventListeners();
-        this.createToggleButton();
-        this.notificationManager = this.app.getModule('notificationManager');
-        this.restoreState();
-        this.isInitialized = true;
+        try {
+            this.setupEventListeners();
+            this.createToggleButton();
+            
+            // Get notification manager with fallback
+            if (this.app && typeof this.app.getModule === 'function') {
+                this.notificationManager = this.app.getModule('notificationManager');
+            }
+            
+            this.restoreState();
+            this.isInitialized = true;
+            
+            console.log('🎨 MAS Live Preview Manager: Initialized successfully');
+            
+            // Dispatch initialization event
+            document.dispatchEvent(new CustomEvent('mas-live-preview-initialized'));
+            
+            return Promise.resolve();
+        } catch (error) {
+            console.error('MAS Live Preview Manager: Initialization failed:', error);
+            return Promise.reject(error);
+        }
     }
     
     initCSSVariables() {
         // Mapowanie pól formularza na CSS custom properties
-        this.cssVariables.set('menu_margin_top', '--mas-menu-margin-top');
-        this.cssVariables.set('menu_margin_right', '--mas-menu-margin-right');
-        this.cssVariables.set('menu_margin_bottom', '--mas-menu-margin-bottom');
-        this.cssVariables.set('menu_margin_left', '--mas-menu-margin-left');
-        this.cssVariables.set('menu_margin_all', '--mas-menu-margin-all');
         
+        // Menu margins (floating mode)
+        this.cssVariables.set('menu_margin_top', '--mas-menu-floating-margin-top');
+        this.cssVariables.set('menu_margin_right', '--mas-menu-floating-margin-right');
+        this.cssVariables.set('menu_margin_bottom', '--mas-menu-floating-margin-bottom');
+        this.cssVariables.set('menu_margin_left', '--mas-menu-floating-margin-left');
+        this.cssVariables.set('menu_margin', '--mas-menu-floating-margin-all');
+        
+        // Admin bar margins
         this.cssVariables.set('admin_bar_margin_top', '--mas-admin-bar-margin-top');
         this.cssVariables.set('admin_bar_margin_right', '--mas-admin-bar-margin-right');
         this.cssVariables.set('admin_bar_margin_bottom', '--mas-admin-bar-margin-bottom');
         this.cssVariables.set('admin_bar_margin_left', '--mas-admin-bar-margin-left');
         this.cssVariables.set('admin_bar_margin_all', '--mas-admin-bar-margin-all');
         
+        // Menu border radius
+        this.cssVariables.set('menu_border_radius_all', '--mas-menu-border-radius');
         this.cssVariables.set('corner_radius_all', '--mas-corner-radius-all');
         this.cssVariables.set('corner_radius_top_left', '--mas-corner-radius-top-left');
         this.cssVariables.set('corner_radius_top_right', '--mas-corner-radius-top-right');
         this.cssVariables.set('corner_radius_bottom_left', '--mas-corner-radius-bottom-left');
         this.cssVariables.set('corner_radius_bottom_right', '--mas-corner-radius-bottom-right');
         
+        // Admin bar border radius
         this.cssVariables.set('admin_bar_corner_radius_all', '--mas-admin-bar-corner-radius-all');
         this.cssVariables.set('admin_bar_corner_radius_top_left', '--mas-admin-bar-corner-radius-top-left');
         this.cssVariables.set('admin_bar_corner_radius_top_right', '--mas-admin-bar-corner-radius-top-right');
         this.cssVariables.set('admin_bar_corner_radius_bottom_left', '--mas-admin-bar-corner-radius-bottom-left');
         this.cssVariables.set('admin_bar_corner_radius_bottom_right', '--mas-admin-bar-corner-radius-bottom-right');
         
-        // Kolory menu
-        this.cssVariables.set('menu_bg', '--mas-menu-bg-color');
+        // Menu colors - primary mapping
+        this.cssVariables.set('menu_background', '--mas-menu-bg-color');
+        this.cssVariables.set('menu_bg', '--mas-menu-bg-color'); // Alternative name
+        this.cssVariables.set('menu_background_color', '--mas-menu-bg-color'); // Alternative name
         this.cssVariables.set('menu_text_color', '--mas-menu-text-color');
-        this.cssVariables.set('menu_hover_color', '--mas-menu-hover-color');
-        this.cssVariables.set('menu_background_color', '--mas-menu-bg-color');
+        this.cssVariables.set('menu_hover_background', '--mas-menu-hover-color');
+        this.cssVariables.set('menu_hover_color', '--mas-menu-hover-color'); // Alternative name
+        this.cssVariables.set('menu_hover_text_color', '--mas-menu-hover-text-color');
+        this.cssVariables.set('menu_active_background', '--mas-menu-active-bg');
+        this.cssVariables.set('menu_active_text_color', '--mas-menu-active-text-color');
         
-        // Wymiary menu
+        // Menu dimensions
         this.cssVariables.set('menu_width', '--mas-menu-width');
-        this.cssVariables.set('menu_border_radius_all', '--mas-menu-border-radius');
+        this.cssVariables.set('menu_item_height', '--mas-menu-item-height');
         
-        // Admin bar kolory
+        // Admin bar colors
         this.cssVariables.set('admin_bar_background_color', '--mas-admin-bar-bg-color');
         this.cssVariables.set('admin_bar_text_color', '--mas-admin-bar-text-color');
         
-        // Gradient backgrounds
+        // Submenu colors
+        this.cssVariables.set('submenu_background', '--mas-submenu-bg-color');
+        this.cssVariables.set('submenu_text_color', '--mas-submenu-text-color');
+        this.cssVariables.set('submenu_hover_background', '--mas-submenu-hover-bg');
+        this.cssVariables.set('submenu_hover_text_color', '--mas-submenu-hover-text-color');
+        this.cssVariables.set('submenu_active_background', '--mas-submenu-active-bg');
+        this.cssVariables.set('submenu_active_text_color', '--mas-submenu-active-text-color');
+        
+        // Submenu dimensions
+        this.cssVariables.set('submenu_width_value', '--mas-submenu-min-width');
+        this.cssVariables.set('submenu_min_width', '--mas-submenu-min-width');
+        this.cssVariables.set('submenu_max_width', '--mas-submenu-max-width');
+        this.cssVariables.set('submenu_border_radius_all', '--mas-submenu-border-radius');
+        
+        // Effects
+        this.cssVariables.set('animation_speed', '--mas-menu-transition-duration');
+        this.cssVariables.set('enable_animations', '--mas-menu-animation-enabled');
+        this.cssVariables.set('menu_glassmorphism', '--mas-menu-glassmorphism-enabled');
+        this.cssVariables.set('menu_shadow', '--mas-menu-shadow-enabled');
+        
+        // Gradient backgrounds (if used)
         this.cssVariables.set('menu_gradient_start', '--mas-menu-gradient-start');
         this.cssVariables.set('menu_gradient_end', '--mas-menu-gradient-end');
         this.cssVariables.set('admin_bar_gradient_start', '--mas-admin-bar-gradient-start');
         this.cssVariables.set('admin_bar_gradient_end', '--mas-admin-bar-gradient-end');
+        
+        console.log(`🎨 MAS Live Preview: Initialized ${this.cssVariables.size} CSS variable mappings`);
     }
     
     setupEventListeners() {
@@ -81,14 +131,26 @@ class LivePreviewManager {
         document.addEventListener('input', (e) => this.handleFormChange(e));
         document.addEventListener('keyup', (e) => this.handleFormChange(e));
         
-        // Color picker events
+        // Color picker events - WordPress color picker
         document.addEventListener('wpColorPickerChange', (e) => this.handleColorChange(e));
+        
+        // jQuery color picker events (fallback)
+        if (typeof jQuery !== 'undefined') {
+            jQuery(document).on('change', '.wp-color-picker', (e) => {
+                this.handleColorChange(e);
+            });
+        }
         
         // Checkbox i radio changes
         document.addEventListener('change', (e) => {
             if (e.target.type === 'checkbox' || e.target.type === 'radio') {
                 this.handleFormChange(e);
             }
+        });
+        
+        // Listen for AJAX live preview responses
+        document.addEventListener('mas-ajax-live-preview-response', (e) => {
+            this.handleAjaxPreviewResponse(e.detail);
         });
     }
     
@@ -102,11 +164,18 @@ class LivePreviewManager {
         const fieldName = input.name;
         const fieldType = input.type;
         
+        // Skip if no field name
+        if (!fieldName) return;
+        
         // Throttle dla różnych typów pól
         const delay = this.getThrottleDelay(fieldType);
         
         this.throttledUpdate(fieldName, () => {
+            // Update CSS variable immediately for instant feedback
             this.updateCSSVariable(fieldName, input);
+            
+            // Also send AJAX request for server-side CSS generation
+            this.sendAjaxPreviewRequest(fieldName, input);
         }, delay);
     }
     
@@ -188,9 +257,10 @@ class LivePreviewManager {
     }
     
     processValue(fieldName, value, input) {
-        // Jeśli to checkbox i jest odznaczony, nie zmieniaj CSS
+        // Jeśli to checkbox i jest odznaczony, usuń CSS variable
         if (input.type === 'checkbox' && !value) {
-            return null; // Nie ustawi CSS variable
+            this.root.style.removeProperty(this.cssVariables.get(fieldName));
+            return null;
         }
         
         // Jeśli to radio i nie jest zaznaczony, nie zmieniaj CSS
@@ -198,14 +268,54 @@ class LivePreviewManager {
             return null;
         }
         
+        // Handle special boolean fields
+        if (input.type === 'checkbox' && value) {
+            // For boolean CSS variables, set to 1 or specific value
+            if (fieldName === 'menu_floating') {
+                return '1';
+            }
+            if (fieldName === 'menu_glassmorphism') {
+                return '1';
+            }
+            if (fieldName === 'menu_shadow') {
+                return '1';
+            }
+            return '1';
+        }
+        
         // Dodaj jednostki dla wartości numerycznych
         if (typeof value === 'number' && this.needsPixelUnit(fieldName)) {
             return value + 'px';
         }
         
-        // Dla kolorów - upewnij się że mają #
-        if (input.type === 'color' && !value.startsWith('#')) {
-            return '#' + value;
+        // Handle range inputs
+        if (input.type === 'range') {
+            const numValue = parseInt(value, 10);
+            if (this.needsPixelUnit(fieldName)) {
+                return numValue + 'px';
+            }
+            // Special handling for animation speed (convert to milliseconds)
+            if (fieldName === 'animation_speed') {
+                return numValue + 'ms';
+            }
+            return numValue.toString();
+        }
+        
+        // Handle animation speed specifically
+        if (fieldName === 'animation_speed' && typeof value === 'number') {
+            return value + 'ms';
+        }
+        
+        // Dla kolorów - upewnij się że mają # i są prawidłowe
+        if (input.type === 'color' || fieldName.includes('color') || fieldName.includes('background')) {
+            if (typeof value === 'string' && value.length > 0) {
+                if (!value.startsWith('#') && value.match(/^[0-9a-fA-F]{6}$/)) {
+                    return '#' + value;
+                }
+                if (value.startsWith('#') || value.startsWith('rgb') || value.startsWith('hsl')) {
+                    return value;
+                }
+            }
         }
         
         return value;
@@ -213,12 +323,18 @@ class LivePreviewManager {
     
     needsPixelUnit(fieldName) {
         const pixelFields = [
-            'menu_margin_top', 'menu_margin_right', 'menu_margin_bottom', 'menu_margin_left', 'menu_margin_all',
+            // Menu margins
+            'menu_margin_top', 'menu_margin_right', 'menu_margin_bottom', 'menu_margin_left', 'menu_margin',
+            // Admin bar margins
             'admin_bar_margin_top', 'admin_bar_margin_right', 'admin_bar_margin_bottom', 'admin_bar_margin_left', 'admin_bar_margin_all',
+            // Border radius
             'corner_radius_all', 'corner_radius_top_left', 'corner_radius_top_right', 'corner_radius_bottom_left', 'corner_radius_bottom_right',
             'admin_bar_corner_radius_all', 'admin_bar_corner_radius_top_left', 'admin_bar_corner_radius_top_right', 
             'admin_bar_corner_radius_bottom_left', 'admin_bar_corner_radius_bottom_right',
-            'menu_width', 'menu_border_radius_all', 'menu_border_radius'
+            'menu_border_radius_all', 'menu_border_radius', 'submenu_border_radius_all',
+            // Dimensions
+            'menu_width', 'menu_item_height',
+            'submenu_width_value', 'submenu_min_width', 'submenu_max_width'
         ];
         
         return pixelFields.includes(fieldName);
@@ -228,20 +344,49 @@ class LivePreviewManager {
         this.isEnabled = true;
         localStorage.setItem('mas-v2-live-preview', 'enabled');
         this.updateToggleButton();
-        this.notificationManager?.show('Live Preview włączony', 'success', 2000, 'top-right');
+        
+        // Show notification
+        if (this.notificationManager) {
+            this.notificationManager.show('Live Preview włączony', 'success', 2000, 'top-right');
+        } else {
+            console.log('🎨 MAS Live Preview: Enabled');
+        }
         
         // Natychmiast zastosuj wszystkie wartości z formularza, jeśli formularz jest dostępny
-        if (document.querySelector('#mas-v2-settings-form')) {
-            this.applyAllFormValues();
+        const form = document.querySelector('#mas-v2-settings-form');
+        if (form) {
+            // Small delay to ensure DOM is ready
+            setTimeout(() => {
+                this.applyAllFormValues();
+            }, 100);
         }
+        
+        // Dispatch enable event
+        document.dispatchEvent(new CustomEvent('mas-live-preview-enabled'));
     }
     
     disable() {
         this.isEnabled = false;
         localStorage.setItem('mas-v2-live-preview', 'disabled');
         this.updateToggleButton();
-        this.clearAllCSSVariables(); // This should clear the applied styles
-        this.notificationManager?.show('Live Preview wyłączony', 'info', 2000, 'top-right');
+        
+        // Clear all applied styles
+        this.clearAllCSSVariables();
+        this.clearAjaxStyles();
+        
+        // Clear any pending timeouts
+        this.timeouts.forEach(timeoutId => clearTimeout(timeoutId));
+        this.timeouts.clear();
+        
+        // Show notification
+        if (this.notificationManager) {
+            this.notificationManager.show('Live Preview wyłączony', 'info', 2000, 'top-right');
+        } else {
+            console.log('🎨 MAS Live Preview: Disabled');
+        }
+        
+        // Dispatch disable event
+        document.dispatchEvent(new CustomEvent('mas-live-preview-disabled'));
     }
     
     toggle() {
@@ -254,20 +399,63 @@ class LivePreviewManager {
     
     applyAllFormValues() {
         const form = document.querySelector('#mas-v2-settings-form');
-        if (!form) return;
+        if (!form) {
+            console.warn('MAS Live Preview: Settings form not found');
+            return;
+        }
         
         const inputs = form.querySelectorAll('input, select, textarea');
+        let appliedCount = 0;
+        
         inputs.forEach(input => {
             if (input.name && this.cssVariables.has(input.name)) {
-                this.updateCSSVariable(input.name, input);
+                try {
+                    this.updateCSSVariable(input.name, input);
+                    appliedCount++;
+                } catch (error) {
+                    console.warn(`MAS Live Preview: Error applying ${input.name}:`, error);
+                }
             }
         });
+        
+        console.log(`🎨 MAS Live Preview: Applied ${appliedCount} CSS variables`);
+        
+        // Also trigger a full AJAX preview for complex styles
+        this.sendFullAjaxPreview();
+    }
+    
+    sendFullAjaxPreview() {
+        const form = document.querySelector('#mas-v2-settings-form');
+        if (!form || !window.masV2Global?.ajaxUrl) return;
+        
+        const formData = new FormData(form);
+        formData.append('action', 'mas_v2_live_preview');
+        formData.append('nonce', window.masV2Global.nonce || '');
+        
+        if (typeof jQuery !== 'undefined') {
+            jQuery.post(window.masV2Global.ajaxUrl, Object.fromEntries(formData))
+                .done((response) => {
+                    if (response.success && response.data.css) {
+                        this.handleAjaxPreviewResponse(response.data);
+                    }
+                })
+                .fail((xhr, status, error) => {
+                    console.warn('MAS Live Preview: Full AJAX preview failed:', error);
+                });
+        }
     }
     
     clearAllCSSVariables() {
         this.cssVariables.forEach((cssVar) => {
             this.root.style.removeProperty(cssVar);
         });
+    }
+    
+    clearAjaxStyles() {
+        const styleElement = document.getElementById('mas-live-preview-styles');
+        if (styleElement) {
+            styleElement.remove();
+        }
     }
     
     createToggleButton() {
@@ -336,6 +524,61 @@ class LivePreviewManager {
                 cssVar,
                 timestamp: Date.now()
             }
+        });
+        document.dispatchEvent(event);
+    }
+    
+    sendAjaxPreviewRequest(fieldName, input) {
+        // Don't send AJAX for every single field change - only for complex settings
+        const ajaxFields = [
+            'menu_background', 'menu_text_color', 'menu_hover_background', 'menu_hover_text_color',
+            'menu_active_background', 'menu_active_text_color', 'admin_bar_background_color', 
+            'admin_bar_text_color', 'menu_floating', 'menu_glassmorphism', 'menu_shadow'
+        ];
+        
+        if (!ajaxFields.includes(fieldName)) {
+            return; // Only update CSS variables for simple fields
+        }
+        
+        // Get all form data for comprehensive preview
+        const form = document.querySelector('#mas-v2-settings-form');
+        if (!form) return;
+        
+        const formData = new FormData(form);
+        formData.append('action', 'mas_v2_live_preview');
+        formData.append('nonce', window.masV2Global?.nonce || '');
+        
+        // Send AJAX request
+        if (typeof jQuery !== 'undefined' && window.masV2Global?.ajaxUrl) {
+            jQuery.post(window.masV2Global.ajaxUrl, Object.fromEntries(formData))
+                .done((response) => {
+                    if (response.success && response.data.css) {
+                        this.handleAjaxPreviewResponse(response.data);
+                    }
+                })
+                .fail((xhr, status, error) => {
+                    console.warn('MAS Live Preview AJAX failed:', error);
+                });
+        }
+    }
+    
+    handleAjaxPreviewResponse(data) {
+        if (!data.css) return;
+        
+        // Update or create dynamic style element
+        let styleElement = document.getElementById('mas-live-preview-styles');
+        if (!styleElement) {
+            styleElement = document.createElement('style');
+            styleElement.id = 'mas-live-preview-styles';
+            document.head.appendChild(styleElement);
+        }
+        
+        // Update CSS content
+        styleElement.textContent = data.css;
+        
+        // Dispatch event for other modules
+        const event = new CustomEvent('mas-ajax-live-preview-updated', {
+            detail: { css: data.css, timestamp: Date.now() }
         });
         document.dispatchEvent(event);
     }

@@ -1,3 +1,4 @@
 {
-    "vscode-edge-devtools.browserFlavor": "Dev"
+    "vscode-edge-devtools.browserFlavor": "Dev",
+    "html.autoClosingTags": false
 }

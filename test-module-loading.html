@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MAS Module Loading Test</title>
+    <style>
+        body { font-family: monospace; padding: 20px; background: #1e1e1e; color: #fff; }
+        .test { margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .pass { background: #2d5016; border-left: 4px solid #4caf50; }
+        .fail { background: #5c1a1a; border-left: 4px solid #f44336; }
+        .info { background: #1a3a5c; border-left: 4px solid #2196f3; }
+        h1 { color: #4fc3f7; }
+        h2 { color: #81c784; margin-top: 30px; }
+        pre { background: #000; padding: 10px; border-radius: 3px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>🔍 MAS Module Loading Diagnostic</h1>
+    <div id="results"></div>
+
+    <script>
+        const results = document.getElementById('results');
+        
+        function addResult(message, type = 'info') {
+            const div = document.createElement('div');
+            div.className = `test ${type}`;
+            div.textContent = message;
+            results.appendChild(div);
+        }
+        
+        function addSection(title) {
+            const h2 = document.createElement('h2');
+            h2.textContent = title;
+            results.appendChild(h2);
+        }
+        
+        // Test 1: Check if scripts are loaded
+        addSection('1. Script Loading Check');
+        
+        const scripts = document.querySelectorAll('script[src*="mas"]');
+        if (scripts.length > 0) {
+            addResult(`✓ Found ${scripts.length} MAS scripts`, 'pass');
+            scripts.forEach(s => addResult(`  - ${s.src}`, 'info'));
+        } else {
+            addResult('✗ No MAS scripts found', 'fail');
+        }
+        
+        // Test 2: Check global objects
+        addSection('2. Global Objects Check');
+        
+        const checks = [
+            { name: 'window.ModernAdminApp', obj: window.ModernAdminApp },
+            { name: 'window.MASLoader', obj: window.MASLoader },
+            { name: 'window.masV2Global', obj: window.masV2Global },
+            { name: 'window.NotificationManager', obj: window.NotificationManager },
+            { name: 'window.ThemeManager', obj: window.ThemeManager },
+            { name: 'window.BodyClassManager', obj: window.BodyClassManager },
+            { name: 'window.MenuManagerFixed', obj: window.MenuManagerFixed },
+            { name: 'window.PaletteManager', obj: window.PaletteManager },
+            { name: 'window.LivePreviewManager', obj: window.LivePreviewManager },
+            { name: 'window.SettingsManager', obj: window.SettingsManager }
+        ];
+        
+        checks.forEach(check => {
+            if (typeof check.obj !== 'undefined') {
+                addResult(`✓ ${check.name} is available (${typeof check.obj})`, 'pass');
+            } else {
+                addResult(`✗ ${check.name} is NOT available`, 'fail');
+            }
+        });
+        
+        // Test 3: Check MASLoader state
+        addSection('3. MASLoader State');
+        
+        if (window.MASLoader) {
+            const state = window.MASLoader.getLoaderState();
+            const health = window.MASLoader.healthCheck();
+            
+            addResult(`Loaded modules: ${Array.from(state.loadedModules).join(', ')}`, 'info');
+            addResult(`Failed modules: ${Array.from(state.failedModules).join(', ') || 'none'}`, 
+                state.failedModules.size > 0 ? 'fail' : 'pass');
+            addResult(`Health status: ${health.status}`, 
+                health.status === 'healthy' ? 'pass' : 'fail');
+            
+            const pre = document.createElement('pre');
+            pre.textContent = JSON.stringify(health, null, 2);
+            results.appendChild(pre);
+        } else {
+            addResult('✗ MASLoader not available', 'fail');
+        }
+        
+        // Test 4: Check ModernAdminApp initialization
+        addSection('4. ModernAdminApp Initialization');
+        
+        if (window.ModernAdminApp) {
+            try {
+                const app = window.ModernAdminApp.getInstance();
+                addResult(`✓ ModernAdminApp instance created`, 'pass');
+                addResult(`Is initialized: ${app.isInitialized}`, 
+                    app.isInitialized ? 'pass' : 'fail');
+                addResult(`Emergency mode: ${app.emergencyMode || false}`, 'info');
+                addResult(`Minimal mode: ${app.minimalMode || false}`, 'info');
+                
+                if (app.modules) {
+                    addResult(`Registered modules: ${app.modules.size}`, 'info');
+                    const moduleNames = Array.from(app.modules.keys());
+                    moduleNames.forEach(name => {
+                        addResult(`  - ${name}`, 'info');
+                    });
+                }
+            } catch (error) {
+                addResult(`✗ Error accessing ModernAdminApp: ${error.message}`, 'fail');
+            }
+        } else {
+            addResult('✗ ModernAdminApp not available', 'fail');
+        }
+        
+        // Test 5: Listen for events
+        addSection('5. Event Monitoring');
+        
+        let eventsReceived = [];
+        
+        document.addEventListener('mas-modules-ready', (e) => {
+            eventsReceived.push('mas-modules-ready');
+            addResult(`✓ Event received: mas-modules-ready`, 'pass');
+            addResult(`  Details: ${JSON.stringify(e.detail)}`, 'info');
+        });
+        
+        document.addEventListener('mas-module-failed', (e) => {
+            eventsReceived.push('mas-module-failed');
+            addResult(`✗ Event received: mas-module-failed`, 'fail');
+            addResult(`  Details: ${JSON.stringify(e.detail)}`, 'info');
+        });
+        
+        document.addEventListener('mas-critical-failure', (e) => {
+            eventsReceived.push('mas-critical-failure');
+            addResult(`✗ Event received: mas-critical-failure`, 'fail');
+            addResult(`  Details: ${JSON.stringify(e.detail)}`, 'info');
+        });
+        
+        setTimeout(() => {
+            if (eventsReceived.length === 0) {
+                addResult('⚠ No events received after 2 seconds', 'fail');
+            }
+        }, 2000);
+        
+        // Test 6: Console log capture
+        addSection('6. Console Logs');
+        
+        const originalLog = console.log;
+        const originalError = console.error;
+        const originalWarn = console.warn;
+        
+        const logs = [];
+        
+        console.log = function(...args) {
+            logs.push({ type: 'log', message: args.join(' ') });
+            originalLog.apply(console, args);
+        };
+        
+        console.error = function(...args) {
+            logs.push({ type: 'error', message: args.join(' ') });
+            originalError.apply(console, args);
+        };
+        
+        console.warn = function(...args) {
+            logs.push({ type: 'warn', message: args.join(' ') });
+            originalWarn.apply(console, args);
+        };
+        
+        setTimeout(() => {
+            addSection('Console Output (last 20 entries)');
+            logs.slice(-20).forEach(log => {
+                const type = log.type === 'error' ? 'fail' : log.type === 'warn' ? 'info' : 'info';
+                addResult(`[${log.type.toUpperCase()}] ${log.message}`, type);
+            });
+        }, 3000);
+        
+    </script>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAS3 Module Loader Enhancement Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; }
+        .success { color: green; }
+        .error { color: red; }
+        .warning { color: orange; }
+        .info { color: blue; }
+        pre { background: #f5f5f5; padding: 10px; overflow-x: auto; }
+        button { margin: 5px; padding: 8px 15px; }
+    </style>
+</head>
+<body>
+    <h1>MAS3 Module Loader Enhancement Test</h1>
+    
+    <div class="test-section">
+        <h2>Test Results</h2>
+        <div id="test-results"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Loader State</h2>
+        <button onclick="showLoaderState()">Show Loader State</button>
+        <button onclick="showHealthCheck()">Health Check</button>
+        <button onclick="testRetryMechanism()">Test Retry Mechanism</button>
+        <pre id="loader-state"></pre>
+    </div>
+    
+    <div class="test-section">
+        <h2>Console Output</h2>
+        <div id="console-output"></div>
+    </div>
+
+    <!-- Mock some module classes for testing -->
+    <script>
+        // Mock module classes to simulate successful loading
+        window.NotificationManager = class NotificationManager {};
+        window.ThemeManager = class ThemeManager {};
+        window.BodyClassManager = class BodyClassManager {};
+        window.MenuManagerFixed = class MenuManagerFixed {};
+        window.PaletteManager = class PaletteManager {};
+        window.ModernAdminApp = class ModernAdminApp {};
+        window.LivePreviewManager = class LivePreviewManager {};
+        window.SettingsManager = class SettingsManager {};
+        
+        // Capture console output
+        const originalConsole = {
+            log: console.log,
+            warn: console.warn,
+            error: console.error
+        };
+        
+        const consoleOutput = [];
+        
+        ['log', 'warn', 'error'].forEach(method => {
+            console[method] = function(...args) {
+                consoleOutput.push({ type: method, message: args.join(' '), time: new Date().toLocaleTimeString() });
+                originalConsole[method].apply(console, args);
+                updateConsoleOutput();
+            };
+        });
+        
+        function updateConsoleOutput() {
+            const output = document.getElementById('console-output');
+            output.innerHTML = consoleOutput.slice(-10).map(entry => 
+                `<div class="${entry.type}"><strong>[${entry.time}]</strong> ${entry.message}</div>`
+            ).join('');
+        }
+        
+        // Test functions
+        function showLoaderState() {
+            if (window.MASLoader) {
+                const state = window.MASLoader.getLoaderState();
+                document.getElementById('loader-state').textContent = JSON.stringify(state, null, 2);
+            } else {
+                document.getElementById('loader-state').textContent = 'MASLoader not available';
+            }
+        }
+        
+        function showHealthCheck() {
+            if (window.MASLoader) {
+                const health = window.MASLoader.healthCheck();
+                document.getElementById('loader-state').textContent = JSON.stringify(health, null, 2);
+            } else {
+                document.getElementById('loader-state').textContent = 'MASLoader not available';
+            }
+        }
+        
+        async function testRetryMechanism() {
+            if (window.MASLoader) {
+                try {
+                    // Try to retry a non-existent module to test error handling
+                    const result = await window.MASLoader.retryFailedModule('NonExistentModule');
+                    console.log('Retry result:', result);
+                } catch (error) {
+                    console.error('Expected error for non-existent module:', error.message);
+                }
+            }
+        }
+        
+        // Listen for module loading events
+        document.addEventListener('mas-modules-ready', (event) => {
+            const results = document.getElementById('test-results');
+            results.innerHTML += `<div class="success">✅ Modules ready event received</div>`;
+            results.innerHTML += `<div class="info">Successful: ${event.detail.successful.join(', ')}</div>`;
+            if (event.detail.failed.length > 0) {
+                results.innerHTML += `<div class="warning">Failed: ${event.detail.failed.map(f => f.name).join(', ')}</div>`;
+            }
+            results.innerHTML += `<div class="info">Load time: ${event.detail.loadTime}ms</div>`;
+        });
+        
+        document.addEventListener('mas-module-failed', (event) => {
+            const results = document.getElementById('test-results');
+            results.innerHTML += `<div class="error">❌ Module failed: ${event.detail.moduleName} - ${event.detail.error}</div>`;
+        });
+        
+        document.addEventListener('mas-critical-failure', (event) => {
+            const results = document.getElementById('test-results');
+            results.innerHTML += `<div class="error">💥 Critical failure: ${event.detail.error}</div>`;
+        });
+        
+        // Initial test
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const results = document.getElementById('test-results');
+                
+                if (window.MASLoader) {
+                    results.innerHTML += `<div class="success">✅ MASLoader available</div>`;
+                    results.innerHTML += `<div class="info">Version: ${window.MASLoader.version}</div>`;
+                    
+                    // Test API methods
+                    try {
+                        const loadedModules = window.MASLoader.getLoadedModules();
+                        results.innerHTML += `<div class="info">Loaded modules: ${loadedModules.join(', ')}</div>`;
+                        
+                        const failedModules = window.MASLoader.getFailedModules();
+                        if (failedModules.length > 0) {
+                            results.innerHTML += `<div class="warning">Failed modules: ${failedModules.join(', ')}</div>`;
+                        }
+                        
+                        const health = window.MASLoader.healthCheck();
+                        results.innerHTML += `<div class="info">Health status: ${health.status}</div>`;
+                        
+                    } catch (error) {
+                        results.innerHTML += `<div class="error">❌ Error testing API: ${error.message}</div>`;
+                    }
+                } else {
+                    results.innerHTML += `<div class="error">❌ MASLoader not available</div>`;
+                }
+            }, 1000);
+        });
+    </script>
+    
+    <!-- Load the enhanced module loader -->
+    <script src="assets/js/mas-loader.js"></script>
+</body>
+</html>

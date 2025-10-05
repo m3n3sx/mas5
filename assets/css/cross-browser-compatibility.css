@@ -1,0 +1,488 @@
+/**
+ * Modern Admin Styler V2 - Cross-Browser Compatibility & Fallbacks
+ * Task 16: Cross-browser Compatibility and Testing
+ * 
+ * This file provides fallbacks and compatibility fixes for older browsers
+ * and ensures progressive enhancement for modern CSS features.
+ */
+
+/* ========================================
+   🌐 BROWSER FEATURE DETECTION & FALLBACKS
+   ======================================== */
+
+/* CSS Custom Properties (CSS Variables) Fallback */
+@supports not (color: var(--color)) {
+    /* Fallback styles for browsers that don't support CSS Variables */
+    
+    /* Basic menu styling without variables */
+    body.wp-admin #adminmenu {
+        background: #23282d !important;
+        font-size: 14px !important;
+        border-radius: 0 !important;
+    }
+    
+    body.wp-admin #adminmenu li.menu-top > a {
+        color: #eee !important;
+        padding: 8px 12px !important;
+        border-radius: 0 !important;
+    }
+    
+    body.wp-admin #adminmenu li.menu-top:hover > a {
+        background: rgba(255, 255, 255, 0.1) !important;
+        color: #fff !important;
+    }
+    
+    body.wp-admin #adminmenu .wp-submenu {
+        background: rgba(0, 0, 0, 0.2) !important;
+        border-radius: 8px !important;
+    }
+    
+    /* Disable advanced effects that rely on CSS variables */
+    body.wp-admin.mas-v2-menu-floating #adminmenu,
+    body.wp-admin.mas-v2-admin-bar-floating #wpadminbar {
+        position: static !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+    }
+}
+
+/* Backdrop Filter Fallback (for glassmorphism effects) */
+@supports not (backdrop-filter: blur(10px)) and not (-webkit-backdrop-filter: blur(10px)) {
+    /* Fallback for browsers without backdrop-filter support */
+    
+    .mas-glassmorphism-enabled .postbox,
+    .mas-glassmorphism-enabled .meta-box-sortables .postbox,
+    .mas-glassmorphism-enabled .mas-v2-card {
+        background: rgba(255, 255, 255, 0.9) !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    }
+    
+    .mas-menu-glassmorphism-enabled #adminmenuwrap {
+        background: rgba(35, 40, 45, 0.95) !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
+    
+    .mas-admin-bar-glassmorphism-enabled #wpadminbar {
+        background: rgba(35, 40, 45, 0.95) !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
+}
+
+/* CSS Grid Fallback */
+@supports not (display: grid) {
+    /* Fallback to flexbox for browsers without CSS Grid support */
+    
+    .mas-settings-grid {
+        display: flex !important;
+        flex-wrap: wrap !important;
+    }
+    
+    .mas-settings-grid > * {
+        flex: 1 1 300px !important;
+        margin: 10px !important;
+    }
+}
+
+/* Flexbox Fallback */
+@supports not (display: flex) {
+    /* Fallback for very old browsers without flexbox */
+    
+    .mas-flex-container {
+        display: block !important;
+    }
+    
+    .mas-flex-item {
+        display: inline-block !important;
+        vertical-align: top !important;
+        width: 48% !important;
+        margin: 1% !important;
+    }
+}
+
+/* CSS Transforms Fallback */
+@supports not (transform: translateX(0)) {
+    /* Disable transform-based animations for unsupported browsers */
+    
+    body.wp-admin #adminmenu li.menu-top:hover {
+        transform: none !important;
+    }
+    
+    body.wp-admin #adminmenu .wp-submenu {
+        transform: none !important;
+        opacity: 1 !important;
+    }
+    
+    /* Use simple position changes instead of transforms */
+    body.wp-admin #adminmenu .wp-submenu li a:hover {
+        margin-left: 4px !important;
+        transform: none !important;
+    }
+}
+
+/* CSS Transitions Fallback */
+@supports not (transition: all 0.3s ease) {
+    /* Disable all transitions for browsers that don't support them */
+    
+    * {
+        transition: none !important;
+        animation: none !important;
+    }
+}
+
+/* ========================================
+   🔧 BROWSER-SPECIFIC FIXES
+   ======================================== */
+
+/* Internet Explorer 11 Fixes */
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+    /* IE11 specific fixes */
+    
+    /* Fix flexbox issues in IE11 */
+    .mas-flex-container {
+        display: -ms-flexbox !important;
+        -ms-flex-wrap: wrap !important;
+    }
+    
+    .mas-flex-item {
+        -ms-flex: 1 1 300px !important;
+    }
+    
+    /* Fix CSS Grid issues in IE11 */
+    .mas-settings-grid {
+        display: -ms-grid !important;
+    }
+    
+    /* Disable advanced effects in IE11 */
+    body.wp-admin.mas-v2-menu-floating #adminmenu,
+    body.wp-admin.mas-v2-admin-bar-floating #wpadminbar {
+        position: static !important;
+        border-radius: 0 !important;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+    }
+    
+    /* Fix submenu positioning in IE11 */
+    body.wp-admin #adminmenu .wp-submenu {
+        position: static !important;
+        left: auto !important;
+        top: auto !important;
+        transform: none !important;
+    }
+}
+
+/* Safari-specific fixes */
+@supports (-webkit-appearance: none) {
+    /* Safari-specific backdrop-filter prefix */
+    .mas-glassmorphism-enabled .postbox,
+    .mas-glassmorphism-enabled .meta-box-sortables .postbox,
+    .mas-glassmorphism-enabled .mas-v2-card {
+        -webkit-backdrop-filter: blur(10px) saturate(1.2) !important;
+    }
+    
+    .mas-menu-glassmorphism-enabled #adminmenuwrap {
+        -webkit-backdrop-filter: blur(10px) saturate(1.1) !important;
+    }
+    
+    .mas-admin-bar-glassmorphism-enabled #wpadminbar {
+        -webkit-backdrop-filter: blur(10px) saturate(1.1) !important;
+    }
+}
+
+/* Firefox-specific fixes */
+@-moz-document url-prefix() {
+    /* Firefox-specific fixes */
+    
+    /* Fix scrollbar styling in Firefox */
+    body.wp-admin #adminmenu {
+        scrollbar-width: thin !important;
+        scrollbar-color: rgba(255, 255, 255, 0.3) transparent !important;
+    }
+    
+    /* Fix backdrop-filter alternative for Firefox */
+    .mas-glassmorphism-enabled .postbox,
+    .mas-glassmorphism-enabled .meta-box-sortables .postbox,
+    .mas-glassmorphism-enabled .mas-v2-card {
+        background: rgba(255, 255, 255, 0.85) !important;
+        border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    }
+}
+
+/* Edge Legacy fixes */
+@supports (-ms-ime-align: auto) {
+    /* Edge Legacy specific fixes */
+    
+    /* Fix CSS Grid in Edge Legacy */
+    .mas-settings-grid {
+        display: -ms-grid !important;
+        -ms-grid-columns: 1fr 1fr !important;
+        -ms-grid-rows: auto !important;
+    }
+    
+    /* Fix flexbox in Edge Legacy */
+    .mas-flex-container {
+        display: -ms-flexbox !important;
+    }
+}
+
+/* ========================================
+   📱 MOBILE & RESPONSIVE FALLBACKS
+   ======================================== */
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+    /* Touch devices - disable hover effects */
+    
+    body.wp-admin #adminmenu li.menu-top:hover {
+        transform: none !important;
+        box-shadow: none !important;
+    }
+    
+    /* Make touch targets larger */
+    body.wp-admin #adminmenu li.menu-top > a {
+        min-height: 44px !important;
+        padding: 12px 16px !important;
+    }
+    
+    /* Disable complex animations on touch devices */
+    body.wp-admin #adminmenu .wp-submenu {
+        transition: none !important;
+        animation: none !important;
+    }
+}
+
+/* High DPI display fixes */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    /* Optimize for high DPI displays */
+    
+    body.wp-admin #adminmenu {
+        -webkit-font-smoothing: antialiased !important;
+        -moz-osx-font-smoothing: grayscale !important;
+    }
+    
+    /* Adjust border widths for high DPI */
+    body.wp-admin #adminmenu .wp-submenu {
+        border-width: 0.5px !important;
+    }
+}
+
+/* ========================================
+   ♿ ACCESSIBILITY & REDUCED MOTION
+   ======================================== */
+
+/* Respect user's motion preferences */
+@media (prefers-reduced-motion: reduce) {
+    /* Disable all animations and transitions */
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        transition-delay: 0s !important;
+        scroll-behavior: auto !important;
+    }
+    
+    /* Remove transform-based animations */
+    body.wp-admin #adminmenu li.menu-top:hover {
+        transform: none !important;
+    }
+    
+    body.wp-admin #adminmenu .wp-submenu {
+        transform: none !important;
+    }
+    
+    /* Disable parallax and complex effects */
+    .mas-glassmorphism-enabled .postbox,
+    .mas-glassmorphism-enabled .meta-box-sortables .postbox,
+    .mas-glassmorphism-enabled .mas-v2-card {
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    /* High contrast adjustments */
+    
+    :root {
+        --mas-menu-bg-color: #000000 !important;
+        --mas-menu-text-color: #ffffff !important;
+        --mas-menu-hover-color: #ffffff !important;
+        --mas-menu-hover-text-color: #000000 !important;
+        --mas-submenu-bg-color: #1a1a1a !important;
+        --mas-submenu-text-color: #ffffff !important;
+    }
+    
+    /* Disable glassmorphism in high contrast mode */
+    .mas-glassmorphism-enabled .postbox,
+    .mas-glassmorphism-enabled .meta-box-sortables .postbox,
+    .mas-glassmorphism-enabled .mas-v2-card {
+        background: #ffffff !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        border: 2px solid #000000 !important;
+    }
+    
+    /* Ensure sufficient contrast for floating elements */
+    body.wp-admin.mas-v2-menu-floating #adminmenu {
+        background: #000000 !important;
+        border: 2px solid #ffffff !important;
+    }
+    
+    body.wp-admin.mas-v2-admin-bar-floating #wpadminbar {
+        background: #000000 !important;
+        border: 2px solid #ffffff !important;
+    }
+}
+
+/* Dark theme preference support */
+@media (prefers-color-scheme: dark) {
+    /* Dark theme fallbacks */
+    
+    body.wp-admin #adminmenu {
+        background: #1a1a1a !important;
+        color: #ffffff !important;
+    }
+    
+    body.wp-admin #adminmenu li.menu-top > a {
+        color: #ffffff !important;
+    }
+    
+    body.wp-admin #adminmenu .wp-submenu {
+        background: rgba(255, 255, 255, 0.1) !important;
+    }
+    
+    /* Dark theme glassmorphism fallbacks */
+    .mas-glassmorphism-enabled .postbox,
+    .mas-glassmorphism-enabled .meta-box-sortables .postbox,
+    .mas-glassmorphism-enabled .mas-v2-card {
+        background: rgba(20, 25, 30, 0.9) !important;
+        border-color: rgba(255, 255, 255, 0.1) !important;
+    }
+}
+
+/* ========================================
+   🔍 FEATURE DETECTION UTILITIES
+   ======================================== */
+
+/* CSS feature detection classes for JavaScript */
+.no-cssvar {
+    /* Applied by JavaScript when CSS Variables are not supported */
+}
+
+.no-backdrop-filter {
+    /* Applied by JavaScript when backdrop-filter is not supported */
+}
+
+.no-transforms {
+    /* Applied by JavaScript when CSS transforms are not supported */
+}
+
+.no-transitions {
+    /* Applied by JavaScript when CSS transitions are not supported */
+}
+
+.no-flexbox {
+    /* Applied by JavaScript when flexbox is not supported */
+}
+
+.no-grid {
+    /* Applied by JavaScript when CSS Grid is not supported */
+}
+
+/* ========================================
+   🖨️ PRINT STYLES
+   ======================================== */
+
+@media print {
+    /* Print-specific styles */
+    
+    /* Hide interactive elements */
+    .mas-theme-toggle,
+    .mas-live-preview-toggle,
+    body.wp-admin.mas-v2-modern-style #adminmenu,
+    body.wp-admin.mas-v2-modern-style #wpadminbar {
+        display: none !important;
+    }
+    
+    /* Ensure content is visible */
+    body.wp-admin #wpbody-content {
+        margin-left: 0 !important;
+        width: 100% !important;
+    }
+    
+    /* Remove shadows and effects for print */
+    * {
+        box-shadow: none !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        transform: none !important;
+    }
+    
+    /* Use high contrast colors for print */
+    body {
+        background: white !important;
+        color: black !important;
+    }
+}
+
+/* ========================================
+   🚨 EMERGENCY FALLBACK STYLES
+   ======================================== */
+
+/* Emergency fallback when all else fails */
+.mas-emergency-mode body.wp-admin #adminmenu {
+    position: static !important;
+    background: #23282d !important;
+    color: #eee !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+}
+
+.mas-emergency-mode body.wp-admin #adminmenu li.menu-top > a {
+    color: #eee !important;
+    background: transparent !important;
+    padding: 8px 12px !important;
+    border-radius: 0 !important;
+}
+
+.mas-emergency-mode body.wp-admin #adminmenu li.menu-top:hover > a {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: #fff !important;
+}
+
+.mas-emergency-mode body.wp-admin #adminmenu .wp-submenu {
+    position: static !important;
+    background: rgba(0, 0, 0, 0.2) !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+    display: block !important;
+}
+
+/* Critical failure mode - absolute minimum styling */
+.mas-critical-failure * {
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+}
+
+.mas-critical-failure body.wp-admin #adminmenu {
+    position: static !important;
+    background: #23282d !important;
+    width: auto !important;
+}
+
+.mas-critical-failure body.wp-admin #wpadminbar {
+    position: static !important;
+    background: #23282d !important;
+}

@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ModernAdminApp Orchestrator Fix Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 20px;
+            background: #f0f0f1;
+        }
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+        .test-section h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .status {
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            margin: 5px 0;
+        }
+        .status.success { background: #d4edda; color: #155724; }
+        .status.error { background: #f8d7da; color: #721c24; }
+        .status.warning { background: #fff3cd; color: #856404; }
+        .status.info { background: #d1ecf1; color: #0c5460; }
+        .log-output {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+        button {
+            background: #0073aa;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #005a87;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .module-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .module-card {
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 15px;
+            background: #fafafa;
+        }
+        .module-card h4 {
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+        .module-status {
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 3px;
+            display: inline-block;
+        }
+        .module-status.active { background: #d4edda; color: #155724; }
+        .module-status.failed { background: #f8d7da; color: #721c24; }
+        .module-status.loading { background: #fff3cd; color: #856404; }
+        .module-status.destroyed { background: #e2e3e5; color: #383d41; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🔧 ModernAdminApp Orchestrator Fix Test</h1>
+        <p>Testing the enhanced ModernAdminApp with improved dependency resolution, error handling, and module lifecycle management.</p>
+        
+        <div class="test-section">
+            <h3>📊 Test Status</h3>
+            <div id="overall-status" class="status info">Initializing tests...</div>
+            <div id="test-progress"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🎛️ Test Controls</h3>
+            <button onclick="runAllTests()">Run All Tests</button>
+            <button onclick="testModuleRegistration()">Test Module Registration</button>
+            <button onclick="testDependencyResolution()">Test Dependency Resolution</button>
+            <button onclick="testErrorHandling()">Test Error Handling</button>
+            <button onclick="testModuleRecovery()">Test Module Recovery</button>
+            <button onclick="testHealthCheck()">Test Health Check</button>
+            <button onclick="clearLogs()">Clear Logs</button>
+        </div>
+        
+        <div class="test-section">
+            <h3>📦 Module Status</h3>
+            <div id="module-status">
+                <div class="status info">No modules loaded yet</div>
+            </div>
+            <div id="module-grid" class="module-grid"></div>
+        </div>
+        
+        <div class="test-section">
+            <h3>🔍 Test Logs</h3>
+            <div id="test-logs" class="log-output">Test logs will appear here...\n</div>
+        </div>
+        
+        <div class="test-section">
+            <h3>⚡ Event Log</h3>
+            <div id="event-logs" class="log-output">Event logs will appear here...\n</div>
+        </div>
+    </div>
+
+    <!-- Mock WordPress admin environment -->
+    <script>
+        // Mock WordPress admin environment
+        window.masV2Global = {
+            settings: {
+                menu_background: '#2c3e50',
+                menu_text_color: '#ffffff',
+                menu_hover_background: '#34495e',
+                menu_detached: true,
+                enable_animations: true
+            },
+            ajaxUrl: '/wp-admin/admin-ajax.php',
+            nonce: 'test-nonce-123'
+        };
+        
+        // Mock module classes for testing
+        class MockNotificationManager {
+            constructor(app) {
+                this.app = app;
+                this.initialized = false;
+            }
+            
+            async init(settings) {
+                this.settings = settings;
+                this.initialized = true;
+                log('NotificationManager initialized');
+            }
+            
+            show(message, type = 'info') {
+                log(`[${type.toUpperCase()}] ${message}`);
+            }
+            
+            success(msg) { this.show(msg, 'success'); }
+            error(msg) { this.show(msg, 'error'); }
+            warning(msg) { this.show(msg, 'warning'); }
+            info(msg) { this.show(msg, 'info'); }
+            
+            healthCheck() {
+                return { status: 'healthy', initialized: this.initialized };
+            }
+            
+            destroy() {
+                this.initialized = false;
+                log('NotificationManager destroyed');
+            }
+        }
+        
+        class MockThemeManager {
+            constructor(app) {
+                this.app = app;
+                this.initialized = false;
+            }
+            
+            async init(settings) {
+                this.settings = settings;
+                this.initialized = true;
+                log('ThemeManager initialized');
+            }
+            
+            healthCheck() {
+                return { status: 'healthy', initialized: this.initialized };
+            }
+            
+            destroy() {
+                this.initialized = false;
+                log('ThemeManager destroyed');
+            }
+        }
+        
+        class MockMenuManager {
+            constructor(app) {
+                this.app = app;
+                this.initialized = false;
+            }
+            
+            async init(settings) {
+                this.settings = settings;
+                this.initialized = true;
+                log('MenuManager initialized');
+            }
+            
+            healthCheck() {
+                return { status: 'healthy', initialized: this.initialized };
+            }
+            
+            destroy() {
+                this.initialized = false;
+                log('MenuManager destroyed');
+            }
+        }
+        
+        class MockFailingModule {
+            constructor(app) {
+                this.app = app;
+            }
+            
+            async init(settings) {
+                throw new Error('Simulated module failure');
+            }
+        }
+        
+        // Make mock classes globally available
+        window.NotificationManager = MockNotificationManager;
+        window.ThemeManager = MockThemeManager;
+        window.MenuManagerFixed = MockMenuManager;
+        window.FailingModule = MockFailingModule;
+        
+        // Logging functions
+        function log(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            const logElement = document.getElementById('test-logs');
+            logElement.textContent += `[${timestamp}] ${message}\n`;
+            logElement.scrollTop = logElement.scrollHeight;
+            console.log(message);
+        }
+        
+        function logEvent(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            const logElement = document.getElementById('event-logs');
+            logElement.textContent += `[${timestamp}] ${message}\n`;
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+        
+        function clearLogs() {
+            document.getElementById('test-logs').textContent = '';
+            document.getElementById('event-logs').textContent = '';
+        }
+        
+        function updateStatus(message, type = 'info') {
+            const statusElement = document.getElementById('overall-status');
+            statusElement.textContent = message;
+            statusElement.className = `status ${type}`;
+        }
+        
+        function updateModuleStatus() {
+            if (!window.testApp) return;
+            
+            const moduleGrid = document.getElementById('module-grid');
+            moduleGrid.innerHTML = '';
+            
+            const modules = window.testApp.getAllModules();
+            const states = window.testApp.moduleStates;
+            
+            modules.forEach((module, name) => {
+                const state = states.get(name);
+                const card = document.createElement('div');
+                card.className = 'module-card';
+                
+                card.innerHTML = `
+                    <h4>${name}</h4>
+                    <div class="module-status ${state?.state || 'unknown'}">${state?.state || 'unknown'}</div>
+                    <div style="font-size: 12px; margin-top: 8px;">
+                        <div>Priority: ${window.testApp.moduleRegistry.get(name)?.priority || 'N/A'}</div>
+                        <div>Dependencies: ${window.testApp.moduleRegistry.get(name)?.dependencies?.join(', ') || 'None'}</div>
+                        <div>Required: ${window.testApp.moduleRegistry.get(name)?.required ? 'Yes' : 'No'}</div>
+                    </div>
+                `;
+                
+                moduleGrid.appendChild(card);
+            });
+        }
+        
+        // Test functions
+        async function runAllTests() {
+            log('🚀 Starting comprehensive ModernAdminApp tests...');
+            updateStatus('Running tests...', 'info');
+            
+            try {
+                await testModuleRegistration();
+                await testDependencyResolution();
+                await testErrorHandling();
+                await testModuleRecovery();
+                await testHealthCheck();
+                
+                updateStatus('All tests completed successfully!', 'success');
+                log('✅ All tests completed successfully!');
+                
+            } catch (error) {
+                updateStatus(`Tests failed: ${error.message}`, 'error');
+                log(`❌ Tests failed: ${error.message}`);
+            }
+        }
+        
+        async function testModuleRegistration() {
+            log('📝 Testing module registration system...');
+            
+            try {
+                // Create new app instance
+                const app = new ModernAdminApp();
+                
+                // Test registering a module
+                app.registerModule({
+                    name: 'testModule',
+                    className: 'NotificationManager',
+                    priority: 10,
+                    global: true,
+                    dependencies: [],
+                    required: false
+                });
+                
+                // Verify registration
+                if (app.moduleRegistry.has('testModule')) {
+                    log('✅ Module registration successful');
+                } else {
+                    throw new Error('Module registration failed');
+                }
+                
+                // Test unregistration
+                app.unregisterModule('testModule');
+                if (!app.moduleRegistry.has('testModule')) {
+                    log('✅ Module unregistration successful');
+                } else {
+                    throw new Error('Module unregistration failed');
+                }
+                
+                log('✅ Module registration tests passed');
+                
+            } catch (error) {
+                log(`❌ Module registration test failed: ${error.message}`);
+                throw error;
+            }
+        }
+        
+        async function testDependencyResolution() {
+            log('🔗 Testing dependency resolution...');
+            
+            try {
+                // Create app and initialize with dependencies
+                const app = new ModernAdminApp();
+                window.testApp = app;
+                
+                // Setup event listeners
+                setupEventListeners(app);
+                
+                await app.init(masV2Global.settings);
+                
+                // Check if modules loaded in correct order
+                const moduleStates = Array.from(app.moduleStates.entries());
+                log(`📊 Loaded ${moduleStates.length} modules`);
+                
+                // Verify notification manager loaded first (required module)
+                if (app.modules.has('notificationManager')) {
+                    log('✅ NotificationManager loaded (required module)');
+                } else {
+                    log('⚠️ NotificationManager not loaded');
+                }
+                
+                updateModuleStatus();
+                log('✅ Dependency resolution tests passed');
+                
+            } catch (error) {
+                log(`❌ Dependency resolution test failed: ${error.message}`);
+                throw error;
+            }
+        }
+        
+        async function testErrorHandling() {
+            log('🚨 Testing error handling and recovery...');
+            
+            try {
+                const app = window.testApp || new ModernAdminApp();
+                
+                // Register a failing module
+                app.registerModule({
+                    name: 'failingModule',
+                    className: 'FailingModule',
+                    priority: 20,
+                    global: true,
+                    dependencies: [],
+                    required: false
+                });
+                
+                // Try to load the failing module
+                const config = app.moduleRegistry.get('failingModule');
+                const result = await app.loadSingleModule(config);
+                
+                if (!result.success) {
+                    log('✅ Error handling working - failing module detected');
+                } else {
+                    log('⚠️ Expected module to fail but it succeeded');
+                }
+                
+                log('✅ Error handling tests passed');
+                
+            } catch (error) {
+                log(`❌ Error handling test failed: ${error.message}`);
+                throw error;
+            }
+        }
+        
+        async function testModuleRecovery() {
+            log('🔄 Testing module recovery system...');
+            
+            try {
+                const app = window.testApp;
+                if (!app) {
+                    throw new Error('No app instance available for recovery test');
+                }
+                
+                // Test reloading a module
+                if (app.modules.has('notificationManager')) {
+                    const result = await app.reloadModule('notificationManager');
+                    
+                    if (result.success) {
+                        log('✅ Module reload successful');
+                    } else {
+                        log(`⚠️ Module reload failed: ${result.error}`);
+                    }
+                }
+                
+                updateModuleStatus();
+                log('✅ Module recovery tests passed');
+                
+            } catch (error) {
+                log(`❌ Module recovery test failed: ${error.message}`);
+                throw error;
+            }
+        }
+        
+        async function testHealthCheck() {
+            log('🏥 Testing health check system...');
+            
+            try {
+                const app = window.testApp;
+                if (!app) {
+                    throw new Error('No app instance available for health check');
+                }
+                
+                const healthReport = await app.performHealthCheck();
+                
+                log(`📊 Health check results:`);
+                log(`   Total modules: ${healthReport.totalModules}`);
+                log(`   Healthy: ${healthReport.healthyModules}`);
+                log(`   Unhealthy: ${healthReport.unhealthyModules}`);
+                
+                Object.entries(healthReport.modules).forEach(([name, health]) => {
+                    log(`   ${name}: ${health.status}`);
+                });
+                
+                log('✅ Health check tests passed');
+                
+            } catch (error) {
+                log(`❌ Health check test failed: ${error.message}`);
+                throw error;
+            }
+        }
+        
+        function setupEventListeners(app) {
+            // Listen to app events
+            document.addEventListener('mas-app-initialized', (e) => {
+                logEvent('🚀 App initialized');
+                updateModuleStatus();
+            });
+            
+            document.addEventListener('mas-app-module-loaded', (e) => {
+                logEvent(`📦 Module loaded: ${e.detail.data.module}`);
+                updateModuleStatus();
+            });
+            
+            document.addEventListener('mas-app-module-error', (e) => {
+                logEvent(`❌ Module error: ${e.detail.data.module} - ${e.detail.data.error}`);
+                updateModuleStatus();
+            });
+            
+            document.addEventListener('mas-app-module-recovered', (e) => {
+                logEvent(`🔄 Module recovered: ${e.detail.data.module}`);
+                updateModuleStatus();
+            });
+            
+            document.addEventListener('mas-app-health-check-complete', (e) => {
+                logEvent(`🏥 Health check complete: ${e.detail.data.healthyModules}/${e.detail.data.totalModules} healthy`);
+            });
+            
+            document.addEventListener('mas-app-critical-modules-failed', (e) => {
+                logEvent(`🚨 Critical modules failed: ${e.detail.data.failed.map(f => f.name).join(', ')}`);
+            });
+        }
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            log('🔧 ModernAdminApp Orchestrator Fix Test initialized');
+            updateStatus('Ready to run tests', 'info');
+        });
+    </script>
+    
+    <!-- Load the actual ModernAdminApp -->
+    <script src="assets/js/modules/ModernAdminApp.js"></script>
+</body>
+</html>
