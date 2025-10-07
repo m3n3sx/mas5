@@ -760,3 +760,41 @@ body.wp-admin.mas-v2-modern-style.rainbow-mode * {
     100% { filter: hue-rotate(360deg); }
 }
 
+/* ========================================
+   🔧 WPFOOTER FIX - Prevent overlap
+   ======================================== */
+
+/* Ensure wpfooter doesn't overlap content */
+body.wp-admin.mas-v2-modern-style #wpfooter {
+    position: relative;
+    clear: both;
+    margin-top: var(--mas-spacing-xl);
+    padding: var(--mas-spacing-md);
+    background: var(--mas-bg-secondary);
+    border-top: 1px solid var(--mas-border-color);
+    z-index: 1;
+}
+
+/* Ensure content area has proper bottom padding */
+body.wp-admin.mas-v2-modern-style #wpbody-content {
+    padding-bottom: calc(var(--mas-spacing-xl) * 2);
+    min-height: calc(100vh - 200px);
+}
+
+/* Fix for wpcontent to ensure proper spacing */
+body.wp-admin.mas-v2-modern-style #wpcontent {
+    padding-bottom: 0;
+}
+
+/* Ensure wpbody has proper layout */
+body.wp-admin.mas-v2-modern-style #wpbody {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Make wpbody-content flex-grow to push footer down */
+body.wp-admin.mas-v2-modern-style #wpbody-content {
+    flex: 1 0 auto;
+}
+

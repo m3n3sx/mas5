@@ -64,7 +64,6 @@ class ModernAdminStylerV2 {
         add_action('wp_head', [$this, 'outputFrontendStyles']);
         add_action('login_head', [$this, 'outputLoginStyles']);
         add_action('admin_footer', [$this, 'addSettingsGearButton']);
-        add_action('admin_footer', [$this, 'addDebugInfo']); // Debug info
         
         // AJAX handlers - TYLKO RAZ!
         add_action('wp_ajax_mas_v2_save_settings', [$this, 'ajaxSaveSettings']);
@@ -1165,9 +1164,9 @@ class ModernAdminStylerV2 {
     }
     
     /**
-     * 🧪 TYMCZASOWY DEBUG - usuń po testach
+     * Debug info - DISABLED
      */
-    public function addDebugInfo() {
+    public function addDebugInfo_DISABLED() {
         if (!current_user_can('manage_options')) return;
         
         $settings = get_option('mas_v2_settings', []);
