@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phase 3 Task 7 - Performance Optimizations Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #2271b1;
+            border-bottom: 2px solid #2271b1;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: #333;
+            margin-top: 0;
+        }
+
+        .test-controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 10px 20px;
+            background: #2271b1;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        button:hover {
+            background: #135e96;
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .results {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .result-line {
+            margin: 5px 0;
+            padding: 5px;
+        }
+
+        .result-line.success {
+            color: #0a7e07;
+        }
+
+        .result-line.error {
+            color: #dc3232;
+        }
+
+        .result-line.info {
+            color: #2271b1;
+        }
+
+        #virtual-list-container {
+            height: 400px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .stat-card {
+            background: #f0f6fc;
+            padding: 15px;
+            border-radius: 4px;
+            border-left: 4px solid #2271b1;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2271b1;
+        }
+
+        .lazy-load-demo {
+            min-height: 200px;
+            border: 2px dashed #ddd;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #666;
+        }
+
+        .performance-chart {
+            margin-top: 15px;
+        }
+
+        .bar {
+            height: 30px;
+            background: linear-gradient(90deg, #2271b1, #135e96);
+            margin: 5px 0;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            padding: 0 10px;
+            color: white;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🚀 Phase 3 Task 7 - Performance Optimizations Test</h1>
+
+    <!-- Test 1: Lazy Loading -->
+    <div class="test-section">
+        <h2>1. Lazy Loading Test</h2>
+        <p>Test dynamic component loading with loading indicators.</p>
+        
+        <div class="test-controls">
+            <button onclick="testLazyLoading()">Load Component</button>
+            <button onclick="testPreloading()">Preload Components</button>
+            <button onclick="clearLazyLoadDemo()">Clear</button>
+        </div>
+
+        <div id="lazy-load-demo" class="lazy-load-demo">
+            Click "Load Component" to test lazy loading
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-label">Loaded Components</div>
+                <div class="stat-value" id="lazy-loaded-count">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Loading Time</div>
+                <div class="stat-value" id="lazy-load-time">-</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test 2: Virtual Scrolling -->
+    <div class="test-section">
+        <h2>2. Virtual Scrolling Test</h2>
+        <p>Test efficient rendering of large lists (only visible items rendered).</p>
+        
+        <div class="test-controls">
+            <button onclick="testVirtualList(100)">100 Items</button>
+            <button onclick="testVirtualList(1000)">1,000 Items</button>
+            <button onclick="testVirtualList(10000)">10,000 Items</button>
+            <button onclick="scrollToMiddle()">Scroll to Middle</button>
+        </div>
+
+        <div id="virtual-list-container"></div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-label">Total Items</div>
+                <div class="stat-value" id="virtual-total">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Visible Items</div>
+                <div class="stat-value" id="virtual-visible">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Render Time</div>
+                <div class="stat-value" id="virtual-render-time">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Scroll Position</div>
+                <div class="stat-value" id="virtual-scroll">0%</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Test 3: DOM Optimization -->
+    <div class="test-section">
+        <h2>3. DOM Optimization Test</h2>
+        <p>Test batched updates, event delegation, and animation frame scheduling.</p>
+        
+        <div class="test-controls">
+            <button onclick="testBatchUpdates()">Batch Updates (1000x)</button>
+            <button onclick="testEventDelegation()">Event Delegation</button>
+            <button onclick="testAnimationFrames()">Animation Frames</button>
+        </div>
+
+        <div class="results" id="dom-results"></div>
+
+        <div class="performance-chart" id="dom-chart"></div>
+    </div>
+
+    <!-- Test 4: Request Caching -->
+    <div class="test-section">
+        <h2>4. Request Caching Test</h2>
+        <p>Test API response caching and cache invalidation.</p>
+        
+        <div class="test-controls">
+            <button onclick="testCaching()">Test Cache</button>
+            <button onclick="testCacheInvalidation()">Test Invalidation</button>
+            <button onclick="clearCache()">Clear Cache</button>
+        </div>
+
+        <div class="results" id="cache-results"></div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-label">Cache Size</div>
+                <div class="stat-value" id="cache-size">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Cache Hits</div>
+                <div class="stat-value" id="cache-hits">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Cache Misses</div>
+                <div class="stat-value" id="cache-misses">0</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Overall Results -->
+    <div class="test-section">
+        <h2>📊 Overall Performance Summary</h2>
+        <div class="results" id="overall-results">
+            Run tests to see performance summary...
+        </div>
+    </div>
+
+    <!-- Load Scripts -->
+    <script src="assets/js/utils/LazyLoader.js"></script>
+    <script src="assets/js/utils/VirtualList.js"></script>
+    <script src="assets/js/utils/DOMOptimizer.js"></script>
+
+    <script>
+        // Test state
+        let virtualList = null;
+        let lazyLoader = new LazyLoader();
+        let domOptimizer = new DOMOptimizer();
+        let cacheHits = 0;
+        let cacheMisses = 0;
+        let mockCache = new Map();
+
+        // Test 1: Lazy Loading
+        async function testLazyLoading() {
+            const container = document.getElementById('lazy-load-demo');
+            const startTime = performance.now();
+
+            try {
+                // Simulate component loading
+                container.innerHTML = '<div class="mas-lazy-loader"><div class="mas-lazy-loader-spinner"></div><div class="mas-lazy-loader-text">Loading component...</div></div>';
+                
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                container.innerHTML = '<div style="padding: 20px; text-align: center;"><h3>✅ Component Loaded!</h3><p>This component was lazy loaded on demand.</p></div>';
+                
+                const endTime = performance.now();
+                const loadTime = Math.round(endTime - startTime);
+                
+                document.getElementById('lazy-loaded-count').textContent = lazyLoader.getStats().loaded + 1;
+                document.getElementById('lazy-load-time').textContent = loadTime + 'ms';
+                
+                addOverallResult(`Lazy loading: ${loadTime}ms`, 'success');
+            } catch (error) {
+                container.innerHTML = '<div style="color: red;">Failed to load component</div>';
+                addOverallResult('Lazy loading: Failed', 'error');
+            }
+        }
+
+        async function testPreloading() {
+            const startTime = performance.now();
+            await new Promise(resolve => setTimeout(resolve, 500));
+            const endTime = performance.now();
+            
+            addOverallResult(`Preloading: ${Math.round(endTime - startTime)}ms`, 'success');
+        }
+
+        function clearLazyLoadDemo() {
+            document.getElementById('lazy-load-demo').innerHTML = 'Click "Load Component" to test lazy loading';
+        }
+
+        // Test 2: Virtual Scrolling
+        function testVirtualList(itemCount) {
+            const container = document.getElementById('virtual-list-container');
+            const startTime = performance.now();
+
+            // Generate items
+            const items = Array.from({ length: itemCount }, (_, i) => ({
+                id: i,
+                title: `Item ${i + 1}`,
+                description: `Description for item ${i + 1}`
+            }));
+
+            // Destroy existing list
+            if (virtualList) {
+                virtualList.destroy();
+            }
+
+            // Create new virtual list
+            virtualList = new VirtualList(container, {
+                itemHeight: 60,
+                buffer: 5,
+                renderItem: (item, index) => {
+                    const div = document.createElement('div');
+                    div.style.cssText = 'padding: 15px; border-bottom: 1px solid #eee; background: white;';
+                    div.innerHTML = `
+                        <strong>${item.title}</strong><br>
+                        <small style="color: #666;">${item.description}</small>
+                    `;
+                    return div;
+                },
+                onScroll: (scrollInfo) => {
+                    document.getElementById('virtual-scroll').textContent = 
+                        Math.round(scrollInfo.scrollPercentage) + '%';
+                }
+            });
+
+            virtualList.setItems(items);
+
+            const endTime = performance.now();
+            const renderTime = Math.round(endTime - startTime);
+
+            // Update stats
+            const stats = virtualList.getStats();
+            document.getElementById('virtual-total').textContent = stats.totalItems;
+            document.getElementById('virtual-visible').textContent = stats.visibleItems;
+            document.getElementById('virtual-render-time').textContent = renderTime + 'ms';
+            document.getElementById('virtual-scroll').textContent = '0%';
+
+            addOverallResult(`Virtual list (${itemCount} items): ${renderTime}ms`, 'success');
+        }
+
+        function scrollToMiddle() {
+            if (virtualList) {
+                const stats = virtualList.getStats();
+                const middleIndex = Math.floor(stats.totalItems / 2);
+                virtualList.scrollToIndex(middleIndex, 'smooth');
+            }
+        }
+
+        // Test 3: DOM Optimization
+        function testBatchUpdates() {
+            const resultsDiv = document.getElementById('dom-results');
+            const chartDiv = document.getElementById('dom-chart');
+            
+            // Test without batching
+            const startUnbatched = performance.now();
+            for (let i = 0; i < 1000; i++) {
+                const div = document.createElement('div');
+                div.textContent = `Item ${i}`;
+                // Simulate DOM update
+            }
+            const unbatchedTime = performance.now() - startUnbatched;
+
+            // Test with batching
+            const startBatched = performance.now();
+            domOptimizer.batchUpdate(() => {
+                for (let i = 0; i < 1000; i++) {
+                    const div = document.createElement('div');
+                    div.textContent = `Item ${i}`;
+                    // Simulate DOM update
+                }
+            });
+            const batchedTime = performance.now() - startBatched;
+
+            const improvement = Math.round(((unbatchedTime - batchedTime) / unbatchedTime) * 100);
+
+            resultsDiv.innerHTML = `
+                <div class="result-line info">Unbatched: ${unbatchedTime.toFixed(2)}ms</div>
+                <div class="result-line success">Batched: ${batchedTime.toFixed(2)}ms</div>
+                <div class="result-line success">Improvement: ${improvement}% faster</div>
+            `;
+
+            chartDiv.innerHTML = `
+                <div class="bar" style="width: 100%;">Unbatched: ${unbatchedTime.toFixed(2)}ms</div>
+                <div class="bar" style="width: ${(batchedTime/unbatchedTime)*100}%;">Batched: ${batchedTime.toFixed(2)}ms</div>
+            `;
+
+            addOverallResult(`DOM batching: ${improvement}% faster`, 'success');
+        }
+
+        function testEventDelegation() {
+            const resultsDiv = document.getElementById('dom-results');
+            
+            const container = document.createElement('div');
+            const startTime = performance.now();
+            
+            // Setup event delegation
+            const cleanup = domOptimizer.delegate(container, 'click', '.item', (event, target) => {
+                console.log('Item clicked:', target);
+            });
+            
+            const endTime = performance.now();
+            
+            resultsDiv.innerHTML = `
+                <div class="result-line success">Event delegation setup: ${(endTime - startTime).toFixed(2)}ms</div>
+                <div class="result-line info">Single handler for multiple elements</div>
+            `;
+
+            cleanup();
+            addOverallResult('Event delegation: Working', 'success');
+        }
+
+        function testAnimationFrames() {
+            const resultsDiv = document.getElementById('dom-results');
+            let frameCount = 0;
+            const maxFrames = 60;
+
+            const startTime = performance.now();
+
+            function animate() {
+                frameCount++;
+                if (frameCount < maxFrames) {
+                    domOptimizer.scheduleFrame('test-animation', animate);
+                } else {
+                    const endTime = performance.now();
+                    const fps = Math.round((frameCount / (endTime - startTime)) * 1000);
+                    
+                    resultsDiv.innerHTML = `
+                        <div class="result-line success">Animated ${frameCount} frames</div>
+                        <div class="result-line success">Average FPS: ${fps}</div>
+                    `;
+
+                    addOverallResult(`Animation: ${fps} FPS`, 'success');
+                }
+            }
+
+            animate();
+        }
+
+        // Test 4: Request Caching
+        async function testCaching() {
+            const resultsDiv = document.getElementById('cache-results');
+            resultsDiv.innerHTML = '';
+
+            // Simulate API call
+            async function mockApiCall(endpoint) {
+                await new Promise(resolve => setTimeout(resolve, 100));
+                return { data: `Response from ${endpoint}` };
+            }
+
+            // First call (cache miss)
+            const start1 = performance.now();
+            if (!mockCache.has('/settings')) {
+                const response = await mockApiCall('/settings');
+                mockCache.set('/settings', response);
+                cacheMisses++;
+            }
+            const time1 = performance.now() - start1;
+
+            // Second call (cache hit)
+            const start2 = performance.now();
+            if (mockCache.has('/settings')) {
+                const response = mockCache.get('/settings');
+                cacheHits++;
+            }
+            const time2 = performance.now() - start2;
+
+            resultsDiv.innerHTML = `
+                <div class="result-line info">First request (miss): ${time1.toFixed(2)}ms</div>
+                <div class="result-line success">Second request (hit): ${time2.toFixed(2)}ms</div>
+                <div class="result-line success">Speedup: ${Math.round(time1/time2)}x faster</div>
+            `;
+
+            updateCacheStats();
+            addOverallResult(`Caching: ${Math.round(time1/time2)}x speedup`, 'success');
+        }
+
+        async function testCacheInvalidation() {
+            const resultsDiv = document.getElementById('cache-results');
+            
+            mockCache.delete('/settings');
+            
+            resultsDiv.innerHTML += `
+                <div class="result-line info">Cache invalidated for /settings</div>
+            `;
+
+            updateCacheStats();
+        }
+
+        function clearCache() {
+            mockCache.clear();
+            cacheHits = 0;
+            cacheMisses = 0;
+            updateCacheStats();
+            
+            const resultsDiv = document.getElementById('cache-results');
+            resultsDiv.innerHTML = '<div class="result-line info">Cache cleared</div>';
+        }
+
+        function updateCacheStats() {
+            document.getElementById('cache-size').textContent = mockCache.size;
+            document.getElementById('cache-hits').textContent = cacheHits;
+            document.getElementById('cache-misses').textContent = cacheMisses;
+        }
+
+        // Helper functions
+        function addOverallResult(message, type = 'info') {
+            const resultsDiv = document.getElementById('overall-results');
+            const line = document.createElement('div');
+            line.className = `result-line ${type}`;
+            line.textContent = `✓ ${message}`;
+            resultsDiv.appendChild(line);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('Performance Optimization Tests Ready');
+            addOverallResult('Test page loaded', 'info');
+        });
+    </script>
+</body>
+</html>

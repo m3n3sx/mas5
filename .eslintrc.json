@@ -1,0 +1,58 @@
+{
+  "env": {
+    "browser": true,
+    "es2021": true,
+    "node": true,
+    "jest": true
+  },
+  "extends": [
+    "eslint:recommended"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 2021,
+    "sourceType": "module"
+  },
+  "globals": {
+    "jQuery": "readonly",
+    "$": "readonly",
+    "wp": "readonly",
+    "wpApiSettings": "readonly",
+    "ajaxurl": "readonly",
+    "EventBus": "writable",
+    "StateManager": "writable",
+    "APIClient": "writable",
+    "ErrorHandler": "writable",
+    "MASError": "writable",
+    "MASAPIError": "writable",
+    "MASValidationError": "writable",
+    "Component": "writable",
+    "MASAdminApp": "writable",
+    "NotificationSystem": "writable",
+    "MASRestClient": "writable"
+  },
+  "rules": {
+    "indent": ["error", 4, { "SwitchCase": 1 }],
+    "linebreak-style": ["error", "unix"],
+    "quotes": ["error", "single", { "avoidEscape": true }],
+    "semi": ["error", "always"],
+    "no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
+    "no-console": ["warn", { "allow": ["warn", "error", "log"] }],
+    "prefer-const": "error",
+    "no-var": "error",
+    "eqeqeq": ["error", "always"],
+    "curly": ["error", "all"],
+    "brace-style": ["error", "1tbs"],
+    "comma-dangle": ["error", "never"],
+    "arrow-spacing": "error",
+    "space-before-blocks": "error",
+    "keyword-spacing": "error",
+    "space-infix-ops": "error",
+    "no-trailing-spaces": "error",
+    "no-multiple-empty-lines": ["error", { "max": 2 }],
+    "object-curly-spacing": ["error", "always"],
+    "array-bracket-spacing": ["error", "never"],
+    "max-len": ["warn", { "code": 120, "ignoreComments": true, "ignoreStrings": true }],
+    "no-multi-spaces": "error",
+    "key-spacing": ["error", { "beforeColon": false, "afterColon": true }]
+  }
+}

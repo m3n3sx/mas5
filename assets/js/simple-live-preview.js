@@ -112,6 +112,8 @@
         // Checkboxes
         $('.mas-v2-checkbox').on('change', function() {
             var name = $(this).attr('name');
+            if (!name) return; // Skip if no name attribute
+            
             var matches = name.match(/\[([^\]]+)\]$/);
             if (matches) {
                 var setting = matches[1];

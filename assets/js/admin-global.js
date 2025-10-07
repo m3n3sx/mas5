@@ -27,6 +27,12 @@
     });
     
     function initializeApp() {
+        // Sprawdź czy moduły są wyłączone (np. na stronie ustawień)
+        if (window.MASDisableModules === true) {
+            console.log('🚫 Modularny system wyłączony - używam prostego handlera');
+            return;
+        }
+        
         // Sprawdź czy mamy dostęp do głównego orchestratora
         if (typeof window.ModernAdminApp !== 'undefined') {
             initializeWithOrchestrator();

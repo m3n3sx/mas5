@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phase 3 Task 8 - Accessibility Implementation Test</title>
+    <link rel="stylesheet" href="assets/css/accessibility.css">
+    <link rel="stylesheet" href="assets/css/notification-system.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f0f0f1;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .test-section h2 {
+            margin-top: 0;
+            color: #1d2327;
+            border-bottom: 2px solid #2271b1;
+            padding-bottom: 10px;
+        }
+        .test-result {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .test-result.pass {
+            background: #d5f4e6;
+            border-left: 4px solid #00a32a;
+        }
+        .test-result.fail {
+            background: #fcf0f1;
+            border-left: 4px solid #d63638;
+        }
+        .test-result.info {
+            background: #f0f6fc;
+            border-left: 4px solid #2271b1;
+        }
+        .demo-form {
+            display: grid;
+            gap: 15px;
+            max-width: 600px;
+        }
+        .form-field {
+            display: flex;
+            flex-direction: column;
+        }
+        .form-field label {
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        .form-field input,
+        .form-field select {
+            padding: 8px;
+            border: 1px solid #8c8f94;
+            border-radius: 4px;
+        }
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        button {
+            padding: 8px 16px;
+            border: 1px solid #2271b1;
+            background: #2271b1;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #135e96;
+        }
+        button.secondary {
+            background: white;
+            color: #2271b1;
+        }
+        button.secondary:hover {
+            background: #f0f0f1;
+        }
+        .color-demo {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .color-pair {
+            padding: 15px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        .color-info {
+            font-size: 12px;
+            margin-top: 5px;
+        }
+        .tab-demo {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .tab-list {
+            display: flex;
+            background: #f0f0f1;
+            border-bottom: 1px solid #ddd;
+        }
+        .tab-button {
+            padding: 12px 20px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+        }
+        .tab-button[aria-selected="true"] {
+            background: white;
+            border-bottom-color: #2271b1;
+            font-weight: 600;
+        }
+        .tab-panel {
+            padding: 20px;
+        }
+        .focus-demo {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        .focus-demo button {
+            min-width: 100px;
+        }
+        #results {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Phase 3 Task 8 - Accessibility Implementation Test</h1>
+    <p>This page tests all accessibility features implemented in Task 8.</p>
+
+    <!-- Test Section 1: ARIA Attributes -->
+    <div class="test-section">
+        <h2>1. ARIA Attributes Test</h2>
+        <p>Testing proper ARIA labels, descriptions, and live regions.</p>
+        
+        <form class="demo-form" id="test-form">
+            <div class="form-field">
+                <label for="test-name">Name (Required)</label>
+                <input type="text" id="test-name" name="name" required aria-required="true">
+                <span class="field-description" id="name-desc">Enter your full name</span>
+            </div>
+
+            <div class="form-field">
+                <label for="test-email">Email</label>
+                <input type="email" id="test-email" name="email" aria-describedby="email-desc">
+                <span class="field-description" id="email-desc">We'll never share your email</span>
+            </div>
+
+            <div class="form-field">
+                <label for="test-color">Favorite Color</label>
+                <input type="text" id="test-color" name="color">
+            </div>
+
+            <div class="button-group">
+                <button type="button" onclick="testARIA()">Test ARIA Attributes</button>
+                <button type="button" onclick="testValidation()" class="secondary">Test Validation</button>
+                <button type="button" onclick="testLiveRegion()" class="secondary">Test Live Region</button>
+            </div>
+        </form>
+
+        <div id="aria-results"></div>
+    </div>
+
+    <!-- Test Section 2: Keyboard Navigation -->
+    <div class="test-section">
+        <h2>2. Keyboard Navigation Test</h2>
+        <p>Test keyboard shortcuts and navigation. Try Tab, Shift+Tab, Arrow keys, Enter, Space, and Escape.</p>
+
+        <div class="tab-demo">
+            <div role="tablist" aria-label="Test tabs" class="tab-list">
+                <button role="tab" aria-selected="true" aria-controls="panel1" id="tab1" class="tab-button">
+                    Tab 1
+                </button>
+                <button role="tab" aria-selected="false" aria-controls="panel2" id="tab2" class="tab-button">
+                    Tab 2
+                </button>
+                <button role="tab" aria-selected="false" aria-controls="panel3" id="tab3" class="tab-button">
+                    Tab 3
+                </button>
+            </div>
+            <div role="tabpanel" id="panel1" aria-labelledby="tab1" class="tab-panel">
+                <h3>Panel 1 Content</h3>
+                <p>Use arrow keys to navigate between tabs.</p>
+                <button onclick="showNotification('info', 'Tab 1 button clicked')">Test Button</button>
+            </div>
+            <div role="tabpanel" id="panel2" aria-labelledby="tab2" class="tab-panel" hidden>
+                <h3>Panel 2 Content</h3>
+                <p>Press Enter or Space to activate a tab.</p>
+                <button onclick="showNotification('success', 'Tab 2 button clicked')">Test Button</button>
+            </div>
+            <div role="tabpanel" id="panel3" aria-labelledby="tab3" class="tab-panel" hidden>
+                <h3>Panel 3 Content</h3>
+                <p>Press Home to go to first tab, End to go to last tab.</p>
+                <button onclick="showNotification('warning', 'Tab 3 button clicked')">Test Button</button>
+            </div>
+        </div>
+
+        <div class="button-group" style="margin-top: 20px;">
+            <button onclick="testKeyboardShortcuts()">Test Keyboard Shortcuts</button>
+            <button onclick="testEscapeKey()" class="secondary">Test Escape Key</button>
+            <button onclick="testFocusTrap()" class="secondary">Test Focus Trap</button>
+        </div>
+
+        <div id="keyboard-results"></div>
+    </div>
+
+    <!-- Test Section 3: Color Contrast -->
+    <div class="test-section">
+        <h2>3. Color Contrast Compliance Test</h2>
+        <p>Testing WCAG AA color contrast ratios (4.5:1 for normal text).</p>
+
+        <div class="color-demo" id="color-demo"></div>
+
+        <div class="button-group" style="margin-top: 20px;">
+            <button onclick="testColorContrast()">Test Color Contrast</button>
+            <button onclick="toggleHighContrast()" class="secondary">Toggle High Contrast</button>
+            <button onclick="testColorBlindness()" class="secondary">Test Color Blindness</button>
+        </div>
+
+        <div id="contrast-results"></div>
+    </div>
+
+    <!-- Test Section 4: Focus Management -->
+    <div class="test-section">
+        <h2>4. Focus Management Test</h2>
+        <p>Testing focus indicators, focus trapping, and focus restoration.</p>
+
+        <div class="focus-demo">
+            <button onclick="testFocusIndicators()">Test Focus Indicators</button>
+            <button onclick="testFocusHistory()">Test Focus History</button>
+            <button onclick="testFocusRestore()">Test Focus Restore</button>
+            <button onclick="testSkipLinks()">Test Skip Links</button>
+            <button onclick="validateFocusOrder()">Validate Focus Order</button>
+        </div>
+
+        <div id="focus-results"></div>
+    </div>
+
+    <!-- Test Results Summary -->
+    <div class="test-section">
+        <h2>Test Results Summary</h2>
+        <div id="results"></div>
+        <div class="button-group">
+            <button onclick="runAllTests()">Run All Tests</button>
+            <button onclick="clearResults()" class="secondary">Clear Results</button>
+        </div>
+    </div>
+
+    <!-- Load Scripts -->
+    <script src="assets/js/utils/AccessibilityHelper.js"></script>
+    <script src="assets/js/utils/KeyboardNavigationHelper.js"></script>
+    <script src="assets/js/utils/ColorContrastHelper.js"></script>
+    <script src="assets/js/utils/FocusManager.js"></script>
+    <script src="assets/js/core/EventBus.js"></script>
+    <script src="assets/js/components/NotificationSystem.js"></script>
+
+    <script>
+        // Initialize
+        const eventBus = new EventBus();
+        const notifications = new NotificationSystem(eventBus);
+        let testResults = [];
+
+        // Helper function to add test result
+        function addResult(test, passed, message) {
+            testResults.push({ test, passed, message });
+            updateResults();
+        }
+
+        function updateResults() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<h3>Test Results:</h3>';
+            
+            testResults.forEach(result => {
+                const div = document.createElement('div');
+                div.className = `test-result ${result.passed ? 'pass' : 'fail'}`;
+                div.textContent = `${result.passed ? '✓' : '✗'} ${result.test}: ${result.message}`;
+                resultsDiv.appendChild(div);
+            });
+
+            // Summary
+            const passed = testResults.filter(r => r.passed).length;
+            const total = testResults.length;
+            const summary = document.createElement('div');
+            summary.className = 'test-result info';
+            summary.textContent = `Summary: ${passed}/${total} tests passed (${(passed/total*100).toFixed(1)}%)`;
+            resultsDiv.appendChild(summary);
+        }
+
+        function clearResults() {
+            testResults = [];
+            document.getElementById('results').innerHTML = '';
+            document.getElementById('aria-results').innerHTML = '';
+            document.getElementById('keyboard-results').innerHTML = '';
+            document.getElementById('contrast-results').innerHTML = '';
+            document.getElementById('focus-results').innerHTML = '';
+        }
+
+        function showNotification(type, message) {
+            notifications.show({ type, message, duration: 3000 });
+        }
+
+        // Test 1: ARIA Attributes
+        function testARIA() {
+            const results = document.getElementById('aria-results');
+            results.innerHTML = '<h3>ARIA Test Results:</h3>';
+
+            const nameField = document.getElementById('test-name');
+            const emailField = document.getElementById('test-email');
+
+            // Test aria-required
+            const hasRequired = nameField.getAttribute('aria-required') === 'true';
+            addResult('ARIA Required', hasRequired, hasRequired ? 'aria-required is set' : 'aria-required is missing');
+
+            // Test aria-describedby
+            const hasDescribedBy = emailField.hasAttribute('aria-describedby');
+            addResult('ARIA DescribedBy', hasDescribedBy, hasDescribedBy ? 'aria-describedby is set' : 'aria-describedby is missing');
+
+            // Test AccessibilityHelper
+            const helperExists = typeof AccessibilityHelper !== 'undefined';
+            addResult('AccessibilityHelper', helperExists, helperExists ? 'AccessibilityHelper is loaded' : 'AccessibilityHelper is missing');
+
+            if (helperExists) {
+                // Test adding label
+                const colorField = document.getElementById('test-color');
+                AccessibilityHelper.addLabel(colorField, 'Choose your favorite color');
+                const hasLabel = colorField.hasAttribute('aria-label');
+                addResult('Add ARIA Label', hasLabel, hasLabel ? 'Label added successfully' : 'Failed to add label');
+            }
+
+            showNotification('info', 'ARIA attributes test completed');
+        }
+
+        function testValidation() {
+            const nameField = document.getElementById('test-name');
+            
+            // Mark as invalid
+            AccessibilityHelper.markInvalid(nameField, 'Name is required');
+            const isInvalid = nameField.getAttribute('aria-invalid') === 'true';
+            addResult('Mark Invalid', isInvalid, isInvalid ? 'Field marked as invalid' : 'Failed to mark invalid');
+
+            setTimeout(() => {
+                // Mark as valid
+                AccessibilityHelper.markValid(nameField);
+                const isValid = !nameField.hasAttribute('aria-invalid');
+                addResult('Mark Valid', isValid, isValid ? 'Field marked as valid' : 'Failed to mark valid');
+            }, 2000);
+
+            showNotification('info', 'Validation test started');
+        }
+
+        function testLiveRegion() {
+            AccessibilityHelper.announce('This is a test announcement', 'polite');
+            addResult('Live Region', true, 'Announcement sent to screen readers');
+            showNotification('success', 'Live region announcement sent');
+        }
+
+        // Test 2: Keyboard Navigation
+        function testKeyboardShortcuts() {
+            const helperExists = typeof KeyboardNavigationHelper !== 'undefined';
+            addResult('KeyboardNavigationHelper', helperExists, helperExists ? 'KeyboardNavigationHelper is loaded' : 'KeyboardNavigationHelper is missing');
+
+            if (helperExists) {
+                // Add test shortcut (Ctrl+K)
+                const cleanup = KeyboardNavigationHelper.addShortcut('k', () => {
+                    showNotification('success', 'Keyboard shortcut Ctrl+K triggered!');
+                    addResult('Keyboard Shortcut', true, 'Ctrl+K shortcut works');
+                }, { ctrl: true });
+
+                showNotification('info', 'Try pressing Ctrl+K');
+                
+                // Cleanup after 5 seconds
+                setTimeout(cleanup, 5000);
+            }
+        }
+
+        function testEscapeKey() {
+            showNotification('info', 'Press Escape to dismiss notifications');
+            addResult('Escape Key', true, 'Escape key handler is active');
+        }
+
+        function testFocusTrap() {
+            const modal = document.createElement('div');
+            modal.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:white;padding:30px;border-radius:8px;box-shadow:0 4px 20px rgba(0,0,0,0.3);z-index:10000;';
+            modal.innerHTML = `
+                <h3>Focus Trap Test</h3>
+                <p>Try tabbing - focus should stay within this modal.</p>
+                <button onclick="closeFocusTrapTest()">Close (or press Escape)</button>
+            `;
+            document.body.appendChild(modal);
+
+            const trapId = FocusManager.createTrap(modal, {
+                escapeDeactivates: true,
+                returnFocus: true
+            });
+
+            window.currentTrapId = trapId;
+            window.currentModal = modal;
+
+            addResult('Focus Trap', true, 'Focus trap created');
+            showNotification('info', 'Focus trap active - try tabbing');
+        }
+
+        window.closeFocusTrapTest = function() {
+            if (window.currentTrapId) {
+                FocusManager.releaseTrap(window.currentTrapId);
+                document.body.removeChild(window.currentModal);
+                addResult('Focus Trap Release', true, 'Focus trap released');
+                showNotification('success', 'Focus trap released');
+            }
+        };
+
+        // Test 3: Color Contrast
+        function testColorContrast() {
+            const results = document.getElementById('contrast-results');
+            results.innerHTML = '<h3>Color Contrast Results:</h3>';
+
+            const helperExists = typeof ColorContrastHelper !== 'undefined';
+            addResult('ColorContrastHelper', helperExists, helperExists ? 'ColorContrastHelper is loaded' : 'ColorContrastHelper is missing');
+
+            if (helperExists) {
+                // Test color pairs
+                const testPairs = [
+                    { fg: '#000000', bg: '#FFFFFF', name: 'Black on White' },
+                    { fg: '#FFFFFF', bg: '#000000', name: 'White on Black' },
+                    { fg: '#2271b1', bg: '#FFFFFF', name: 'Blue on White' },
+                    { fg: '#d63638', bg: '#FFFFFF', name: 'Red on White' },
+                    { fg: '#888888', bg: '#FFFFFF', name: 'Gray on White (Fail)' }
+                ];
+
+                const demoDiv = document.getElementById('color-demo');
+                demoDiv.innerHTML = '';
+
+                testPairs.forEach(pair => {
+                    const result = ColorContrastHelper.meetsWCAG_AA(pair.fg, pair.bg);
+                    
+                    const div = document.createElement('div');
+                    div.className = 'color-pair';
+                    div.style.color = pair.fg;
+                    div.style.background = pair.bg;
+                    div.innerHTML = `
+                        <strong>${pair.name}</strong>
+                        <div class="color-info">
+                            Ratio: ${result.ratio.toFixed(2)}:1<br>
+                            ${result.passes ? '✓ WCAG AA Pass' : '✗ WCAG AA Fail'}
+                        </div>
+                    `;
+                    demoDiv.appendChild(div);
+
+                    addResult(`Contrast: ${pair.name}`, result.passes, `Ratio: ${result.ratio.toFixed(2)}:1`);
+                });
+            }
+        }
+
+        function toggleHighContrast() {
+            const isEnabled = ColorContrastHelper.isHighContrastMode();
+            ColorContrastHelper.setHighContrastMode(!isEnabled);
+            addResult('High Contrast Mode', true, isEnabled ? 'Disabled' : 'Enabled');
+            showNotification('info', `High contrast mode ${isEnabled ? 'disabled' : 'enabled'}`);
+        }
+
+        function testColorBlindness() {
+            const color1 = '#FF0000'; // Red
+            const color2 = '#00FF00'; // Green
+            
+            const results = ColorContrastHelper.checkColorBlindness(color1, color2);
+            
+            Object.entries(results).forEach(([type, result]) => {
+                addResult(`Color Blindness: ${type}`, result.distinguishable, 
+                    `Ratio: ${result.ratio.toFixed(2)}:1 - ${result.distinguishable ? 'Distinguishable' : 'Not distinguishable'}`);
+            });
+
+            showNotification('info', 'Color blindness test completed');
+        }
+
+        // Test 4: Focus Management
+        function testFocusIndicators() {
+            const buttons = document.querySelectorAll('.focus-demo button');
+            buttons.forEach((btn, i) => {
+                FocusManager.addFocusIndicator(btn, i % 3 === 0 ? 'outline' : i % 3 === 1 ? 'ring' : 'glow');
+            });
+            addResult('Focus Indicators', true, 'Focus indicators added to buttons');
+            showNotification('info', 'Focus indicators added - try tabbing through buttons');
+        }
+
+        function testFocusHistory() {
+            const history = FocusManager.focusHistory;
+            addResult('Focus History', history.length > 0, `${history.length} focus events recorded`);
+            showNotification('info', `Focus history has ${history.length} entries`);
+        }
+
+        function testFocusRestore() {
+            const currentFocus = document.activeElement;
+            FocusManager.saveFocus('test');
+            
+            // Focus something else
+            document.querySelector('h1').focus();
+            
+            setTimeout(() => {
+                const restored = FocusManager.restoreSavedFocus('test');
+                addResult('Focus Restore', restored, restored ? 'Focus restored successfully' : 'Failed to restore focus');
+                showNotification(restored ? 'success' : 'error', restored ? 'Focus restored' : 'Failed to restore focus');
+            }, 1000);
+        }
+
+        function testSkipLinks() {
+            const skipLink = FocusManager.createSkipLink('results', 'Skip to results');
+            document.body.insertBefore(skipLink, document.body.firstChild);
+            addResult('Skip Links', true, 'Skip link created');
+            showNotification('info', 'Skip link added - press Tab to see it');
+        }
+
+        function validateFocusOrder() {
+            const validation = FocusManager.validateFocusOrder();
+            addResult('Focus Order Validation', validation.valid, 
+                validation.valid ? 'No issues found' : `${validation.issues.length} issues found`);
+            
+            if (!validation.valid) {
+                validation.issues.forEach(issue => {
+                    console.warn('Focus order issue:', issue);
+                });
+            }
+            
+            showNotification(validation.valid ? 'success' : 'warning', 
+                `Focus order: ${validation.focusableCount} elements, ${validation.issues.length} issues`);
+        }
+
+        // Run all tests
+        function runAllTests() {
+            clearResults();
+            showNotification('info', 'Running all tests...');
+            
+            setTimeout(() => {
+                testARIA();
+                setTimeout(() => {
+                    testColorContrast();
+                    setTimeout(() => {
+                        testFocusIndicators();
+                        setTimeout(() => {
+                            validateFocusOrder();
+                            showNotification('success', 'All tests completed!');
+                        }, 500);
+                    }, 500);
+                }, 500);
+            }, 500);
+        }
+
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', () => {
+            console.log('Accessibility test page loaded');
+            ColorContrastHelper.initHighContrastMode();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Live Preview AJAX</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f0f0f1;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #1d2327;
+            border-bottom: 3px solid #2271b1;
+            padding-bottom: 10px;
+        }
+        .test-button {
+            background: #2271b1;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 5px;
+        }
+        .test-button:hover {
+            background: #135e96;
+        }
+        #console-output {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 4px;
+            min-height: 300px;
+            max-height: 600px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            margin: 15px 0;
+        }
+        .log-line {
+            margin: 5px 0;
+            padding: 3px 0;
+        }
+        .log-success { color: #4ec9b0; }
+        .log-error { color: #f48771; }
+        .log-warning { color: #dcdcaa; }
+        .log-info { color: #9cdcfe; }
+        .status {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+        .status.info {
+            background: #e5f5fa;
+            border-left: 4px solid #2271b1;
+            color: #2271b1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 Test Live Preview AJAX</h1>
+        
+        <div class="status info">
+            📋 Ten test sprawdza czy AJAX handler dla live preview działa poprawnie
+        </div>
+
+        <h2>Testy do wykonania:</h2>
+        
+        <button class="test-button" onclick="testAjaxHandler()">1. Test AJAX Handler</button>
+        <button class="test-button" onclick="testColorChange()">2. Test Zmiana Koloru</button>
+        <button class="test-button" onclick="testCheckbox()">3. Test Checkbox</button>
+        <button class="test-button" onclick="testNumber()">4. Test Liczba</button>
+        <button class="test-button" onclick="clearConsole()">🗑️ Wyczyść</button>
+
+        <div id="console-output"></div>
+
+        <h2>📋 Diagnostyka</h2>
+        <ul>
+            <li><strong>AJAX URL:</strong> <code id="ajax-url">Sprawdzanie...</code></li>
+            <li><strong>Nonce:</strong> <code id="nonce-value">Sprawdzanie...</code></li>
+            <li><strong>masV2Global:</strong> <code id="global-status">Sprawdzanie...</code></li>
+        </ul>
+
+        <h2>🔍 Oczekiwane zachowanie:</h2>
+        <ul>
+            <li>✅ AJAX request powinien zwrócić success: true</li>
+            <li>✅ Response powinien zawierać data.css</li>
+            <li>✅ CSS powinien być wstrzyknięty do &lt;head&gt;</li>
+            <li>✅ Zmiany powinny być widoczne natychmiast</li>
+        </ul>
+
+        <h2>❌ Możliwe problemy:</h2>
+        <ul>
+            <li>❌ masV2Global nie jest zdefiniowany</li>
+            <li>❌ AJAX handler nie jest zarejestrowany</li>
+            <li>❌ Nonce verification fails</li>
+            <li>❌ CSS generation methods nie istnieją</li>
+            <li>❌ Response nie zawiera CSS</li>
+        </ul>
+    </div>
+
+    <script>
+        let consoleOutput = document.getElementById('console-output');
+        
+        function log(message, type = 'info') {
+            const line = document.createElement('div');
+            line.className = `log-line log-${type}`;
+            line.textContent = message;
+            consoleOutput.appendChild(line);
+            consoleOutput.scrollTop = consoleOutput.scrollHeight;
+        }
+
+        function clearConsole() {
+            consoleOutput.innerHTML = '';
+        }
+
+        // Check diagnostics on load
+        window.addEventListener('load', function() {
+            // Check masV2Global
+            if (typeof masV2Global !== 'undefined') {
+                document.getElementById('global-status').textContent = '✅ Dostępny';
+                document.getElementById('global-status').style.color = 'green';
+                document.getElementById('ajax-url').textContent = masV2Global.ajaxUrl || 'Brak';
+                document.getElementById('nonce-value').textContent = masV2Global.nonce ? '✅ Ustawiony' : '❌ Brak';
+                
+                log('✅ masV2Global jest dostępny', 'success');
+                log('   AJAX URL: ' + masV2Global.ajaxUrl, 'info');
+                log('   Nonce: ' + (masV2Global.nonce ? 'Ustawiony' : 'Brak'), 'info');
+            } else {
+                document.getElementById('global-status').textContent = '❌ Niedostępny';
+                document.getElementById('global-status').style.color = 'red';
+                document.getElementById('ajax-url').textContent = 'N/A';
+                document.getElementById('nonce-value').textContent = 'N/A';
+                
+                log('❌ masV2Global NIE jest dostępny!', 'error');
+                log('   Live preview nie będzie działać', 'error');
+            }
+        });
+
+        function testAjaxHandler() {
+            clearConsole();
+            log('=== TEST 1: AJAX HANDLER ===', 'warning');
+            log('');
+            
+            if (typeof masV2Global === 'undefined') {
+                log('❌ masV2Global nie jest zdefiniowany', 'error');
+                log('   Upewnij się że jesteś na stronie ustawień wtyczki', 'warning');
+                return;
+            }
+            
+            log('📤 Wysyłanie request do: ' + masV2Global.ajaxUrl, 'info');
+            log('   Action: mas_v2_get_preview_css', 'info');
+            log('   Nonce: ' + masV2Global.nonce.substring(0, 10) + '...', 'info');
+            log('');
+            
+            fetch(masV2Global.ajaxUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    action: 'mas_v2_get_preview_css',
+                    nonce: masV2Global.nonce
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                log('📥 Response otrzymany:', 'success');
+                log('   Success: ' + (data.success ? '✅ true' : '❌ false'), data.success ? 'success' : 'error');
+                
+                if (data.success) {
+                    log('   ✅ AJAX handler działa poprawnie!', 'success');
+                    log('   CSS length: ' + (data.data.css ? data.data.css.length : 0) + ' znaków', 'info');
+                    
+                    if (data.data.performance) {
+                        log('   Execution time: ' + data.data.performance.execution_time_ms + 'ms', 'info');
+                        log('   Memory usage: ' + data.data.performance.memory_usage_mb + 'MB', 'info');
+                    }
+                    
+                    if (data.data.css) {
+                        log('', 'info');
+                        log('📄 Przykład CSS (pierwsze 200 znaków):', 'info');
+                        log(data.data.css.substring(0, 200) + '...', 'info');
+                    }
+                } else {
+                    log('   ❌ AJAX handler zwrócił błąd', 'error');
+                    log('   Message: ' + (data.data ? data.data.message : 'Brak wiadomości'), 'error');
+                }
+            })
+            .catch(error => {
+                log('❌ Błąd sieci:', 'error');
+                log('   ' + error.message, 'error');
+            });
+        }
+
+        function testColorChange() {
+            clearConsole();
+            log('=== TEST 2: ZMIANA KOLORU ===', 'warning');
+            log('');
+            
+            if (typeof masV2Global === 'undefined') {
+                log('❌ masV2Global nie jest zdefiniowany', 'error');
+                return;
+            }
+            
+            const testColor = '#ff0000';
+            log('🎨 Testowanie zmiany koloru menu_background na: ' + testColor, 'info');
+            log('');
+            
+            fetch(masV2Global.ajaxUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    action: 'mas_v2_get_preview_css',
+                    nonce: masV2Global.nonce,
+                    setting: 'menu_background',
+                    value: testColor
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success && data.data.css) {
+                    log('✅ CSS wygenerowany pomyślnie', 'success');
+                    
+                    // Apply CSS
+                    const styleId = 'mas-test-preview';
+                    let styleEl = document.getElementById(styleId);
+                    if (!styleEl) {
+                        styleEl = document.createElement('style');
+                        styleEl.id = styleId;
+                        document.head.appendChild(styleEl);
+                    }
+                    styleEl.textContent = data.data.css;
+                    
+                    log('✅ CSS zastosowany do strony', 'success');
+                    log('   Sprawdź czy kolor menu się zmienił', 'info');
+                    
+                    // Check if CSS contains the color
+                    if (data.data.css.includes(testColor)) {
+                        log('✅ CSS zawiera testowy kolor', 'success');
+                    } else {
+                        log('⚠️  CSS nie zawiera testowego koloru', 'warning');
+                    }
+                } else {
+                    log('❌ Błąd generowania CSS', 'error');
+                }
+            })
+            .catch(error => {
+                log('❌ Błąd: ' + error.message, 'error');
+            });
+        }
+
+        function testCheckbox() {
+            clearConsole();
+            log('=== TEST 3: CHECKBOX ===', 'warning');
+            log('');
+            
+            if (typeof masV2Global === 'undefined') {
+                log('❌ masV2Global nie jest zdefiniowany', 'error');
+                return;
+            }
+            
+            log('☑️  Testowanie checkbox menu_floating = true', 'info');
+            log('');
+            
+            fetch(masV2Global.ajaxUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    action: 'mas_v2_get_preview_css',
+                    nonce: masV2Global.nonce,
+                    setting: 'menu_floating',
+                    value: 'true'
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    log('✅ CSS wygenerowany dla checkbox', 'success');
+                    log('   CSS length: ' + data.data.css.length, 'info');
+                } else {
+                    log('❌ Błąd: ' + (data.data ? data.data.message : 'Unknown'), 'error');
+                }
+            })
+            .catch(error => {
+                log('❌ Błąd: ' + error.message, 'error');
+            });
+        }
+
+        function testNumber() {
+            clearConsole();
+            log('=== TEST 4: LICZBA ===', 'warning');
+            log('');
+            
+            if (typeof masV2Global === 'undefined') {
+                log('❌ masV2Global nie jest zdefiniowany', 'error');
+                return;
+            }
+            
+            log('🔢 Testowanie liczby menu_width = 250', 'info');
+            log('');
+            
+            fetch(masV2Global.ajaxUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    action: 'mas_v2_get_preview_css',
+                    nonce: masV2Global.nonce,
+                    setting: 'menu_width',
+                    value: '250'
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    log('✅ CSS wygenerowany dla liczby', 'success');
+                    log('   CSS length: ' + data.data.css.length, 'info');
+                    
+                    if (data.data.css.includes('250')) {
+                        log('✅ CSS zawiera wartość 250', 'success');
+                    }
+                } else {
+                    log('❌ Błąd: ' + (data.data ? data.data.message : 'Unknown'), 'error');
+                }
+            })
+            .catch(error => {
+                log('❌ Błąd: ' + error.message, 'error');
+            });
+        }
+    </script>
+</body>
+</html>

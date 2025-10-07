@@ -1,0 +1,33 @@
+coverage:
+  status:
+    project:
+      default:
+        target: 80%
+        threshold: 2%
+    patch:
+      default:
+        target: 80%
+        threshold: 2%
+
+comment:
+  layout: "reach,diff,flags,tree"
+  behavior: default
+  require_changes: false
+
+flags:
+  php:
+    paths:
+      - includes/
+      - src/
+  javascript:
+    paths:
+      - assets/js/
+
+ignore:
+  - "tests/"
+  - "vendor/"
+  - "node_modules/"
+  - "*.md"
+  - "*.txt"
+  - "*.yml"
+  - "*.json"

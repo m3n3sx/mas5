@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phase 3 Task 5 - Notification System Test</title>
+    <link rel="stylesheet" href="assets/css/notification-system.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f5f5;
+            padding: 40px 20px;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            color: #1e1e1e;
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        
+        .test-section {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border-left: 4px solid #0073aa;
+        }
+        
+        .test-section h2 {
+            color: #1e1e1e;
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+        
+        .test-section p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+        
+        button {
+            padding: 12px 24px;
+            font-size: 14px;
+            font-weight: 500;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: #0073aa;
+            color: white;
+        }
+        
+        button:hover {
+            background: #005a87;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 115, 170, 0.3);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        button.success {
+            background: #46b450;
+        }
+        
+        button.success:hover {
+            background: #2d7a39;
+        }
+        
+        button.error {
+            background: #dc3232;
+        }
+        
+        button.error:hover {
+            background: #a02020;
+        }
+        
+        button.warning {
+            background: #ffb900;
+            color: #333;
+        }
+        
+        button.warning:hover {
+            background: #cc9400;
+        }
+        
+        button.info {
+            background: #0073aa;
+        }
+        
+        button.info:hover {
+            background: #005a87;
+        }
+        
+        button.secondary {
+            background: #666;
+        }
+        
+        button.secondary:hover {
+            background: #444;
+        }
+        
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+        }
+        
+        .status h3 {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .status-content {
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            color: #333;
+        }
+        
+        .feature-list {
+            list-style: none;
+            margin-top: 15px;
+        }
+        
+        .feature-list li {
+            padding: 8px 0;
+            padding-left: 30px;
+            position: relative;
+            color: #333;
+        }
+        
+        .feature-list li:before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: #46b450;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        code {
+            background: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            color: #d63384;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔔 Notification System Test</h1>
+        <p class="subtitle">Phase 3 Task 5 - Complete Notification System Implementation</p>
+        
+        <!-- Task 5.1 & 5.2: Basic Notification Types -->
+        <div class="test-section">
+            <h2>Task 5.1 & 5.2: Notification Types</h2>
+            <p>Test all four notification types with proper icons and colors.</p>
+            
+            <div class="button-group">
+                <button class="success" onclick="testSuccess()">Show Success</button>
+                <button class="error" onclick="testError()">Show Error</button>
+                <button class="warning" onclick="testWarning()">Show Warning</button>
+                <button class="info" onclick="testInfo()">Show Info</button>
+            </div>
+            
+            <ul class="feature-list">
+                <li>Success notifications with green checkmark icon</li>
+                <li>Error notifications with red X icon</li>
+                <li>Warning notifications with yellow warning icon</li>
+                <li>Info notifications with blue info icon</li>
+            </ul>
+        </div>
+        
+        <!-- Task 5.3: Action Buttons -->
+        <div class="test-section">
+            <h2>Task 5.3: Action Buttons</h2>
+            <p>Test notifications with action buttons including retry and report actions.</p>
+            
+            <div class="button-group">
+                <button class="error" onclick="testRetryAction()">Error with Retry</button>
+                <button class="error" onclick="testReportAction()">Error with Report</button>
+                <button class="error" onclick="testNetworkError()">Network Error</button>
+                <button class="error" onclick="testUnexpectedError()">Unexpected Error</button>
+                <button onclick="testCustomActions()">Custom Actions</button>
+            </div>
+            
+            <ul class="feature-list">
+                <li>Retry action for network errors</li>
+                <li>Report action for unexpected errors</li>
+                <li>Dismiss action for all notifications</li>
+                <li>Custom action buttons with callbacks</li>
+            </ul>
+        </div>
+        
+        <!-- Task 5.4: Animations -->
+        <div class="test-section">
+            <h2>Task 5.4: Animations</h2>
+            <p>Test slide-in, fade-out animations and auto-dismiss functionality.</p>
+            
+            <div class="button-group">
+                <button onclick="testSlideIn()">Slide-in Animation</button>
+                <button onclick="testFadeOut()">Fade-out Animation</button>
+                <button onclick="testAutoDismiss()">Auto-dismiss (3s)</button>
+                <button onclick="testStacking()">Test Stacking (5 notifications)</button>
+                <button class="secondary" onclick="testHideAll()">Hide All</button>
+            </div>
+            
+            <ul class="feature-list">
+                <li>Smooth slide-in animation from right</li>
+                <li>Smooth fade-out animation on dismiss</li>
+                <li>Auto-dismiss after configurable duration</li>
+                <li>Stacking with max 5 notifications</li>
+            </ul>
+        </div>
+        
+        <!-- Task 5.5: Accessibility -->
+        <div class="test-section">
+            <h2>Task 5.5: Accessibility Features</h2>
+            <p>Test ARIA attributes, keyboard navigation, and screen reader support.</p>
+            
+            <div class="button-group">
+                <button onclick="testAriaAttributes()">Test ARIA Attributes</button>
+                <button onclick="testKeyboardDismiss()">Test Escape Key (show then press ESC)</button>
+                <button onclick="testFocusManagement()">Test Focus Management</button>
+                <button onclick="testScreenReader()">Test Screen Reader Announcement</button>
+            </div>
+            
+            <ul class="feature-list">
+                <li>ARIA <code>role="alert"</code> on notifications</li>
+                <li>ARIA <code>aria-live="polite"</code> on container</li>
+                <li>Keyboard dismissal with Escape key</li>
+                <li>Visible focus indicators on buttons</li>
+                <li>Screen reader announcements</li>
+            </ul>
+        </div>
+        
+        <!-- Advanced Tests -->
+        <div class="test-section">
+            <h2>Advanced Features</h2>
+            <p>Test advanced notification features and edge cases.</p>
+            
+            <div class="button-group">
+                <button onclick="testWithTitle()">Notification with Title</button>
+                <button onclick="testPersistent()">Persistent Notification</button>
+                <button onclick="testLongMessage()">Long Message</button>
+                <button onclick="testRapidFire()">Rapid Fire (10 notifications)</button>
+                <button onclick="testAllFeatures()">All Features Combined</button>
+            </div>
+        </div>
+        
+        <!-- Status Display -->
+        <div class="status">
+            <h3>Event Log</h3>
+            <div class="status-content" id="eventLog">
+                Waiting for events...
+            </div>
+        </div>
+    </div>
+    
+    <!-- Load Dependencies -->
+    <script src="assets/js/core/EventBus.js"></script>
+    <script src="assets/js/components/NotificationSystem.js"></script>
+    
+    <script>
+        // Initialize notification system
+        const eventBus = new EventBus();
+        eventBus.debug = true;
+        
+        const notifications = new NotificationSystem(eventBus);
+        
+        // Event logging
+        const eventLog = document.getElementById('eventLog');
+        let logEntries = [];
+        
+        function logEvent(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            logEntries.unshift(`[${timestamp}] ${message}`);
+            if (logEntries.length > 10) logEntries.pop();
+            eventLog.textContent = logEntries.join('\n');
+        }
+        
+        // Listen to notification events
+        eventBus.on('notification:shown', (event) => {
+            logEvent(`Notification shown: ${event.data.type} - "${event.data.message}"`);
+        });
+        
+        eventBus.on('notification:hidden', (event) => {
+            logEvent(`Notification hidden: ID ${event.data.id}`);
+        });
+        
+        eventBus.on('error:reported', (event) => {
+            logEvent(`Error reported: ${JSON.stringify(event.data.details)}`);
+        });
+        
+        // Task 5.1 & 5.2: Basic notification types
+        function testSuccess() {
+            notifications.success('Settings saved successfully!');
+        }
+        
+        function testError() {
+            notifications.error('Failed to save settings. Please try again.');
+        }
+        
+        function testWarning() {
+            notifications.warning('You have unsaved changes.');
+        }
+        
+        function testInfo() {
+            notifications.info('New features are available in this version.');
+        }
+        
+        // Task 5.3: Action buttons
+        function testRetryAction() {
+            notifications.errorWithRetry(
+                'Failed to connect to server.',
+                () => {
+                    logEvent('Retry button clicked');
+                    notifications.success('Retry successful!');
+                }
+            );
+        }
+        
+        function testReportAction() {
+            notifications.errorWithReport(
+                'An unexpected error occurred.',
+                {
+                    error: 'TypeError: Cannot read property of undefined',
+                    component: 'SettingsForm',
+                    action: 'save'
+                }
+            );
+        }
+        
+        function testNetworkError() {
+            notifications.networkError(() => {
+                logEvent('Network retry clicked');
+                notifications.success('Connection restored!');
+            });
+        }
+        
+        function testUnexpectedError() {
+            const error = new Error('Something went wrong');
+            error.stack = 'Error: Something went wrong\n    at testUnexpectedError (test.html:123:45)';
+            notifications.unexpectedError(error);
+        }
+        
+        function testCustomActions() {
+            notifications.show({
+                type: 'warning',
+                message: 'Do you want to save your changes?',
+                duration: 0,
+                actions: [
+                    {
+                        id: 'save',
+                        label: 'Save',
+                        callback: () => {
+                            logEvent('Save clicked');
+                            notifications.success('Changes saved!');
+                        }
+                    },
+                    {
+                        id: 'discard',
+                        label: 'Discard',
+                        callback: () => {
+                            logEvent('Discard clicked');
+                            notifications.info('Changes discarded');
+                        }
+                    },
+                    {
+                        id: 'cancel',
+                        label: 'Cancel',
+                        callback: () => {
+                            logEvent('Cancel clicked');
+                        }
+                    }
+                ]
+            });
+        }
+        
+        // Task 5.4: Animations
+        function testSlideIn() {
+            notifications.info('Watch the smooth slide-in animation!', 5000);
+        }
+        
+        function testFadeOut() {
+            const id = notifications.info('Click the X to see fade-out animation', 0);
+            logEvent(`Created notification ${id} - click X to dismiss`);
+        }
+        
+        function testAutoDismiss() {
+            notifications.success('This will auto-dismiss in 3 seconds', 3000);
+        }
+        
+        function testStacking() {
+            for (let i = 1; i <= 5; i++) {
+                setTimeout(() => {
+                    notifications.info(`Notification ${i} of 5`, 10000);
+                }, i * 200);
+            }
+        }
+        
+        function testHideAll() {
+            notifications.hideAll();
+            logEvent('All notifications hidden');
+        }
+        
+        // Task 5.5: Accessibility
+        function testAriaAttributes() {
+            const id = notifications.info('Check the DOM inspector for ARIA attributes', 0);
+            logEvent('Notification created with ARIA attributes - inspect the DOM');
+            
+            setTimeout(() => {
+                const container = document.getElementById('mas-notification-container');
+                const notification = container.querySelector(`[data-notification-id="${id}"]`);
+                
+                console.group('ARIA Attributes');
+                console.log('Container aria-live:', container.getAttribute('aria-live'));
+                console.log('Container role:', container.getAttribute('role'));
+                console.log('Notification role:', notification.getAttribute('role'));
+                console.log('Notification aria-live:', notification.getAttribute('aria-live'));
+                console.groupEnd();
+                
+                notifications.success('Check console for ARIA attributes', 3000);
+            }, 100);
+        }
+        
+        function testKeyboardDismiss() {
+            notifications.info('Press the Escape key to dismiss all notifications', 0);
+            notifications.warning('Press ESC to dismiss', 0);
+            logEvent('Press Escape key to dismiss all notifications');
+        }
+        
+        function testFocusManagement() {
+            notifications.show({
+                type: 'info',
+                message: 'Tab through the buttons to see focus indicators',
+                duration: 0,
+                actions: [
+                    { id: 'btn1', label: 'Button 1', callback: () => logEvent('Button 1 clicked') },
+                    { id: 'btn2', label: 'Button 2', callback: () => logEvent('Button 2 clicked') },
+                    { id: 'btn3', label: 'Button 3', callback: () => logEvent('Button 3 clicked') }
+                ]
+            });
+            logEvent('Use Tab key to navigate through action buttons');
+        }
+        
+        function testScreenReader() {
+            notifications.success('This message will be announced to screen readers', 5000);
+            logEvent('Screen reader announcement triggered (check with NVDA/JAWS/VoiceOver)');
+        }
+        
+        // Advanced tests
+        function testWithTitle() {
+            notifications.show({
+                type: 'success',
+                title: 'Operation Complete',
+                message: 'Your settings have been saved successfully.',
+                duration: 5000
+            });
+        }
+        
+        function testPersistent() {
+            notifications.show({
+                type: 'warning',
+                message: 'This notification will not auto-dismiss. Click X to close.',
+                duration: 0
+            });
+        }
+        
+        function testLongMessage() {
+            notifications.show({
+                type: 'info',
+                title: 'Important Information',
+                message: 'This is a very long message that demonstrates how the notification system handles lengthy content. The notification should wrap text properly and maintain good readability even with multiple lines of text.',
+                duration: 10000
+            });
+        }
+        
+        function testRapidFire() {
+            for (let i = 1; i <= 10; i++) {
+                setTimeout(() => {
+                    notifications.info(`Rapid notification ${i}`, 2000);
+                }, i * 100);
+            }
+            logEvent('Firing 10 rapid notifications - max 5 will be shown');
+        }
+        
+        function testAllFeatures() {
+            notifications.show({
+                type: 'warning',
+                title: 'Complete Feature Test',
+                message: 'This notification demonstrates all features: title, message, actions, and persistence.',
+                duration: 0,
+                actions: [
+                    {
+                        id: 'confirm',
+                        label: 'Confirm',
+                        callback: () => {
+                            notifications.success('Confirmed!', 2000);
+                        }
+                    },
+                    {
+                        id: 'cancel',
+                        label: 'Cancel',
+                        callback: () => {
+                            notifications.info('Cancelled', 2000);
+                        }
+                    }
+                ]
+            });
+        }
+        
+        // Initial log
+        logEvent('Notification system initialized');
+        logEvent('Ready for testing');
+    </script>
+</body>
+</html>

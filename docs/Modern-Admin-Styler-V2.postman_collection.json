@@ -1,0 +1,1023 @@
+{
+  "info": {
+    "name": "Modern Admin Styler V2 - REST API (Phase 2)",
+    "description": "Complete REST API collection for Modern Admin Styler V2 WordPress plugin. Includes all Phase 1 and Phase 2 endpoints.\n\n**Phase 2 Features:**\n- System health and diagnostics\n- Security audit logging and rate limiting\n- Batch operations with transactions\n- Webhook management\n- Analytics and monitoring\n\n**Setup Instructions:**\n1. Import this collection into Postman\n2. Set up the environment variables (see Environment section)\n3. Authenticate with WordPress (cookie authentication)\n4. Start making requests!\n\n**Base URL:** {{base_url}}/wp-json/mas-v2/v1\n\n**Authentication:** WordPress cookie authentication with nonce\n\n**Version:** 2.3.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "12345678"
+  },
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "value",
+        "value": "{{nonce}}",
+        "type": "string"
+      },
+      {
+        "key": "key",
+        "value": "X-WP-Nonce",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Settings",
+      "item": [
+        {
+          "name": "Get Settings",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/wp-json/mas-v2/v1/settings",
+              "host": ["{{base_url}}"],
+              "path": ["wp-json", "mas-v2", "v1", "settings"]
+            },
+            "description": "Retrieve current plugin settings.\n\n**Response includes:**\n- All plugin settings\n- Current theme\n- Color scheme\n- Animation settings\n- Custom CSS\n\n**Cache Headers:**\n- ETag for conditional requests\n- Cache-Control: private, max-age=300"
+          },
+          "response": [
+            {
+              "name": "Success Response",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{base_url}}/wp-json/mas-v2/v1/settings",
+                  "host": ["{{base_url}}"],
+                  "path": ["wp-json", "mas-v2", "v1", "settings"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"enable_plugin\": true,\n    \"theme\": \"modern\",\n    \"color_scheme\": \"light\",\n    \"admin_bar_background\": \"#23282d\",\n    \"admin_bar_text_color\": \"#ffffff\",\n    \"menu_background\": \"#23282d\",\n    \"menu_text_color\": \"#ffffff\",\n    \"menu_hover_background\": \"#32373c\",\n    \"menu_hover_text_color\": \"#00a0d2\",\n    \"menu_width\": 160,\n    \"enable_animations\": true,\n    \"animation_speed\": 300,\n    \"glassmorphism_effects\": false,\n    \"custom_css\": \"\"\n  },\n  \"message\": \"Settings retrieved successfully\",\n  \"timestamp\": 1704902400\n}"
+            }
+          ]
+        },
+        {
+          "name": "Save Settings (Full)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"menu_background\": \"#1e1e2e\",\n  \"menu_text_color\": \"#ffffff\",\n  \"menu_hover_background\": \"#2d2d44\",\n  \"menu_hover_text_color\": \"#00a0d2\",\n  \"enable_animations\": true,\n  \"animation_speed\": 300\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/wp-json/mas-v2/v1/settings",
+              "host": ["{{base_url}}"],
+              "path": ["wp-json", "mas-v2", "v1", "settings"]
+            },
+            "description": "Save complete settings (full replacement).\n\n**Side Effects:**\n- Regenerates CSS\n- Clears settings cache\n- Triggers action hooks\n\n**Validation:**\n- Colors must be valid hex (#RRGGBB)\n- Numeric values must be within range\n- Boolean values must be true/false"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Settings (Partial)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"menu_background\": \"#2d2d44\",\n  \"enable_animations\": false\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/wp-json/mas-v2/v1/settings",
+              "host": ["{{base_url}}"],
+              "path": ["wp-json", "mas-v2", "v1", "settings"]
+            },
+            "description": "Update settings (partial update - merges with existing).\n\nOnly the provided fields will be updated. Other settings remain unchanged."
+          },
+          "response": []
+        },
+        {
+          "name": "Reset Settings",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/wp-json/mas-v2/v1/settings",
+              "host": ["{{base_url}}"],
+              "path": ["wp-json", "mas-v2", "v1", "settings"]
+            },
+            "description": "Reset settings to defaults.\n\n**Side Effects:**\n- Creates automatic backup before reset\n- Resets all settings to default values\n- Regenerates CSS\n- Clears settings cache"
+          },
+          "response": []
+        }
+      ],
+      "description": "Endpoints for managing plugin settings"
+    },
+    {
+      "name": "Themes",
+      "item": [
+        {
+          "name": "List Themes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/wp-json/mas-v2/v1/themes?limit=20&page=1",
+              "host": ["{{base_url}}"],
+              "path": ["wp-json", "mas-v2", "v1", "themes"],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "predefined",
+                  "description": "Filter by type: predefined or custom",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Number of themes per page"
+                },
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number"
+                }
+              ]
+            },
+            "description": "List all available themes (predefined and custom).\n\n**Pagination:**\n- Use `limit` and `page` parameters\n- Check `X-WP-Total` and `X-WP-TotalPages` headers\n- Use `Link` header for navigation"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Theme",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/wp-json/mas-v2/v1/themes/dark-blue",
+              "host": ["{{base_url}}"],
+              "path": ["wp-json", "mas-v2", "v1", "themes", "dark-blue"]
+            },
+            "description": "Get a specific theme by ID."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Theme",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"id\": \"my-custom-theme\",\n  \"name\": \"My Custom Theme\",\n  \"description\": \"A custom theme for my site\",\n  \"settings\": {\n    \"menu_background\": \"#ff6b6b\",\n    \"menu_text_color\": \"#ffffff\",\n    \"menu_hover_background\": \"#ff8787\",\n    \"admin_bar_background\": \"#ff6b6b\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/wp-json/mas-v2/v1/themes",
+              "host": ["{{base_url}}"],
+              "path": ["wp-json", "mas-v2", "v1", "themes"]
+            },
+            "description": "Create a custom theme.\n\n**Requirements:**\n- ID must be unique (lowercase letters, numbers, hyphens)\n- Name is required\n- Settings object is required"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Theme",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Theme Name\",\n  \"settings\": {\n    \"menu_background\": \"#4ecdc4\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/wp-json/mas-v2/v1/themes/my-custom-theme",
+              "host": ["{{base_url}}"],
+              "path": ["wp-json", "mas-v2", "v1", "themes", "my-custom-theme"]
+            },
+            "description": "Update a custom theme.\n\n**Note:** Predefined themes cannot be updated."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Theme",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/wp-json/mas-v2/v1/themes/my-custom-theme",
+              "host": ["{{base_url}}"],
+              "path": ["wp-json", "mas-v2", "v1", "themes", "my-custom-theme"]
+            },
+            "description": "Delete a custom theme.\n\n**Note:** Predefined themes cannot be deleted."
+          },
+          "response": []
+        },
+        {
+          "name": "Apply Theme",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/wp-json/mas-v2/v1/themes/dark-blue/apply",
+              "host": ["{{base_url}}"],
+              "path": ["wp-json", "mas-v2", "v1", "themes", "dark-blue", "apply"]
+            },
+            "description": "Apply a theme to current settings.\n\n**Side Effects:**\n- Updates current settings with theme settings\n- Regenerates CSS\n- Clears settings cache"
+          },
+          "response": []
+        }
+      ],
+      "description": "Endpoints for managing themes and color palettes"
+    },
+    {
+      "name": "Backups",
+      "item": [
+        {
+          "name": "List Backups",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/wp-json/mas-v2/v1/backups?limit=10&page=1",
+              "host": ["{{base_url}}"],
+              "path": ["wp-json", "mas-v2", "v1", "backups"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Number of backups per page"
+                },
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number"
+                }
+              ]
+            },
+            "description": "List all backups with pagination.\n\n**Pagination:**\n- Default limit: 10\n- Check pagination headers for navigation"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Backup",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/wp-json/mas-v2/v1/backups/backup_1704902400",
+              "host": ["{{base_url}}"],
+              "path": ["wp-json", "mas-v2", "v1", "backups", "backup_1704902400"]
+            },
+            "description": "Get a specific backup by ID."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Backup",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"note\": \"Backup before testing new theme\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/wp-json/mas-v2/v1/backups",
+              "host": ["{{base_url}}"],
+              "path": ["wp-json", "mas-v2", "v1", "backups"]
+            },
+            "description": "Create a new manual backup.\n\n**Optional:**\n- Add a note to describe the backup"
+          },
+          "response": []
+        },
+        {
+          "name": "Restore Backup",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/wp-json/mas-v2/v1/backups/backup_1704902400/restore",
+              "host": ["{{base_url}}"],
+              "path": ["wp-json", "mas-v2", "v1", "backups", "backup_1704902400", "restore"]
+            },
+            "description": "Restore a backup.\n\n**Side Effects:**\n- Creates automatic backup of current settings\n- Restores settings from backup\n- Regenerates CSS\n- Clears settings cache"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Backup",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/wp-json/mas-v2/v1/backups/backup_1704902400",
+              "host": ["{{base_url}}"],
+              "path": ["wp-json", "mas-v2", "v1", "backups", "backup_1704902400"]
+            },
+            "description": "Delete a backup."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Statistics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/wp-json/mas-v2/v1/backups/statistics",
+              "host": ["{{base_url}}"],
+              "path": ["wp-json", "mas-v2", "v1", "backups", "statistics"]
+            },
+            "description": "Get backup statistics including total count, size, and date range."
+          },
+          "response": []
+        }
+      ],
+      "description": "Endpoints for managing backups"
+    },
+    {
+      "name": "Import/Export",
+      "item": [
+        {
+          "name": "Export Settings",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/wp-json/mas-v2/v1/export?include_metadata=true",
+              "host": ["{{base_url}}"],
+              "path": ["wp-json", "mas-v2", "v1", "export"],
+              "query": [
+                {
+                  "key": "include_metadata",
+                  "value": "true",
+                  "description": "Include version and metadata"
+                }
+              ]
+            },
+            "description": "Export current settings as JSON.\n\n**Response Headers:**\n- Content-Disposition: attachment (triggers download)\n- Content-Type: application/json"
+          },
+          "response": []
+        },
+        {
+          "name": "Import Settings",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data\": {\n    \"version\": \"2.2.0\",\n    \"settings\": {\n      \"menu_background\": \"#1e1e2e\",\n      \"menu_text_color\": \"#ffffff\",\n      \"enable_animations\": true\n    }\n  },\n  \"create_backup\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/wp-json/mas-v2/v1/import",
+              "host": ["{{base_url}}"],
+              "path": ["wp-json", "mas-v2", "v1", "import"]
+            },
+            "description": "Import settings from JSON.\n\n**Features:**\n- Validates imported data\n- Creates backup before import (optional)\n- Migrates legacy format if needed\n- Regenerates CSS"
+          },
+          "response": []
+        }
+      ],
+      "description": "Endpoints for importing and exporting settings"
+    },
+    {
+      "name": "Preview",
+      "item": [
+        {
+          "name": "Generate Preview",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"settings\": {\n    \"menu_background\": \"#ff6b6b\",\n    \"menu_text_color\": \"#ffffff\",\n    \"enable_animations\": true,\n    \"animation_speed\": 300\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/wp-json/mas-v2/v1/preview",
+              "host": ["{{base_url}}"],
+              "path": ["wp-json", "mas-v2", "v1", "preview"]
+            },
+            "description": "Generate preview CSS without saving settings.\n\n**Features:**\n- Server-side debouncing (500ms)\n- No-cache headers\n- Fallback CSS on error\n\n**Rate Limiting:**\n- Minimum 500ms between requests\n- Returns 429 if too frequent"
+          },
+          "response": []
+        }
+      ],
+      "description": "Endpoints for live preview functionality"
+    },
+    {
+      "name": "Diagnostics",
+      "item": [
+        {
+          "name": "Get Diagnostics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/wp-json/mas-v2/v1/diagnostics",
+              "host": ["{{base_url}}"],
+              "path": ["wp-json", "mas-v2", "v1", "diagnostics"],
+              "query": [
+                {
+                  "key": "include",
+                  "value": "system,performance",
+                  "description": "Comma-separated list of sections",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Get comprehensive system diagnostics.\n\n**Available Sections:**\n- system\n- plugin\n- settings\n- filesystem\n- conflicts\n- performance\n- recommendations"
+          },
+          "response": []
+        },
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/wp-json/mas-v2/v1/diagnostics/health",
+              "host": ["{{base_url}}"],
+              "path": ["wp-json", "mas-v2", "v1", "diagnostics", "health"]
+            },
+            "description": "Quick health check.\n\n**Status Values:**\n- healthy: All checks passed\n- warning: Some checks have warnings\n- unhealthy: One or more checks failed"
+          },
+          "response": []
+        },
+        {
+          "name": "Performance Metrics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/wp-json/mas-v2/v1/diagnostics/performance",
+              "host": ["{{base_url}}"],
+              "path": ["wp-json", "mas-v2", "v1", "diagnostics", "performance"]
+            },
+            "description": "Get performance metrics only.\n\n**Includes:**\n- Memory usage\n- Execution time\n- Database queries\n- Cache statistics"
+          },
+          "response": []
+        }
+      ],
+      "description": "Endpoints for system diagnostics and health checks"
+    },
+    {
+      "name": "System (Phase 2)",
+      "item": [
+        {
+          "name": "Get System Health",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/wp-json/mas-v2/v1/system/health",
+              "host": ["{{base_url}}"],
+              "path": ["wp-json", "mas-v2", "v1", "system", "health"]
+            },
+            "description": "Get comprehensive system health status.\n\n**Status Values:**\n- healthy: All checks passed\n- warning: Some checks have warnings\n- critical: One or more critical checks failed"
+          },
+          "response": []
+        },
+        {
+          "name": "Get System Info",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/wp-json/mas-v2/v1/system/info",
+              "host": ["{{base_url}}"],
+              "path": ["wp-json", "mas-v2", "v1", "system", "info"]
+            },
+            "description": "Get detailed system information including PHP, WordPress, plugin, and server details."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Performance Metrics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/wp-json/mas-v2/v1/system/performance",
+              "host": ["{{base_url}}"],
+              "path": ["wp-json", "mas-v2", "v1", "system", "performance"]
+            },
+            "description": "Get performance metrics including memory, cache, database, and API statistics."
+          },
+          "response": []
+        },
+        {
+          "name": "Detect Conflicts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/wp-json/mas-v2/v1/system/conflicts",
+              "host": ["{{base_url}}"],
+              "path": ["wp-json", "mas-v2", "v1", "system", "conflicts"]
+            },
+            "description": "Detect plugin and theme conflicts."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Cache Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/wp-json/mas-v2/v1/system/cache",
+              "host": ["{{base_url}}"],
+              "path": ["wp-json", "mas-v2", "v1", "system", "cache"]
+            },
+            "description": "Get cache status and statistics."
+          },
+          "response": []
+        },
+        {
+          "name": "Clear Cache",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/wp-json/mas-v2/v1/system/cache",
+              "host": ["{{base_url}}"],
+              "path": ["wp-json", "mas-v2", "v1", "system", "cache"]
+            },
+            "description": "Clear all plugin caches."
+          },
+          "response": []
+        }
+      ],
+      "description": "⭐ Phase 2: System health monitoring and diagnostics"
+    },
+    {
+      "name": "Security (Phase 2)",
+      "item": [
+        {
+          "name": "Get Audit Log",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/wp-json/mas-v2/v1/security/audit-log?limit=50&page=1",
+              "host": ["{{base_url}}"],
+              "path": ["wp-json", "mas-v2", "v1", "security", "audit-log"],
+              "query": [
+                {
+                  "key": "action",
+                  "value": "settings.updated",
+                  "description": "Filter by action type",
+                  "disabled": true
+                },
+                {
+                  "key": "user_id",
+                  "value": "1",
+                  "description": "Filter by user ID",
+                  "disabled": true
+                },
+                {
+                  "key": "start_date",
+                  "value": "2025-01-01",
+                  "description": "Start date (YYYY-MM-DD)",
+                  "disabled": true
+                },
+                {
+                  "key": "end_date",
+                  "value": "2025-01-10",
+                  "description": "End date (YYYY-MM-DD)",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "50",
+                  "description": "Results per page"
+                },
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number"
+                }
+              ]
+            },
+            "description": "Get security audit log with filtering.\n\n**Filterable by:**\n- Action type\n- User ID\n- Date range"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Rate Limit Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/wp-json/mas-v2/v1/security/rate-limit/status",
+              "host": ["{{base_url}}"],
+              "path": ["wp-json", "mas-v2", "v1", "security", "rate-limit", "status"]
+            },
+            "description": "Get current rate limit status for the user.\n\n**Limits:**\n- Default: 60 requests/minute\n- Settings save: 10 requests/minute\n- Backup create: 5 requests/5 minutes"
+          },
+          "response": []
+        }
+      ],
+      "description": "⭐ Phase 2: Security audit logging and rate limiting"
+    },
+    {
+      "name": "Batch Operations (Phase 2)",
+      "item": [
+        {
+          "name": "Batch Settings Update",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"operations\": [\n    {\n      \"action\": \"update\",\n      \"settings\": {\n        \"menu_background\": \"#1e1e2e\"\n      }\n    },\n    {\n      \"action\": \"update\",\n      \"settings\": {\n        \"menu_text_color\": \"#ffffff\"\n      }\n    }\n  ],\n  \"atomic\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/wp-json/mas-v2/v1/settings/batch",
+              "host": ["{{base_url}}"],
+              "path": ["wp-json", "mas-v2", "v1", "settings", "batch"]
+            },
+            "description": "Perform batch settings updates with transaction support.\n\n**Features:**\n- Atomic operations (all or nothing)\n- Automatic rollback on failure\n- Multiple operations in one request"
+          },
+          "response": []
+        },
+        {
+          "name": "Batch Backup Operations",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"operations\": [\n    {\n      \"action\": \"delete\",\n      \"backup_id\": \"backup_1704800000\"\n    },\n    {\n      \"action\": \"delete\",\n      \"backup_id\": \"backup_1704810000\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/wp-json/mas-v2/v1/backups/batch",
+              "host": ["{{base_url}}"],
+              "path": ["wp-json", "mas-v2", "v1", "backups", "batch"]
+            },
+            "description": "Perform batch backup operations.\n\n**Supported Actions:**\n- delete: Delete a backup\n- restore: Restore a backup"
+          },
+          "response": []
+        },
+        {
+          "name": "Batch Apply Theme",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"theme_id\": \"dark-blue\",\n  \"create_backup\": true,\n  \"validate\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/wp-json/mas-v2/v1/themes/batch-apply",
+              "host": ["{{base_url}}"],
+              "path": ["wp-json", "mas-v2", "v1", "themes", "batch-apply"]
+            },
+            "description": "Apply theme with validation in a transaction.\n\n**Features:**\n- Automatic backup creation\n- Validation before applying\n- Rollback on failure"
+          },
+          "response": []
+        }
+      ],
+      "description": "⭐ Phase 2: Batch operations with transaction support"
+    },
+    {
+      "name": "Webhooks (Phase 2)",
+      "item": [
+        {
+          "name": "List Webhooks",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/wp-json/mas-v2/v1/webhooks?limit=20&page=1",
+              "host": ["{{base_url}}"],
+              "path": ["wp-json", "mas-v2", "v1", "webhooks"],
+              "query": [
+                {
+                  "key": "active",
+                  "value": "true",
+                  "description": "Filter by active status",
+                  "disabled": true
+                },
+                {
+                  "key": "event",
+                  "value": "settings.updated",
+                  "description": "Filter by event type",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Results per page"
+                },
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number"
+                }
+              ]
+            },
+            "description": "List all registered webhooks."
+          },
+          "response": []
+        },
+        {
+          "name": "Register Webhook",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"url\": \"https://example.com/webhook\",\n  \"events\": [\"settings.updated\", \"theme.applied\", \"backup.created\"],\n  \"secret\": \"your-webhook-secret\",\n  \"active\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/wp-json/mas-v2/v1/webhooks",
+              "host": ["{{base_url}}"],
+              "path": ["wp-json", "mas-v2", "v1", "webhooks"]
+            },
+            "description": "Register a new webhook.\n\n**Available Events:**\n- settings.updated\n- settings.reset\n- theme.applied\n- backup.created\n- backup.restored\n- backup.deleted\n\n**Security:**\n- URL must be HTTPS\n- Secret is used for HMAC signature"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Webhook",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/wp-json/mas-v2/v1/webhooks/1",
+              "host": ["{{base_url}}"],
+              "path": ["wp-json", "mas-v2", "v1", "webhooks", "1"]
+            },
+            "description": "Get a specific webhook."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Webhook",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"events\": [\"settings.updated\", \"backup.created\"],\n  \"active\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/wp-json/mas-v2/v1/webhooks/1",
+              "host": ["{{base_url}}"],
+              "path": ["wp-json", "mas-v2", "v1", "webhooks", "1"]
+            },
+            "description": "Update a webhook."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Webhook",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/wp-json/mas-v2/v1/webhooks/1",
+              "host": ["{{base_url}}"],
+              "path": ["wp-json", "mas-v2", "v1", "webhooks", "1"]
+            },
+            "description": "Delete a webhook."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Webhook Deliveries",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/wp-json/mas-v2/v1/webhooks/1/deliveries?limit=50&page=1",
+              "host": ["{{base_url}}"],
+              "path": ["wp-json", "mas-v2", "v1", "webhooks", "1", "deliveries"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "failed",
+                  "description": "Filter by status: success, failed, pending",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "50",
+                  "description": "Results per page"
+                },
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Page number"
+                }
+              ]
+            },
+            "description": "Get webhook delivery history."
+          },
+          "response": []
+        }
+      ],
+      "description": "⭐ Phase 2: Webhook management and event subscriptions"
+    },
+    {
+      "name": "Analytics (Phase 2)",
+      "item": [
+        {
+          "name": "Get Usage Statistics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/wp-json/mas-v2/v1/analytics/usage?start_date=2025-01-01&end_date=2025-01-10&group_by=endpoint",
+              "host": ["{{base_url}}"],
+              "path": ["wp-json", "mas-v2", "v1", "analytics", "usage"],
+              "query": [
+                {
+                  "key": "start_date",
+                  "value": "2025-01-01",
+                  "description": "Start date (YYYY-MM-DD)"
+                },
+                {
+                  "key": "end_date",
+                  "value": "2025-01-10",
+                  "description": "End date (YYYY-MM-DD)"
+                },
+                {
+                  "key": "group_by",
+                  "value": "endpoint",
+                  "description": "Group by: endpoint, method, user, date"
+                },
+                {
+                  "key": "endpoint",
+                  "value": "/settings",
+                  "description": "Filter by specific endpoint",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Get API usage statistics.\n\n**Group By Options:**\n- endpoint\n- method\n- user\n- date"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Performance Metrics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/wp-json/mas-v2/v1/analytics/performance?start_date=2025-01-01&end_date=2025-01-10",
+              "host": ["{{base_url}}"],
+              "path": ["wp-json", "mas-v2", "v1", "analytics", "performance"],
+              "query": [
+                {
+                  "key": "start_date",
+                  "value": "2025-01-01",
+                  "description": "Start date (YYYY-MM-DD)"
+                },
+                {
+                  "key": "end_date",
+                  "value": "2025-01-10",
+                  "description": "End date (YYYY-MM-DD)"
+                }
+              ]
+            },
+            "description": "Get API performance metrics.\n\n**Includes:**\n- Response time percentiles (p50, p75, p90, p95, p99)\n- Average, min, max response times\n- Performance by endpoint\n- Slow request tracking"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Error Statistics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/wp-json/mas-v2/v1/analytics/errors?start_date=2025-01-01&end_date=2025-01-10",
+              "host": ["{{base_url}}"],
+              "path": ["wp-json", "mas-v2", "v1", "analytics", "errors"],
+              "query": [
+                {
+                  "key": "start_date",
+                  "value": "2025-01-01",
+                  "description": "Start date (YYYY-MM-DD)"
+                },
+                {
+                  "key": "end_date",
+                  "value": "2025-01-10",
+                  "description": "End date (YYYY-MM-DD)"
+                }
+              ]
+            },
+            "description": "Get error statistics and analysis.\n\n**Includes:**\n- Total errors and error rate\n- Errors by status code\n- Errors by error code\n- Errors by endpoint\n- Recent error details"
+          },
+          "response": []
+        },
+        {
+          "name": "Export Analytics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/wp-json/mas-v2/v1/analytics/export?type=usage&start_date=2025-01-01&end_date=2025-01-10",
+              "host": ["{{base_url}}"],
+              "path": ["wp-json", "mas-v2", "v1", "analytics", "export"],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "usage",
+                  "description": "Export type: usage, performance, errors"
+                },
+                {
+                  "key": "start_date",
+                  "value": "2025-01-01",
+                  "description": "Start date (YYYY-MM-DD)"
+                },
+                {
+                  "key": "end_date",
+                  "value": "2025-01-10",
+                  "description": "End date (YYYY-MM-DD)"
+                }
+              ]
+            },
+            "description": "Export analytics data as CSV.\n\n**Export Types:**\n- usage: API usage statistics\n- performance: Performance metrics\n- errors: Error statistics"
+          },
+          "response": []
+        }
+      ],
+      "description": "⭐ Phase 2: Analytics and monitoring"
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://example.com",
+      "type": "string"
+    },
+    {
+      "key": "nonce",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}

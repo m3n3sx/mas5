@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phase 3 Task 4 - Live Preview Component Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f0f0f1;
+        }
+
+        .test-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #1d2327;
+            border-bottom: 2px solid #2271b1;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: #2271b1;
+            margin-top: 30px;
+        }
+
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f6f7f7;
+            border-left: 4px solid #2271b1;
+        }
+
+        .success {
+            color: #00a32a;
+            font-weight: bold;
+        }
+
+        .error {
+            color: #d63638;
+            font-weight: bold;
+        }
+
+        .info {
+            color: #2271b1;
+            font-style: italic;
+        }
+
+        button {
+            background: #2271b1;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+
+        button:hover {
+            background: #135e96;
+        }
+
+        button:disabled {
+            background: #dcdcde;
+            cursor: not-allowed;
+        }
+
+        button.active {
+            background: #00a32a;
+        }
+
+        .preview-controls {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .preview-status {
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            font-weight: 500;
+        }
+
+        .preview-status.disabled {
+            background: #f0f0f1;
+            color: #646970;
+        }
+
+        .preview-status.enabled {
+            background: #e7f5fe;
+            color: #2271b1;
+        }
+
+        .preview-status.active {
+            background: #d5f5e3;
+            color: #00a32a;
+        }
+
+        .preview-status.loading {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .preview-status.error {
+            background: #f8d7da;
+            color: #d63638;
+        }
+
+        .form-group {
+            margin: 15px 0;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #1d2327;
+        }
+
+        input[type="color"],
+        input[type="text"],
+        select {
+            padding: 8px;
+            border: 1px solid #8c8f94;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        input[type="color"] {
+            width: 60px;
+            height: 40px;
+            cursor: pointer;
+        }
+
+        input[type="checkbox"] {
+            margin-right: 8px;
+        }
+
+        .test-results {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f6f7f7;
+            border-radius: 4px;
+        }
+
+        .test-result {
+            padding: 8px;
+            margin: 5px 0;
+            border-radius: 4px;
+        }
+
+        .test-result.pass {
+            background: #d5f5e3;
+            color: #00a32a;
+        }
+
+        .test-result.fail {
+            background: #f8d7da;
+            color: #d63638;
+        }
+
+        pre {
+            background: #1d2327;
+            color: #f0f0f1;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+
+        .demo-menu {
+            background: #1e1e2e;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .demo-menu-item {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .demo-menu-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        #mas-live-preview {
+            min-height: 100px;
+        }
+
+        #mas-live-preview.preview-enabled {
+            border: 2px solid #2271b1;
+        }
+
+        #mas-live-preview.preview-active {
+            border-color: #00a32a;
+        }
+
+        #mas-live-preview.preview-loading {
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🎨 Phase 3 Task 4 - Live Preview Component Test</h1>
+        <p class="info">Testing LivePreviewComponent implementation with real-time preview functionality</p>
+    </div>
+
+    <div class="test-container">
+        <h2>Live Preview Component</h2>
+        
+        <div id="mas-live-preview">
+            <div class="preview-controls">
+                <button class="mas-preview-toggle">Enable Preview</button>
+                <button class="mas-preview-reset" disabled>Reset Preview</button>
+            </div>
+            
+            <div class="mas-preview-status disabled">Preview disabled</div>
+
+            <div class="form-group">
+                <label for="menu_background">Menu Background Color:</label>
+                <input type="color" id="menu_background" name="menu_background" value="#1e1e2e">
+            </div>
+
+            <div class="form-group">
+                <label for="menu_text_color">Menu Text Color:</label>
+                <input type="color" id="menu_text_color" name="menu_text_color" value="#ffffff">
+            </div>
+
+            <div class="form-group">
+                <label for="menu_hover_background">Menu Hover Background:</label>
+                <input type="color" id="menu_hover_background" name="menu_hover_background" value="#2d2d44">
+            </div>
+
+            <div class="form-group">
+                <label>
+                    <input type="checkbox" id="glassmorphism_enabled" name="glassmorphism_enabled" checked>
+                    Enable Glassmorphism Effect
+                </label>
+            </div>
+        </div>
+
+        <div class="demo-menu">
+            <h3>Demo Menu (Preview Target)</h3>
+            <div class="demo-menu-item">Dashboard</div>
+            <div class="demo-menu-item">Posts</div>
+            <div class="demo-menu-item">Media</div>
+            <div class="demo-menu-item">Pages</div>
+            <div class="demo-menu-item">Settings</div>
+        </div>
+    </div>
+
+    <div class="test-container">
+        <h2>Test Results</h2>
+        <div id="test-results" class="test-results">
+            <p>Running tests...</p>
+        </div>
+    </div>
+
+    <div class="test-container">
+        <h2>Event Log</h2>
+        <div id="event-log" style="max-height: 300px; overflow-y: auto; background: #f6f7f7; padding: 10px; border-radius: 4px;">
+            <p class="info">Events will appear here...</p>
+        </div>
+    </div>
+
+    <!-- Load dependencies -->
+    <script src="assets/js/core/EventBus.js"></script>
+    <script src="assets/js/core/StateManager.js"></script>
+    <script src="assets/js/mas-rest-client.js"></script>
+    <script src="assets/js/core/APIClient.js"></script>
+    <script src="assets/js/components/Component.js"></script>
+    <script src="assets/js/components/LivePreviewComponent.js"></script>
+
+    <script>
+        // Mock WordPress API settings
+        window.wpApiSettings = {
+            root: '/wp-json/',
+            nonce: 'test-nonce-12345'
+        };
+
+        // Event log helper
+        function logEvent(message, type = 'info') {
+            const log = document.getElementById('event-log');
+            const entry = document.createElement('div');
+            entry.style.padding = '5px';
+            entry.style.borderBottom = '1px solid #ddd';
+            entry.style.fontSize = '12px';
+            
+            const timestamp = new Date().toLocaleTimeString();
+            const color = type === 'error' ? '#d63638' : type === 'success' ? '#00a32a' : '#2271b1';
+            
+            entry.innerHTML = `<span style="color: #646970;">[${timestamp}]</span> <span style="color: ${color};">${message}</span>`;
+            log.appendChild(entry);
+            log.scrollTop = log.scrollHeight;
+        }
+
+        // Test results helper
+        function addTestResult(name, passed, message = '') {
+            const results = document.getElementById('test-results');
+            const result = document.createElement('div');
+            result.className = `test-result ${passed ? 'pass' : 'fail'}`;
+            result.textContent = `${passed ? '✓' : '✗'} ${name}${message ? ': ' + message : ''}`;
+            results.appendChild(result);
+        }
+
+        // Initialize core components
+        const eventBus = new EventBus();
+        const stateManager = new StateManager(eventBus);
+        
+        // Mock API client with preview endpoint
+        const mockApiClient = new APIClient({
+            debug: true
+        });
+
+        // Override generatePreview to return mock CSS
+        mockApiClient.generatePreview = async function(settings) {
+            logEvent('API: generatePreview called', 'info');
+            
+            // Simulate API delay
+            await new Promise(resolve => setTimeout(resolve, 500));
+
+            // Generate mock CSS based on settings
+            const css = `
+                .demo-menu {
+                    background: ${settings.menu_background || '#1e1e2e'} !important;
+                    color: ${settings.menu_text_color || '#ffffff'} !important;
+                }
+                .demo-menu-item:hover {
+                    background: ${settings.menu_hover_background || '#2d2d44'} !important;
+                }
+                ${settings.glassmorphism_enabled ? `
+                .demo-menu {
+                    backdrop-filter: blur(10px);
+                    background: ${settings.menu_background}cc !important;
+                }
+                ` : ''}
+            `;
+
+            return {
+                success: true,
+                data: {
+                    css: css.trim()
+                }
+            };
+        };
+
+        // Initialize LivePreviewComponent
+        const previewElement = document.getElementById('mas-live-preview');
+        const livePreview = new LivePreviewComponent(
+            previewElement,
+            mockApiClient,
+            stateManager,
+            eventBus
+        );
+
+        // Subscribe to events for logging
+        eventBus.on('preview:enabled', () => {
+            logEvent('Preview enabled', 'success');
+        });
+
+        eventBus.on('preview:disabled', () => {
+            logEvent('Preview disabled', 'info');
+        });
+
+        eventBus.on('preview:updated', (event) => {
+            logEvent('Preview updated successfully', 'success');
+        });
+
+        eventBus.on('preview:error', (event) => {
+            logEvent(`Preview error: ${event.data.error}`, 'error');
+        });
+
+        eventBus.on('preview:reset', () => {
+            logEvent('Preview reset', 'info');
+        });
+
+        // Simulate field changes
+        const colorInputs = document.querySelectorAll('input[type="color"]');
+        const checkboxInputs = document.querySelectorAll('input[type="checkbox"]');
+
+        function collectFormData() {
+            return {
+                menu_background: document.getElementById('menu_background').value,
+                menu_text_color: document.getElementById('menu_text_color').value,
+                menu_hover_background: document.getElementById('menu_hover_background').value,
+                glassmorphism_enabled: document.getElementById('glassmorphism_enabled').checked
+            };
+        }
+
+        colorInputs.forEach(input => {
+            input.addEventListener('input', () => {
+                const settings = collectFormData();
+                eventBus.emit('field:changed', {
+                    field: input.name,
+                    value: input.value,
+                    settings: settings
+                });
+                logEvent(`Field changed: ${input.name} = ${input.value}`, 'info');
+            });
+        });
+
+        checkboxInputs.forEach(input => {
+            input.addEventListener('change', () => {
+                const settings = collectFormData();
+                eventBus.emit('field:changed', {
+                    field: input.name,
+                    value: input.checked,
+                    settings: settings
+                });
+                logEvent(`Field changed: ${input.name} = ${input.checked}`, 'info');
+            });
+        });
+
+        // Run tests
+        async function runTests() {
+            const results = document.getElementById('test-results');
+            results.innerHTML = '<h3>Running Tests...</h3>';
+
+            logEvent('Starting tests...', 'info');
+
+            try {
+                // Test 1: Component initialization
+                addTestResult(
+                    'Component Initialization',
+                    livePreview.isInitialized === true,
+                    'Component should be initialized'
+                );
+
+                // Test 2: Initial state
+                addTestResult(
+                    'Initial State',
+                    livePreview.localState.enabled === false,
+                    'Preview should be disabled initially'
+                );
+
+                // Test 3: Enable preview
+                livePreview.enablePreview();
+                await new Promise(resolve => setTimeout(resolve, 100));
+                addTestResult(
+                    'Enable Preview',
+                    livePreview.localState.enabled === true,
+                    'Preview should be enabled'
+                );
+
+                // Test 4: Original CSS stored
+                addTestResult(
+                    'Store Original CSS',
+                    livePreview.localState.originalCSS !== null,
+                    'Original CSS should be stored'
+                );
+
+                // Test 5: Update preview
+                const testSettings = collectFormData();
+                await livePreview.updatePreview(testSettings);
+                await new Promise(resolve => setTimeout(resolve, 600));
+                addTestResult(
+                    'Update Preview',
+                    livePreview.localState.active === true,
+                    'Preview should be active after update'
+                );
+
+                // Test 6: CSS injection
+                const previewStyle = document.getElementById('mas-live-preview-styles');
+                addTestResult(
+                    'CSS Injection',
+                    previewStyle !== null && previewStyle.textContent.length > 0,
+                    'Preview CSS should be injected'
+                );
+
+                // Test 7: Debounced updates
+                logEvent('Testing debounced updates...', 'info');
+                const updateCount = { count: 0 };
+                const originalUpdate = livePreview.updatePreview.bind(livePreview);
+                livePreview.updatePreview = async function(settings) {
+                    updateCount.count++;
+                    return originalUpdate(settings);
+                };
+
+                // Trigger multiple rapid changes
+                for (let i = 0; i < 5; i++) {
+                    eventBus.emit('field:changed', {
+                        field: 'menu_background',
+                        value: `#${Math.floor(Math.random()*16777215).toString(16)}`,
+                        settings: testSettings
+                    });
+                }
+
+                await new Promise(resolve => setTimeout(resolve, 500));
+                addTestResult(
+                    'Debounced Updates',
+                    updateCount.count <= 2,
+                    `Should debounce rapid changes (${updateCount.count} updates)`
+                );
+
+                // Test 8: Reset preview
+                livePreview.handleResetClick({ preventDefault: () => {} });
+                await new Promise(resolve => setTimeout(resolve, 100));
+                addTestResult(
+                    'Reset Preview',
+                    livePreview.localState.active === false,
+                    'Preview should be inactive after reset'
+                );
+
+                // Test 9: Disable preview
+                livePreview.disablePreview();
+                await new Promise(resolve => setTimeout(resolve, 100));
+                addTestResult(
+                    'Disable Preview',
+                    livePreview.localState.enabled === false,
+                    'Preview should be disabled'
+                );
+
+                // Test 10: CSS cleanup
+                const previewStyleAfterDisable = document.getElementById('mas-live-preview-styles');
+                addTestResult(
+                    'CSS Cleanup',
+                    previewStyleAfterDisable === null,
+                    'Preview CSS should be removed after disable'
+                );
+
+                // Test 11: Event subscriptions
+                const eventCount = livePreview.unsubscribers.length;
+                addTestResult(
+                    'Event Subscriptions',
+                    eventCount > 0,
+                    `Component subscribed to ${eventCount} events`
+                );
+
+                // Test 12: UI updates
+                const toggleButton = document.querySelector('.mas-preview-toggle');
+                addTestResult(
+                    'UI Updates',
+                    toggleButton.textContent === 'Enable Preview',
+                    'UI should reflect disabled state'
+                );
+
+                logEvent('All tests completed!', 'success');
+
+            } catch (error) {
+                logEvent(`Test error: ${error.message}`, 'error');
+                addTestResult('Test Execution', false, error.message);
+            }
+        }
+
+        // Run tests after a short delay
+        setTimeout(runTests, 1000);
+
+        logEvent('Test page loaded', 'success');
+        logEvent('LivePreviewComponent initialized', 'success');
+    </script>
+</body>
+</html>

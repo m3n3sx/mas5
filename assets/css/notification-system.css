@@ -1,0 +1,332 @@
+/**
+ * Notification System Styles
+ * 
+ * Toast notification styles with animations, colors, and accessibility features.
+ */
+
+/* Container positioning */
+.mas-notification-container {
+    position: fixed;
+    z-index: 999999;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    max-width: 420px;
+    width: 100%;
+    padding: 20px;
+}
+
+/* Position variants */
+.mas-notification-top-right {
+    top: 0;
+    right: 0;
+}
+
+.mas-notification-top-left {
+    top: 0;
+    left: 0;
+}
+
+.mas-notification-bottom-right {
+    bottom: 0;
+    right: 0;
+}
+
+.mas-notification-bottom-left {
+    bottom: 0;
+    left: 0;
+}
+
+/* Notification card */
+.mas-notification {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.05);
+    pointer-events: auto;
+    opacity: 0;
+    transform: translateX(100%);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    max-width: 100%;
+    word-wrap: break-word;
+}
+
+/* Show animation */
+.mas-notification-show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Hide animation */
+.mas-notification-hide {
+    opacity: 0;
+    transform: translateX(100%);
+}
+
+/* Left position animations */
+.mas-notification-top-left .mas-notification,
+.mas-notification-bottom-left .mas-notification {
+    transform: translateX(-100%);
+}
+
+.mas-notification-top-left .mas-notification-show,
+.mas-notification-bottom-left .mas-notification-show {
+    transform: translateX(0);
+}
+
+.mas-notification-top-left .mas-notification-hide,
+.mas-notification-bottom-left .mas-notification-hide {
+    transform: translateX(-100%);
+}
+
+/* Icon container */
+.mas-notification-icon {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Content area */
+.mas-notification-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.mas-notification-title {
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 1.4;
+    margin-bottom: 4px;
+    color: #1e1e1e;
+}
+
+.mas-notification-message {
+    font-size: 14px;
+    line-height: 1.5;
+    color: #4a4a4a;
+}
+
+/* Close button */
+.mas-notification-close {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    color: #666;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.mas-notification-close:hover {
+    background: rgba(0, 0, 0, 0.05);
+    color: #333;
+}
+
+.mas-notification-close:focus {
+    outline: 2px solid #0073aa;
+    outline-offset: 2px;
+}
+
+/* Action buttons */
+.mas-notification-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+}
+
+.mas-notification-action {
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: rgba(0, 0, 0, 0.05);
+    color: #333;
+}
+
+.mas-notification-action:hover {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.mas-notification-action:focus {
+    outline: 2px solid #0073aa;
+    outline-offset: 2px;
+}
+
+/* Success notification */
+.mas-notification-success {
+    border-left: 4px solid #46b450;
+}
+
+.mas-notification-success .mas-notification-icon {
+    color: #46b450;
+}
+
+.mas-notification-success .mas-notification-action {
+    background: rgba(70, 180, 80, 0.1);
+    color: #2d7a39;
+}
+
+.mas-notification-success .mas-notification-action:hover {
+    background: rgba(70, 180, 80, 0.2);
+}
+
+/* Error notification */
+.mas-notification-error {
+    border-left: 4px solid #dc3232;
+}
+
+.mas-notification-error .mas-notification-icon {
+    color: #dc3232;
+}
+
+.mas-notification-error .mas-notification-action {
+    background: rgba(220, 50, 50, 0.1);
+    color: #a02020;
+}
+
+.mas-notification-error .mas-notification-action:hover {
+    background: rgba(220, 50, 50, 0.2);
+}
+
+/* Warning notification */
+.mas-notification-warning {
+    border-left: 4px solid #ffb900;
+}
+
+.mas-notification-warning .mas-notification-icon {
+    color: #ffb900;
+}
+
+.mas-notification-warning .mas-notification-action {
+    background: rgba(255, 185, 0, 0.1);
+    color: #8f6800;
+}
+
+.mas-notification-warning .mas-notification-action:hover {
+    background: rgba(255, 185, 0, 0.2);
+}
+
+/* Info notification */
+.mas-notification-info {
+    border-left: 4px solid #0073aa;
+}
+
+.mas-notification-info .mas-notification-icon {
+    color: #0073aa;
+}
+
+.mas-notification-info .mas-notification-action {
+    background: rgba(0, 115, 170, 0.1);
+    color: #005177;
+}
+
+.mas-notification-info .mas-notification-action:hover {
+    background: rgba(0, 115, 170, 0.2);
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .mas-notification {
+        background: #2c2c2c;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1);
+    }
+    
+    .mas-notification-title {
+        color: #e0e0e0;
+    }
+    
+    .mas-notification-message {
+        color: #b0b0b0;
+    }
+    
+    .mas-notification-close {
+        color: #999;
+    }
+    
+    .mas-notification-close:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: #ccc;
+    }
+    
+    .mas-notification-action {
+        background: rgba(255, 255, 255, 0.1);
+        color: #e0e0e0;
+    }
+    
+    .mas-notification-action:hover {
+        background: rgba(255, 255, 255, 0.15);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .mas-notification-container {
+        max-width: 100%;
+        padding: 12px;
+    }
+    
+    .mas-notification {
+        padding: 12px;
+        font-size: 13px;
+    }
+    
+    .mas-notification-title {
+        font-size: 13px;
+    }
+    
+    .mas-notification-message {
+        font-size: 13px;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .mas-notification {
+        border: 2px solid currentColor;
+    }
+    
+    .mas-notification-close:focus,
+    .mas-notification-action:focus {
+        outline-width: 3px;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .mas-notification {
+        transition: opacity 0.1s ease;
+        transform: none !important;
+    }
+    
+    .mas-notification-show {
+        opacity: 1;
+    }
+    
+    .mas-notification-hide {
+        opacity: 0;
+    }
+}
+
+/* Print styles */
+@media print {
+    .mas-notification-container {
+        display: none;
+    }
+}

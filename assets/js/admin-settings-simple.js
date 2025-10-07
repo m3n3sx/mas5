@@ -1,14 +1,48 @@
 /**
  * Modern Admin Styler V2 - Simple Settings Page Handler
  * Prosty handler dla strony ustawień - bez skomplikowanych modułów
+ * 
+ * @deprecated 3.0.0 This file is deprecated and replaced by Phase 3 frontend architecture
+ * @see assets/js/mas-admin-app.js
+ * @see assets/js/mas-settings-form-handler.js (Phase 2 fallback)
+ * 
+ * DEPRECATION NOTICE:
+ * This AJAX-based handler has been replaced with:
+ * - Phase 3: Unified component-based architecture (mas-admin-app.js)
+ * - Phase 2: REST API handler (mas-settings-form-handler.js)
+ * 
+ * This file eliminates dual handler conflicts and provides better error handling.
+ * This file is kept for reference only and should not be loaded.
+ * 
+ * Migration Guide: See docs/PHASE3-MIGRATION-GUIDE.md
  */
 
 (function($) {
     'use strict';
     
-    console.log('🎯 MAS Simple Settings: Initializing...');
+    // Show deprecation warning
+    console.warn('⚠️ DEPRECATED: admin-settings-simple.js is deprecated since v3.0.0');
+    console.warn('📖 Migration Guide: Use Phase 3 frontend (mas-admin-app.js) or Phase 2 fallback (mas-settings-form-handler.js)');
+    console.warn('🔗 See: docs/PHASE3-MIGRATION-GUIDE.md');
+    
+    // Check if new frontend is active
+    if (window.MASUseNewFrontend) {
+        console.error('❌ ERROR: Legacy handler loaded while new frontend is active!');
+        console.error('This should not happen. Please check your feature flags.');
+        return; // Exit immediately
+    }
+    
+    console.log('🎯 MAS Simple Settings: Initializing (LEGACY MODE)...');
+    
+    // Wyłącz modularny system
+    window.MASDisableModules = true;
     
     $(document).ready(function() {
+        
+        // Usuń wszystkie inne handlery formularza (na wypadek konfliktu)
+        $('#mas-v2-settings-form').off('submit');
+        
+        console.log('✅ Simple handler: Wszystkie poprzednie handlery usunięte');
         
         // Obsługa zapisywania ustawień
         $('#mas-v2-settings-form').on('submit', function(e) {

@@ -1,0 +1,391 @@
+/**
+ * Accessibility Styles
+ * 
+ * Styles for accessibility features including:
+ * - Screen reader only content
+ * - Focus indicators
+ * - High contrast mode
+ * - Skip links
+ */
+
+/* Screen Reader Only */
+.sr-only,
+.screen-reader-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+.sr-only-focusable:focus,
+.screen-reader-only-focusable:focus {
+    position: static;
+    width: auto;
+    height: auto;
+    padding: inherit;
+    margin: inherit;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+}
+
+/* Focus Indicators */
+.has-focus-indicator:focus {
+    outline: 2px solid #2271b1;
+    outline-offset: 2px;
+}
+
+.has-focus-indicator[data-focus-style="ring"]:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(34, 113, 177, 0.3);
+}
+
+.has-focus-indicator[data-focus-style="glow"]:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(34, 113, 177, 0.5),
+                0 0 10px rgba(34, 113, 177, 0.3);
+}
+
+/* Enhanced focus for form fields */
+input:focus,
+select:focus,
+textarea:focus,
+button:focus {
+    outline: 2px solid #2271b1;
+    outline-offset: 2px;
+}
+
+/* Focus visible (only show on keyboard navigation) */
+*:focus:not(:focus-visible) {
+    outline: none;
+}
+
+*:focus-visible {
+    outline: 2px solid #2271b1;
+    outline-offset: 2px;
+}
+
+/* Skip Links */
+.skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: #2271b1;
+    color: #fff;
+    padding: 8px 16px;
+    text-decoration: none;
+    z-index: 100000;
+    border-radius: 0 0 4px 0;
+}
+
+.skip-link:focus {
+    top: 0;
+    outline: 2px solid #fff;
+    outline-offset: -2px;
+}
+
+/* Required Field Indicator */
+.required-indicator {
+    color: #d63638;
+    font-weight: bold;
+    margin-left: 2px;
+}
+
+/* Field Errors */
+.field-error {
+    display: block;
+    color: #d63638;
+    font-size: 13px;
+    margin-top: 4px;
+    padding: 4px 8px;
+    background: #fcf0f1;
+    border-left: 3px solid #d63638;
+    border-radius: 2px;
+}
+
+input.error,
+select.error,
+textarea.error {
+    border-color: #d63638 !important;
+    box-shadow: 0 0 0 1px #d63638;
+}
+
+/* High Contrast Mode */
+.high-contrast-mode {
+    /* Increase all contrast ratios */
+}
+
+.high-contrast-mode * {
+    /* Force higher contrast */
+    text-shadow: none !important;
+    box-shadow: none !important;
+}
+
+.high-contrast-mode a {
+    text-decoration: underline;
+}
+
+.high-contrast-mode button,
+.high-contrast-mode .button {
+    border: 2px solid currentColor !important;
+}
+
+.high-contrast-mode input:focus,
+.high-contrast-mode select:focus,
+.high-contrast-mode textarea:focus,
+.high-contrast-mode button:focus {
+    outline: 3px solid #000 !important;
+    outline-offset: 2px;
+}
+
+/* High contrast mode - light theme */
+.high-contrast-mode.light-theme {
+    background: #fff;
+    color: #000;
+}
+
+.high-contrast-mode.light-theme a {
+    color: #0000ee;
+}
+
+.high-contrast-mode.light-theme a:visited {
+    color: #551a8b;
+}
+
+.high-contrast-mode.light-theme button,
+.high-contrast-mode.light-theme .button {
+    background: #fff;
+    color: #000;
+    border: 2px solid #000;
+}
+
+/* High contrast mode - dark theme */
+.high-contrast-mode.dark-theme {
+    background: #000;
+    color: #fff;
+}
+
+.high-contrast-mode.dark-theme a {
+    color: #8cb4ff;
+}
+
+.high-contrast-mode.dark-theme a:visited {
+    color: #d896ff;
+}
+
+.high-contrast-mode.dark-theme button,
+.high-contrast-mode.dark-theme .button {
+    background: #000;
+    color: #fff;
+    border: 2px solid #fff;
+}
+
+/* Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* Forced Colors Mode (Windows High Contrast) */
+@media (forced-colors: active) {
+    * {
+        forced-color-adjust: auto;
+    }
+
+    .has-focus-indicator:focus {
+        outline: 2px solid CanvasText;
+    }
+
+    button,
+    .button {
+        border: 1px solid ButtonText;
+    }
+}
+
+/* Live Regions */
+[aria-live] {
+    /* Ensure live regions are accessible but not visible */
+}
+
+[aria-live="polite"].sr-only,
+[aria-live="assertive"].sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* Keyboard Navigation Indicators */
+.keyboard-navigation-active *:focus {
+    outline: 2px solid #2271b1 !important;
+    outline-offset: 2px;
+}
+
+/* Tab Focus Ring */
+[role="tab"]:focus {
+    outline: 2px solid #2271b1;
+    outline-offset: -2px;
+    z-index: 1;
+}
+
+/* Button Focus */
+button:focus,
+.button:focus {
+    outline: 2px solid #2271b1;
+    outline-offset: 2px;
+}
+
+/* Link Focus */
+a:focus {
+    outline: 2px solid #2271b1;
+    outline-offset: 2px;
+    text-decoration: underline;
+}
+
+/* Notification Focus */
+.mas-notification:focus-within {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15),
+                0 0 0 3px rgba(34, 113, 177, 0.3);
+}
+
+/* Form Field Focus */
+.mas-field-wrapper:focus-within {
+    outline: 2px solid #2271b1;
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+/* Disabled State */
+[disabled],
+[aria-disabled="true"] {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Loading State */
+[aria-busy="true"] {
+    opacity: 0.7;
+    cursor: wait;
+}
+
+/* Invalid State */
+[aria-invalid="true"] {
+    border-color: #d63638;
+}
+
+/* Hidden State */
+[hidden],
+[aria-hidden="true"] {
+    display: none !important;
+}
+
+/* Expanded/Collapsed States */
+[aria-expanded="false"] + * {
+    display: none;
+}
+
+[aria-expanded="true"] + * {
+    display: block;
+}
+
+/* Selected State */
+[aria-selected="true"] {
+    background: #f0f0f1;
+    font-weight: 600;
+}
+
+/* Pressed State */
+[aria-pressed="true"] {
+    background: #2271b1;
+    color: #fff;
+}
+
+/* Checked State */
+[aria-checked="true"]::before {
+    content: "✓";
+    margin-right: 4px;
+}
+
+/* Color Contrast Warning */
+.contrast-warning {
+    display: inline-block;
+    padding: 4px 8px;
+    background: #fcf0f1;
+    color: #d63638;
+    border-left: 3px solid #d63638;
+    font-size: 12px;
+    margin-left: 8px;
+    border-radius: 2px;
+}
+
+.contrast-warning::before {
+    content: "⚠ ";
+    font-weight: bold;
+}
+
+/* Accessibility Toggle Button */
+.accessibility-toggle {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 9999;
+    background: #2271b1;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s ease;
+}
+
+.accessibility-toggle:hover {
+    transform: scale(1.1);
+}
+
+.accessibility-toggle:focus {
+    outline: 3px solid #fff;
+    outline-offset: 2px;
+}
+
+/* Tooltip for accessibility info */
+.a11y-tooltip {
+    position: absolute;
+    background: #1d2327;
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    z-index: 10000;
+    pointer-events: none;
+}
+
+.a11y-tooltip::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #1d2327 transparent transparent transparent;
+}

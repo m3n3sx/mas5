@@ -2,85 +2,52 @@
 
 ## Introduction
 
-The Modern Admin Styler V2 (MAS3) WordPress plugin is currently in a critical state with approximately 90% of functionality non-operational due to over-aggressive refactoring. This repair project aims to systematically restore full functionality through a three-phase approach: Emergency Stabilization, Architecture Repair, and Full Feature Restoration. The plugin provides advanced WordPress admin interface styling capabilities including custom color palettes, glassmorphism effects, floating menus, and live preview functionality.
+The Modern Admin Styler V2 plugin is experiencing a critical WordPress error that prevents the site from loading. The error message "There has been a critical error on this website" indicates a fatal PHP error is occurring during plugin initialization. Based on the codebase analysis, the issue stems from the REST API infrastructure attempting to load controller classes that extend `WP_REST_Controller` before WordPress has fully initialized the REST API framework.
+
+This is a critical production issue that requires immediate resolution to restore site functionality.
 
 ## Requirements
 
-### Requirement 1: Emergency Stabilization
+### Requirement 1: Fix Fatal Error on Plugin Load
 
-**User Story:** As a WordPress administrator, I want basic admin interface styling to work immediately, so that my WordPress admin is functional and visually enhanced.
-
-#### Acceptance Criteria
-
-1. WHEN the plugin is activated THEN the CSS generation function SHALL produce valid CSS output
-2. WHEN admin-menu-modern.css is loaded THEN basic menu styling SHALL be applied to the WordPress admin
-3. WHEN quick-fix.css is loaded THEN critical UI elements SHALL display correctly
-4. WHEN hovering over menu items in floating mode THEN submenus SHALL appear and be accessible
-5. WHEN viewing the admin interface THEN there SHALL be no JavaScript console errors related to the plugin
-6. WHEN basic color settings are applied THEN menu background colors SHALL update correctly
-
-### Requirement 2: Architecture Repair
-
-**User Story:** As a WordPress administrator, I want the modular JavaScript system to work properly, so that all plugin features are accessible and settings can be saved.
+**User Story:** As a WordPress site administrator, I want the plugin to load without causing fatal errors, so that my website remains accessible to visitors and I can access the admin panel.
 
 #### Acceptance Criteria
 
-1. WHEN the plugin loads THEN ModernAdminApp SHALL initialize without dependency errors
-2. WHEN module dependencies are loaded THEN the loading sequence SHALL complete successfully
-3. WHEN live preview is enabled THEN CSS variables SHALL update in real-time as settings change
-4. WHEN settings are modified THEN changes SHALL persist correctly in the WordPress database
-5. WHEN the settings interface is accessed THEN all UI tabs SHALL be responsive and accessible
-6. WHEN JavaScript modules are loaded THEN the mas-loader.js SHALL properly manage module dependencies
+1. WHEN the plugin is activated THEN the WordPress site SHALL load without fatal errors
+2. WHEN WordPress initializes THEN the plugin SHALL only load REST API controllers after `WP_REST_Controller` class is available
+3. IF the plugin encounters a loading error THEN it SHALL log the error details for debugging without breaking the site
+4. WHEN the REST API is initialized THEN all controller files SHALL be loaded safely within the `rest_api_init` hook
 
-### Requirement 3: Full Feature Restoration
+### Requirement 2: Implement Safe Class Loading
 
-**User Story:** As a WordPress administrator, I want all advanced styling features to work completely, so that I can fully customize my WordPress admin interface.
+**User Story:** As a developer, I want the plugin to use lazy loading for REST API controllers, so that classes are only loaded when WordPress is ready to support them.
 
 #### Acceptance Criteria
 
-1. WHEN glassmorphism effects are enabled THEN transparent blur effects SHALL render correctly across all browsers
-2. WHEN shadow effects are applied THEN CSS shadows SHALL display properly on menu elements
-3. WHEN animations are enabled THEN smooth transitions SHALL occur during menu interactions
-4. WHEN color palette system is used THEN predefined color schemes SHALL apply correctly
-5. WHEN export settings is clicked THEN current configuration SHALL be exported as a valid JSON file
-6. WHEN import settings is used THEN valid configuration files SHALL restore all plugin settings
-7. WHEN performance optimization is enabled THEN plugin SHALL load efficiently without memory issues
+1. WHEN the plugin initializes THEN it SHALL NOT require controller files during the constructor phase
+2. WHEN `rest_api_init` fires THEN the system SHALL verify `WP_REST_Controller` exists before loading controllers
+3. IF `WP_REST_Controller` is not available THEN the system SHALL log a warning and gracefully skip REST API initialization
+4. WHEN controller files are loaded THEN they SHALL be loaded only once to prevent duplicate class declarations
 
-### Requirement 4: WordPress Compatibility
+### Requirement 3: Add Error Handling and Diagnostics
 
-**User Story:** As a WordPress site owner, I want the plugin to work seamlessly with WordPress core, so that it doesn't break existing functionality or cause conflicts.
+**User Story:** As a site administrator, I want clear error messages when something goes wrong, so that I can quickly identify and resolve issues.
 
 #### Acceptance Criteria
 
-1. WHEN the plugin is active THEN WordPress core admin functionality SHALL remain unaffected
-2. WHEN other plugins are active THEN there SHALL be no CSS or JavaScript conflicts
-3. WHEN WordPress is updated THEN the plugin SHALL continue to function correctly
-4. WHEN the plugin is deactivated THEN WordPress admin SHALL return to default styling without residual effects
-5. WHEN WordPress coding standards are applied THEN all PHP code SHALL pass WordPress validation
-6. WHEN security audits are performed THEN no vulnerabilities SHALL be present in the codebase
+1. WHEN a fatal error occurs THEN the system SHALL log detailed error information including file, line number, and stack trace
+2. WHEN the plugin cannot initialize properly THEN it SHALL display an admin notice explaining the issue
+3. IF WordPress version is incompatible THEN the system SHALL prevent activation with a clear error message
+4. WHEN debug mode is enabled THEN the system SHALL provide verbose logging of the initialization sequence
 
-### Requirement 5: Performance and Maintenance
+### Requirement 4: Verify Fix Across WordPress Versions
 
-**User Story:** As a WordPress administrator, I want the plugin to perform efficiently and be maintainable, so that it doesn't slow down my site or become difficult to update.
+**User Story:** As a plugin maintainer, I want the fix to work across supported WordPress versions, so that all users can safely use the plugin.
 
 #### Acceptance Criteria
 
-1. WHEN the plugin loads THEN memory usage SHALL not exceed reasonable WordPress plugin standards
-2. WHEN CSS is generated THEN file sizes SHALL be optimized for web delivery
-3. WHEN JavaScript executes THEN performance SHALL not impact WordPress admin responsiveness
-4. WHEN code is modified THEN changes SHALL be documented with clear reasoning
-5. WHEN future maintenance is needed THEN code structure SHALL be easily understandable
-6. WHEN cross-browser testing is performed THEN functionality SHALL work in all modern browsers
-
-### Requirement 6: Data Integrity and Recovery
-
-**User Story:** As a WordPress administrator, I want my plugin settings to be safe and recoverable, so that I don't lose my customizations during the repair process.
-
-#### Acceptance Criteria
-
-1. WHEN repair begins THEN existing user settings SHALL be backed up automatically
-2. WHEN settings are migrated THEN no user configuration data SHALL be lost
-3. WHEN errors occur during repair THEN rollback mechanisms SHALL restore previous working state
-4. WHEN plugin is updated THEN user customizations SHALL be preserved
-5. WHEN database operations occur THEN data integrity SHALL be maintained throughout the process
-6. WHEN backup restoration is needed THEN previous configurations SHALL be fully recoverable
+1. WHEN tested on WordPress 5.8+ THEN the plugin SHALL activate and function without errors
+2. WHEN tested on WordPress 6.0+ THEN the REST API SHALL initialize correctly
+3. WHEN tested on the latest WordPress version THEN all features SHALL work as expected
+4. IF running on an unsupported WordPress version THEN the system SHALL prevent activation with a helpful message

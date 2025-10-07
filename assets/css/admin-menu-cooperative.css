@@ -1,0 +1,158 @@
+/**
+ * ADMIN MENU COOPERATIVE - Modern Admin Styler V2
+ * 
+ * 🤝 FILOZOFIA: WSPÓŁPRACA Z WORDPRESS, NIE WALKA
+ * 
+ * Zamiast nadpisywać wszystkie style WordPress, dodajemy tylko
+ * delikatne ulepszenia które współpracują z natywnym menu.
+ * 
+ * ✅ CO ROBIMY:
+ * - Używamy CSS Variables dla łatwej customizacji
+ * - Dodajemy style tylko gdy użytkownik włączy opcje
+ * - Nie nadpisujemy podstawowych stylów WordPress
+ * - Nie używamy !important (prawie wcale)
+ * 
+ * ❌ CZEGO NIE ROBIMY:
+ * - Nie zmieniamy width/height bez potrzeby
+ * - Nie nadpisujemy position/display
+ * - Nie walczymy z WordPress defaults
+ * - Nie wymuszamy stylów
+ */
+
+/* ========================================
+   🎨 CSS VARIABLES - TYLKO CUSTOMIZACJE
+   ======================================== */
+:root {
+    /* Kolory - tylko gdy użytkownik ustawi */
+    --mas-menu-bg: inherit;
+    --mas-menu-text: inherit;
+    --mas-menu-hover-bg: inherit;
+    --mas-menu-hover-text: inherit;
+    --mas-menu-active-bg: inherit;
+    --mas-menu-active-text: inherit;
+    
+    /* Submenu kolory */
+    --mas-submenu-bg: inherit;
+    --mas-submenu-text: inherit;
+    --mas-submenu-hover-bg: inherit;
+    --mas-submenu-hover-text: inherit;
+    
+    /* Efekty - domyślnie wyłączone */
+    --mas-menu-radius: 0;
+    --mas-menu-shadow: none;
+    --mas-menu-transition: 0ms;
+}
+
+/* ========================================
+   ✨ DELIKATNE ULEPSZENIA (OPCJONALNE)
+   ======================================== */
+
+/* Kolory menu - TYLKO gdy użytkownik ustawi */
+body.mas-v2-menu-custom-enabled #adminmenu {
+    background-color: var(--mas-menu-bg);
+}
+
+body.mas-v2-menu-custom-enabled #adminmenu a {
+    color: var(--mas-menu-text);
+}
+
+body.mas-v2-menu-custom-enabled #adminmenu li.menu-top:hover > a {
+    background-color: var(--mas-menu-hover-bg);
+    color: var(--mas-menu-hover-text);
+}
+
+body.mas-v2-menu-custom-enabled #adminmenu li.current > a,
+body.mas-v2-menu-custom-enabled #adminmenu li.wp-has-current-submenu > a {
+    background-color: var(--mas-menu-active-bg);
+    color: var(--mas-menu-active-text);
+}
+
+/* ========================================
+   📂 SUBMENU - WSPÓŁPRACA Z WORDPRESS
+   ======================================== */
+
+/* WAŻNE: NIE nadpisujemy display, visibility, position
+   WordPress zarządza tym natywnie i działa dobrze */
+
+/* Submenu kolory - TYLKO gdy użytkownik ustawi */
+body.mas-v2-submenu-custom-enabled #adminmenu .wp-submenu {
+    background-color: var(--mas-submenu-bg);
+}
+
+body.mas-v2-submenu-custom-enabled #adminmenu .wp-submenu a {
+    color: var(--mas-submenu-text);
+}
+
+body.mas-v2-submenu-custom-enabled #adminmenu .wp-submenu a:hover {
+    background-color: var(--mas-submenu-hover-bg);
+    color: var(--mas-submenu-hover-text);
+}
+
+/* ========================================
+   🔧 SUBMENU VISIBILITY FIX
+   ======================================== */
+
+/* Upewnij się że submenu jest widoczne gdy powinno być
+   NIE wymuszamy display/visibility - szanujemy WordPress
+   
+   WordPress zarządza tym natywnie:
+   - Normal mode: submenu widoczne dla .wp-has-current-submenu i .current
+   - Collapsed mode: submenu na hover
+   - Mobile mode: submenu zawsze widoczne dla aktywnych
+   
+   My dodajemy TYLKO kolory i efekty, nie logikę visibility
+*/
+
+/* ========================================
+   🎯 EFEKTY (TYLKO GDY WŁĄCZONE)
+   ======================================== */
+
+/* Rounded corners - TYLKO gdy włączone */
+body.mas-v2-menu-rounded #adminmenu {
+    border-radius: var(--mas-menu-radius);
+}
+
+body.mas-v2-menu-rounded #adminmenu li.menu-top > a {
+    border-radius: calc(var(--mas-menu-radius) * 0.5);
+    margin: 2px 4px;
+}
+
+/* Shadow - TYLKO gdy włączone */
+body.mas-v2-menu-shadow #adminmenu {
+    box-shadow: var(--mas-menu-shadow);
+}
+
+/* Smooth transitions - TYLKO gdy włączone */
+body.mas-v2-menu-smooth #adminmenu a {
+    transition: all var(--mas-menu-transition) ease;
+}
+
+/* Glossy effect - TYLKO gdy włączone */
+body.mas-v2-menu-glossy #adminmenu {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+/* ========================================
+   📱 RESPONSIVE - SZANUJ WORDPRESS
+   ======================================== */
+@media screen and (max-width: 782px) {
+    /* Na mobile - pełny reset do WordPress defaults */
+    body.mas-v2-menu-custom-enabled #adminmenu,
+    body.mas-v2-menu-rounded #adminmenu,
+    body.mas-v2-menu-shadow #adminmenu,
+    body.mas-v2-menu-glossy #adminmenu {
+        border-radius: 0;
+        box-shadow: none;
+        backdrop-filter: none;
+    }
+}
+
+/* ========================================
+   ♿ ACCESSIBILITY
+   ======================================== */
+@media (prefers-reduced-motion: reduce) {
+    body.mas-v2-menu-smooth #adminmenu a {
+        transition: none;
+    }
+}

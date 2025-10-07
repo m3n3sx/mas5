@@ -1,6 +1,14 @@
 /**
  * Modern Admin Styler V2 - Settings Manager Module
  * Zarządzanie ustawieniami, formularzami, save/load/export/import
+ * 
+ * @deprecated 2.2.0 Form submission functionality moved to mas-settings-form-handler.js
+ * @see assets/js/mas-settings-form-handler.js
+ * 
+ * DEPRECATION NOTICE:
+ * The form submission code in this module has been replaced with a unified
+ * REST API handler to eliminate dual handler conflicts. This module is kept
+ * for backward compatibility but form submission is disabled.
  */
 
 class SettingsManager {
@@ -34,11 +42,13 @@ class SettingsManager {
     }
     
     setupEventListeners() {
-        // Submit formularza
-        this.form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            this.saveSettings();
-        });
+        // Submit formularza - DISABLED (handled by mas-settings-form-handler.js)
+        // this.form.addEventListener('submit', (e) => {
+        //     e.preventDefault();
+        //     this.saveSettings();
+        // });
+        
+        console.warn('⚠️ SettingsManager form submission is disabled. Using mas-settings-form-handler.js instead.');
         
         // Przyciski akcji
         document.addEventListener('click', (e) => {
