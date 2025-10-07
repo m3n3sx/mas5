@@ -200,10 +200,35 @@ class MAS_Feature_Flags_Service {
     /**
      * Check if new frontend should be used
      * 
-     * @return bool Whether to use new frontend
+     * ⚠️ EMERGENCY OVERRIDE: Always returns false until Phase 3 is fixed
+     * 
+     * Phase 3 frontend has critical issues:
+     * - Broken dependencies (EventBus, StateManager, APIClient)
+     * - Handler conflicts causing settings save failures
+     * - Live preview not functioning
+     * 
+     * @return bool Always false during emergency stabilization
      */
     public function use_new_frontend() {
-        return $this->is_enabled('use_new_frontend');
+        // EMERGENCY STABILIZATION: Phase 3 frontend has broken dependencies
+        // Force Phase 2 mode until proper fix is implemented
+        
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log('MAS V2: Emergency mode active - Phase 3 frontend disabled');
+        }
+        
+        return false;
+    }
+    
+    /**
+     * Check if emergency mode is active
+     * 
+     * Emergency mode disables Phase 3 frontend due to critical issues.
+     * 
+     * @return bool Always true during emergency stabilization
+     */
+    public function is_emergency_mode() {
+        return true; // Hardcoded during emergency stabilization
     }
     
     /**
@@ -222,12 +247,15 @@ class MAS_Feature_Flags_Service {
      */
     public function export_for_js() {
         return [
-            'useNewFrontend' => $this->is_enabled('use_new_frontend'),
+            'useNewFrontend' => false, // Hardcoded false during emergency mode
             'enableLivePreview' => $this->is_enabled('enable_live_preview'),
             'enableAdvancedEffects' => $this->is_enabled('enable_advanced_effects'),
             'debugMode' => $this->is_enabled('debug_mode'),
             'performanceMode' => $this->is_enabled('performance_mode'),
-            'frontendMode' => $this->get_frontend_mode(),
+            'frontendMode' => 'phase2-stable', // Explicit Phase 2 mode
+            'emergencyMode' => true, // Emergency stabilization active
+            'phase3Disabled' => true, // Phase 3 explicitly disabled
+            'frontendVersion' => 'phase2-stable', // Version indicator
         ];
     }
 }

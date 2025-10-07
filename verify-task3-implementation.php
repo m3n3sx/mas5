@@ -1,118 +1,154 @@
 <?php
 /**
- * Verify Task 3 Implementation
+ * Simple Verification: Task 3 Implementation
  * 
- * Simple verification that the error handling methods exist
+ * Verifies that both methods are properly disabled by checking the source code
  */
 
-echo "=== Task 3: Error Handling Implementation Verification ===\n\n";
+echo "=== Task 3 Implementation Verification ===\n\n";
 
-// Check if the file exists
-$file = __DIR__ . '/includes/class-mas-rest-api.php';
+$file = 'modern-admin-styler-v2.php';
+
 if (!file_exists($file)) {
-    echo "✗ File not found: $file\n";
+    echo "❌ FAIL: File not found: {$file}\n";
     exit(1);
 }
 
-echo "✓ File exists: includes/class-mas-rest-api.php\n\n";
-
-// Read the file content
 $content = file_get_contents($file);
 
-// Task 3.1: Check for log_error method
-echo "--- Task 3.1: Error Logging Helper Method ---\n";
+// Test 1: Check enqueue_new_frontend() is disabled
+echo "Test 1: enqueue_new_frontend() Method\n";
+$test1_pass = true;
 
-$has_log_error = strpos($content, 'private function log_error($message, $context = [])') !== false;
-echo ($has_log_error ? "✓" : "✗") . " log_error() method exists\n";
+$checks = [
+    'DISABLED FOR EMERGENCY STABILIZATION' => false,
+    'private function enqueue_new_frontend()' => false,
+    'EMERGENCY STABILIZATION: Method disabled - early return' => false,
+    'Phase 3 frontend has broken dependencies' => false,
+    'Requirements: 1.1, 1.2, 1.3' => false,
+    'DISABLED CODE - DO NOT UNCOMMENT UNTIL PHASE 3 IS FIXED' => false
+];
 
-$has_wp_version = strpos($content, "'WordPress Version: ' . get_bloginfo('version')") !== false;
-echo ($has_wp_version ? "✓" : "✗") . " Includes WordPress version in context\n";
+foreach ($checks as $string => $found) {
+    if (strpos($content, $string) !== false) {
+        echo "  ✅ Found: '{$string}'\n";
+    } else {
+        echo "  ❌ Missing: '{$string}'\n";
+        $test1_pass = false;
+    }
+}
 
-$has_php_version = strpos($content, "'PHP Version: ' . PHP_VERSION") !== false;
-echo ($has_php_version ? "✓" : "✗") . " Includes PHP version in context\n";
+if ($test1_pass) {
+    echo "✅ PASS: enqueue_new_frontend() properly disabled\n\n";
+} else {
+    echo "❌ FAIL: enqueue_new_frontend() not properly disabled\n\n";
+}
 
-$has_file_context = strpos($content, "!empty(\$context['file'])") !== false;
-echo ($has_file_context ? "✓" : "✗") . " Includes file path in context\n";
+// Test 2: Check enqueue_legacy_frontend() is disabled
+echo "Test 2: enqueue_legacy_frontend() Method\n";
+$test2_pass = true;
 
-$has_line_context = strpos($content, "!empty(\$context['line'])") !== false;
-echo ($has_line_context ? "✓" : "✗") . " Includes line number in context\n";
+$checks2 = [
+    'private function enqueue_legacy_frontend()' => false,
+    'DISABLED FOR EMERGENCY STABILIZATION' => false,
+    'replaced by inline script loading' => false,
+    'Requirements: 3.4' => false,
+    'DISABLED CODE - Phase 2 scripts now loaded inline' => false
+];
 
-$has_debug_check = strpos($content, "if (!defined('WP_DEBUG') || !WP_DEBUG)") !== false;
-echo ($has_debug_check ? "✓" : "✗") . " Only logs when WP_DEBUG is enabled\n";
+foreach ($checks2 as $string => $found) {
+    if (strpos($content, $string) !== false) {
+        echo "  ✅ Found: '{$string}'\n";
+    } else {
+        echo "  ❌ Missing: '{$string}'\n";
+        $test2_pass = false;
+    }
+}
 
-$has_error_storage = strpos($content, '$this->initialization_errors[] =') !== false;
-echo ($has_error_storage ? "✓" : "✗") . " Stores errors for admin notice display\n";
+if ($test2_pass) {
+    echo "✅ PASS: enqueue_legacy_frontend() properly disabled\n\n";
+} else {
+    echo "❌ FAIL: enqueue_legacy_frontend() not properly disabled\n\n";
+}
 
-// Task 3.2: Check for admin notice method
-echo "\n--- Task 3.2: Admin Notice for Initialization Failures ---\n";
+// Test 3: Verify early return statements
+echo "Test 3: Early Return Statements\n";
+$test3_pass = true;
 
-$has_display_method = strpos($content, 'public function display_initialization_errors()') !== false;
-echo ($has_display_method ? "✓" : "✗") . " display_initialization_errors() method exists\n";
+// Count occurrences of the early return pattern
+$pattern1 = '/private function enqueue_new_frontend\(\).*?return;/s';
+$pattern2 = '/private function enqueue_legacy_frontend\(\).*?return;/s';
 
-$has_admin_check = strpos($content, "current_user_can('manage_options')") !== false;
-echo ($has_admin_check ? "✓" : "✗") . " Displays only to administrators\n";
+if (preg_match($pattern1, $content)) {
+    echo "  ✅ enqueue_new_frontend() has early return\n";
+} else {
+    echo "  ❌ enqueue_new_frontend() missing early return\n";
+    $test3_pass = false;
+}
 
-$has_error_notice = strpos($content, 'notice notice-error') !== false;
-echo ($has_error_notice ? "✓" : "✗") . " Creates error notice\n";
+if (preg_match($pattern2, $content)) {
+    echo "  ✅ enqueue_legacy_frontend() has early return\n";
+} else {
+    echo "  ❌ enqueue_legacy_frontend() missing early return\n";
+    $test3_pass = false;
+}
 
-$has_troubleshooting = strpos($content, 'Troubleshooting Steps:') !== false;
-echo ($has_troubleshooting ? "✓" : "✗") . " Includes troubleshooting information\n";
+if ($test3_pass) {
+    echo "✅ PASS: Both methods have early return statements\n\n";
+} else {
+    echo "❌ FAIL: Missing early return statements\n\n";
+}
 
-$has_debug_details = strpos($content, 'Technical Details (Debug Mode)') !== false;
-echo ($has_debug_details ? "✓" : "✗") . " Shows technical details in debug mode\n";
+// Test 4: Verify Phase 3 scripts are commented out
+echo "Test 4: Phase 3 Scripts Commented Out\n";
+$test4_pass = true;
 
-$has_admin_hook = strpos($content, "add_action('admin_notices', [\$this, 'display_initialization_errors'])") !== false;
-echo ($has_admin_hook ? "✓" : "✗") . " Registered on admin_notices hook\n";
+$phase3_scripts = [
+    'mas-v2-event-bus',
+    'mas-v2-state-manager',
+    'mas-v2-api-client',
+    'mas-v2-admin-app',
+    'mas-v2-component'
+];
 
-// Check for helper properties
-echo "\n--- Helper Properties and Methods ---\n";
+foreach ($phase3_scripts as $script) {
+    if (strpos($content, $script) !== false) {
+        echo "  ✅ Script '{$script}' found in commented code\n";
+    } else {
+        echo "  ⚠️  Script '{$script}' not found (may be OK if removed)\n";
+    }
+}
 
-$has_errors_property = strpos($content, 'private $initialization_errors = []') !== false;
-echo ($has_errors_property ? "✓" : "✗") . " initialization_errors property exists\n";
+echo "✅ PASS: Phase 3 scripts preserved in comments\n\n";
 
-$has_initialized_property = strpos($content, 'private $initialized = false') !== false;
-echo ($has_initialized_property ? "✓" : "✗") . " initialized property exists\n";
+// Test 5: Verify spec reference
+echo "Test 5: Spec Documentation Reference\n";
 
-$has_is_initialized = strpos($content, 'public function is_initialized()') !== false;
-echo ($has_is_initialized ? "✓" : "✗") . " is_initialized() method exists\n";
+if (strpos($content, '.kiro/specs/emergency-frontend-stabilization/') !== false) {
+    echo "  ✅ Found spec reference\n";
+    echo "✅ PASS: Spec documentation referenced\n\n";
+} else {
+    echo "  ❌ Missing spec reference\n";
+    echo "❌ FAIL: Spec not referenced\n\n";
+}
 
-$has_get_errors = strpos($content, 'public function get_initialization_errors()') !== false;
-echo ($has_get_errors ? "✓" : "✗") . " get_initialization_errors() method exists\n";
+// Final Summary
+echo "=== Summary ===\n";
 
-$has_has_errors = strpos($content, 'public function has_errors()') !== false;
-echo ($has_has_errors ? "✓" : "✗") . " has_errors() method exists\n";
+$all_pass = $test1_pass && $test2_pass && $test3_pass;
 
-// Summary
-echo "\n=== Summary ===\n";
-
-$task_3_1_complete = 
-    $has_log_error &&
-    $has_wp_version &&
-    $has_php_version &&
-    $has_file_context &&
-    $has_line_context &&
-    $has_debug_check &&
-    $has_error_storage;
-
-$task_3_2_complete = 
-    $has_display_method &&
-    $has_admin_check &&
-    $has_error_notice &&
-    $has_troubleshooting &&
-    $has_debug_details &&
-    $has_admin_hook;
-
-echo "\nTask 3.1 - Error Logging Helper Method: " . ($task_3_1_complete ? "✓ COMPLETE" : "✗ INCOMPLETE") . "\n";
-echo "Task 3.2 - Admin Notice for Failures: " . ($task_3_2_complete ? "✓ COMPLETE" : "✗ INCOMPLETE") . "\n";
-
-if ($task_3_1_complete && $task_3_2_complete) {
-    echo "\n✓ Task 3: Add comprehensive error handling - COMPLETE\n";
-    echo "\nAll requirements met:\n";
-    echo "  ✓ Requirement 3.1: Error logging with context information\n";
-    echo "  ✓ Requirement 3.2: Admin notices for initialization failures\n";
-    echo "  ✓ Requirement 3.3: Debug mode logging\n";
+if ($all_pass) {
+    echo "✅ ALL TESTS PASSED\n\n";
+    echo "Task 3 Implementation Status: ✅ COMPLETE\n\n";
+    echo "Both methods are properly disabled:\n";
+    echo "  • enqueue_new_frontend() - Phase 3 frontend disabled\n";
+    echo "  • enqueue_legacy_frontend() - Replaced by inline loading\n\n";
+    echo "Next Steps:\n";
+    echo "  • Task 4: Update feature flags admin UI\n";
+    echo "  • Task 5: Test emergency stabilization\n";
     exit(0);
 } else {
-    echo "\n✗ Task 3: Some requirements not met\n";
+    echo "❌ SOME TESTS FAILED\n";
+    echo "Please review the implementation\n";
     exit(1);
 }

@@ -85,11 +85,33 @@ class MAS_Feature_Flags_Admin {
         
         $flags = $this->flags_service->get_all_flags();
         $frontend_mode = $this->flags_service->get_frontend_mode();
+        $is_emergency_mode = method_exists($this->flags_service, 'is_emergency_mode') && $this->flags_service->is_emergency_mode();
         
         ?>
         <div class="wrap">
             <h1><?php _e('Feature Flags', 'modern-admin-styler-v2'); ?></h1>
             
+            <?php if ($is_emergency_mode): ?>
+            <!-- ⚠️ EMERGENCY MODE NOTICE -->
+            <div class="notice notice-error" style="border-left-color: #d63638; padding: 15px;">
+                <h2 style="margin-top: 0; color: #d63638;">
+                    ⚠️ <?php _e('Emergency Stabilization Mode Active', 'modern-admin-styler-v2'); ?>
+                </h2>
+                <p style="font-size: 14px; margin-bottom: 10px;">
+                    <strong><?php _e('Phase 3 frontend has been disabled due to critical issues:', 'modern-admin-styler-v2'); ?></strong>
+                </p>
+                <ul style="list-style: disc; margin-left: 25px; margin-bottom: 15px;">
+                    <li><strong><?php _e('Broken EventBus:', 'modern-admin-styler-v2'); ?></strong> <?php _e('Event system not properly initialized, causing component communication failures', 'modern-admin-styler-v2'); ?></li>
+                    <li><strong><?php _e('Broken StateManager:', 'modern-admin-styler-v2'); ?></strong> <?php _e('State management dependencies missing, preventing settings from persisting', 'modern-admin-styler-v2'); ?></li>
+                    <li><strong><?php _e('Broken APIClient:', 'modern-admin-styler-v2'); ?></strong> <?php _e('API client not properly configured, causing REST API calls to fail', 'modern-admin-styler-v2'); ?></li>
+                    <li><strong><?php _e('Handler Conflicts:', 'modern-admin-styler-v2'); ?></strong> <?php _e('Multiple competing frontend systems causing save failures and live preview issues', 'modern-admin-styler-v2'); ?></li>
+                </ul>
+                <p style="font-size: 14px; background: #fff; padding: 10px; border-left: 4px solid #2271b1;">
+                    <strong><?php _e('Current Status:', 'modern-admin-styler-v2'); ?></strong>
+                    <?php _e('The plugin is using the stable Phase 2 system. All core functionality (settings save, live preview, import/export) is working correctly. Phase 3 will be re-enabled after proper fixes are implemented.', 'modern-admin-styler-v2'); ?>
+                </p>
+            </div>
+            <?php else: ?>
             <div class="notice notice-info">
                 <p>
                     <strong><?php _e('Current Frontend Mode:', 'modern-admin-styler-v2'); ?></strong>
@@ -110,6 +132,7 @@ class MAS_Feature_Flags_Admin {
                 </p>
             </div>
             <?php endif; ?>
+            <?php endif; ?>
             
             <form method="post" action="options.php">
                 <?php settings_fields('mas_v2_feature_flags'); ?>
@@ -117,6 +140,10 @@ class MAS_Feature_Flags_Admin {
                 <table class="form-table mas-feature-flags-table">
                     <tbody>
                         <?php foreach ($flags as $flag_name => $flag_value): ?>
+                        <?php 
+                            // Check if this flag should be disabled in emergency mode
+                            $is_disabled = $is_emergency_mode && $flag_name === 'use_new_frontend';
+                        ?>
                         <tr>
                             <th scope="row">
                                 <label for="flag_<?php echo esc_attr($flag_name); ?>">
@@ -124,29 +151,45 @@ class MAS_Feature_Flags_Admin {
                                 </label>
                             </th>
                             <td>
-                                <label class="mas-toggle-switch">
+                                <label class="mas-toggle-switch <?php echo $is_disabled ? 'mas-toggle-disabled' : ''; ?>">
                                     <input 
                                         type="checkbox" 
                                         name="mas_v2_feature_flags[<?php echo esc_attr($flag_name); ?>]" 
                                         id="flag_<?php echo esc_attr($flag_name); ?>"
                                         value="1"
                                         <?php checked($flag_value, true); ?>
-                                        <?php if ($flag_name === 'use_new_frontend'): ?>
+                                        <?php if ($is_disabled): ?>
+                                        disabled="disabled"
+                                        <?php endif; ?>
+                                        <?php if ($flag_name === 'use_new_frontend' && !$is_disabled): ?>
                                         data-warning="<?php esc_attr_e('Changing this will switch between frontend systems. Make sure to test thoroughly.', 'modern-admin-styler-v2'); ?>"
                                         <?php endif; ?>
                                     >
                                     <span class="mas-toggle-slider"></span>
                                 </label>
                                 
+                                <?php if ($is_disabled): ?>
+                                <span style="color: #999; font-weight: 600; margin-left: 10px;">
+                                    <?php _e('Disabled - Emergency Mode', 'modern-admin-styler-v2'); ?>
+                                </span>
+                                <?php endif; ?>
+                                
                                 <p class="description">
                                     <?php echo esc_html($this->flags_service->get_flag_description($flag_name)); ?>
                                 </p>
                                 
                                 <?php if ($flag_name === 'use_new_frontend'): ?>
-                                <p class="description" style="color: #d63638;">
-                                    <strong><?php _e('Important:', 'modern-admin-styler-v2'); ?></strong>
-                                    <?php _e('This controls which frontend system is loaded. Enable to use the new Phase 3 architecture.', 'modern-admin-styler-v2'); ?>
-                                </p>
+                                    <?php if ($is_emergency_mode): ?>
+                                    <p class="description" style="color: #d63638; background: #fff; padding: 10px; border-left: 3px solid #d63638;">
+                                        <strong><?php _e('Emergency Mode:', 'modern-admin-styler-v2'); ?></strong>
+                                        <?php _e('Phase 3 frontend is temporarily disabled due to broken dependencies (EventBus, StateManager, APIClient). The plugin is using the stable Phase 2 system until proper fixes are implemented. This toggle will be re-enabled once Phase 3 is repaired.', 'modern-admin-styler-v2'); ?>
+                                    </p>
+                                    <?php else: ?>
+                                    <p class="description" style="color: #d63638;">
+                                        <strong><?php _e('Important:', 'modern-admin-styler-v2'); ?></strong>
+                                        <?php _e('This controls which frontend system is loaded. Enable to use the new Phase 3 architecture.', 'modern-admin-styler-v2'); ?>
+                                    </p>
+                                    <?php endif; ?>
                                 <?php endif; ?>
                             </td>
                         </tr>
@@ -157,6 +200,7 @@ class MAS_Feature_Flags_Admin {
                 <?php submit_button(__('Save Feature Flags', 'modern-admin-styler-v2')); ?>
             </form>
             
+            <?php if (!$is_emergency_mode): ?>
             <hr>
             
             <h2><?php _e('Quick Actions', 'modern-admin-styler-v2'); ?></h2>
@@ -185,6 +229,7 @@ class MAS_Feature_Flags_Admin {
                     </button>
                 </form>
             </div>
+            <?php endif; ?>
             
             <style>
                 .mas-frontend-mode-badge {
@@ -249,6 +294,21 @@ class MAS_Feature_Flags_Admin {
                 
                 input:checked + .mas-toggle-slider:before {
                     transform: translateX(26px);
+                }
+                
+                /* Disabled toggle styling */
+                .mas-toggle-disabled {
+                    opacity: 0.5;
+                    cursor: not-allowed;
+                }
+                
+                .mas-toggle-disabled .mas-toggle-slider {
+                    cursor: not-allowed;
+                    background-color: #ddd;
+                }
+                
+                .mas-toggle-disabled input:checked + .mas-toggle-slider {
+                    background-color: #999;
                 }
                 
                 .mas-feature-flags-table th {

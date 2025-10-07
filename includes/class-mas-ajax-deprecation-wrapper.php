@@ -89,7 +89,8 @@ class MAS_AJAX_Deprecation_Wrapper {
         $this->add_deprecation_headers($handler_name, $rest_endpoint);
         
         // Record usage statistics
-        $this->deprecation_service->record_handler_usage($handler_name);
+        // TODO: Implement record_handler_usage method in MAS_Deprecation_Service
+        // $this->deprecation_service->record_handler_usage($handler_name);
         
         // Log deprecation warning
         if ($this->deprecation_service->should_warn_for_handler($handler_name)) {

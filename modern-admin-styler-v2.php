@@ -725,7 +725,9 @@ class ModernAdminStylerV2 {
     
     /**
      * Enqueue CSS and JS on plugin settings pages
-     * Uses feature flags to conditionally load new or legacy frontend
+     * 
+     * ⚠️ EMERGENCY STABILIZATION: Phase 3 frontend disabled due to broken dependencies
+     * Using ONLY Phase 2 stable system until Phase 3 is properly fixed
      */
     public function enqueueAssets($hook) {
         // Check if we're on one of the plugin pages
@@ -748,10 +750,6 @@ class ModernAdminStylerV2 {
             return;
         }
         
-        // Load feature flags service
-        require_once MAS_V2_PLUGIN_DIR . 'includes/services/class-mas-feature-flags-service.php';
-        $flags_service = MAS_Feature_Flags_Service::get_instance();
-        
         // Always load base CSS
         wp_enqueue_style(
             'mas-v2-menu-reset',
@@ -771,33 +769,83 @@ class ModernAdminStylerV2 {
         wp_enqueue_style('thickbox');
         wp_enqueue_media();
         
-        // Check which frontend to load
-        $use_new_frontend = $flags_service->use_new_frontend();
+        // ⚠️ EMERGENCY STABILIZATION: Phase 3 frontend disabled
+        // Directly load Phase 2 stable system (no feature flag checks)
         
-        if ($use_new_frontend) {
-            // ✨ NEW PHASE 3 FRONTEND
-            $this->enqueue_new_frontend();
-        } else {
-            // 🔄 LEGACY FRONTEND (Phase 2)
-            $this->enqueue_legacy_frontend();
-        }
+        // Disable modular system and Phase 3 frontend
+        wp_add_inline_script('jquery', 
+            'window.MASDisableModules = true; ' .
+            'window.MASUseNewFrontend = false; ' .
+            'window.MASEmergencyMode = true;', 
+            'before'
+        );
         
-        // Localize script with feature flags
-        $script_handle = $use_new_frontend ? 'mas-v2-admin-app' : 'mas-v2-settings-form-handler';
-        wp_localize_script($script_handle, 'masV2Global', [
+        // Load ONLY Phase 2 stable system
+        
+        // 1. REST API client
+        wp_enqueue_script(
+            'mas-v2-rest-client',
+            MAS_V2_PLUGIN_URL . 'assets/js/mas-rest-client.js',
+            [],
+            MAS_V2_VERSION,
+            true
+        );
+        
+        // 2. Unified form handler (Phase 2) - handles all form submissions
+        wp_enqueue_script(
+            'mas-v2-settings-form-handler',
+            MAS_V2_PLUGIN_URL . 'assets/js/mas-settings-form-handler.js',
+            ['jquery', 'wp-color-picker', 'mas-v2-rest-client'],
+            MAS_V2_VERSION,
+            true
+        );
+        
+        // 3. Simple Live Preview - AJAX-based, proven to work
+        wp_enqueue_script(
+            'mas-v2-simple-live-preview',
+            MAS_V2_PLUGIN_URL . 'assets/js/simple-live-preview.js',
+            ['jquery', 'wp-color-picker', 'mas-v2-settings-form-handler'],
+            MAS_V2_VERSION,
+            true
+        );
+        
+        // Localize script with all required data
+        wp_localize_script('mas-v2-settings-form-handler', 'masV2Global', [
             'ajaxUrl' => admin_url('admin-ajax.php'),
+            'restUrl' => rest_url('mas/v2/'),
             'nonce' => wp_create_nonce('mas_v2_nonce'),
+            'restNonce' => wp_create_nonce('wp_rest'),
             'settings' => $this->getSettings(),
             'debug_mode' => defined('WP_DEBUG') && WP_DEBUG,
-            'featureFlags' => $flags_service->export_for_js(),
-            'frontendMode' => $use_new_frontend ? 'new' : 'legacy'
+            'frontendMode' => 'phase2-stable',
+            'emergencyMode' => true
         ]);
     }
     
     /**
      * Enqueue new Phase 3 frontend scripts
+     * 
+     * ⚠️ DISABLED FOR EMERGENCY STABILIZATION
+     * 
+     * This method has been disabled due to critical issues with Phase 3 frontend:
+     * - Broken dependencies (EventBus, StateManager, APIClient not properly initialized)
+     * - Handler conflicts causing settings save failures
+     * - Live preview not functioning correctly
+     * - Component system causing JavaScript errors
+     * 
+     * The plugin is now using ONLY the stable Phase 2 system (enqueued directly in enqueueAssets()).
+     * This method should NOT be re-enabled until all Phase 3 dependencies are properly fixed.
+     * 
+     * Related Requirements: 1.1, 1.2, 1.3
+     * See: .kiro/specs/emergency-frontend-stabilization/
      */
     private function enqueue_new_frontend() {
+        // EMERGENCY STABILIZATION: Method disabled - early return
+        // Phase 3 frontend has broken dependencies and causes critical failures
+        return;
+        
+        /* DISABLED CODE - DO NOT UNCOMMENT UNTIL PHASE 3 IS FIXED
+        
         // Disable legacy modules
         wp_add_inline_script('jquery', 'window.MASDisableModules = true; window.MASUseNewFrontend = true;', 'before');
         
@@ -904,12 +952,32 @@ class ModernAdminStylerV2 {
             MAS_V2_VERSION,
             true
         );
+        
+        END DISABLED CODE */
     }
     
     /**
      * Enqueue legacy Phase 2 frontend scripts
+     * 
+     * ⚠️ DISABLED FOR EMERGENCY STABILIZATION
+     * 
+     * This method has been replaced by inline script loading directly in enqueueAssets().
+     * The Phase 2 scripts are now loaded without any feature flag checks or conditional logic
+     * to ensure a single, clean code path for all frontend operations.
+     * 
+     * This method should remain disabled as long as emergency stabilization is active.
+     * All Phase 2 script loading is now handled directly in enqueueAssets() method.
+     * 
+     * Related Requirements: 3.4
+     * See: .kiro/specs/emergency-frontend-stabilization/
      */
     private function enqueue_legacy_frontend() {
+        // EMERGENCY STABILIZATION: Method disabled - early return
+        // Phase 2 scripts are now loaded directly in enqueueAssets() without feature flag checks
+        return;
+        
+        /* DISABLED CODE - Phase 2 scripts now loaded inline in enqueueAssets()
+        
         // Disable modular system to avoid handler conflicts
         wp_add_inline_script('jquery', 'window.MASDisableModules = true; window.MASUseNewFrontend = false;', 'before');
         
@@ -939,6 +1007,8 @@ class ModernAdminStylerV2 {
             MAS_V2_VERSION,
             true
         );
+        
+        END DISABLED CODE */
     }
     
     /**
@@ -6042,18 +6112,16 @@ class ModernAdminStylerV2 {
      * @return void
      */
     public function init_deprecation_wrapper() {
-        // Load required classes
-        require_once MAS_V2_PLUGIN_DIR . 'includes/services/class-mas-feature-flags-service.php';
-        require_once MAS_V2_PLUGIN_DIR . 'includes/services/class-mas-deprecation-service.php';
-        require_once MAS_V2_PLUGIN_DIR . 'includes/services/class-mas-operation-lock-service.php';
-        require_once MAS_V2_PLUGIN_DIR . 'includes/services/class-mas-request-deduplication-service.php';
-        require_once MAS_V2_PLUGIN_DIR . 'includes/class-mas-ajax-deprecation-wrapper.php';
-        require_once MAS_V2_PLUGIN_DIR . 'includes/class-mas-migration-utility.php';
-        require_once MAS_V2_PLUGIN_DIR . 'includes/admin/class-mas-feature-flags-admin.php';
-        require_once MAS_V2_PLUGIN_DIR . 'includes/admin/class-mas-migration-admin.php';
+        // TEMPORARY FIX: Deprecation wrapper disabled due to missing method
+        // TODO: Fix MAS_Deprecation_Service::record_handler_usage() method
+        // The deprecation wrapper was causing 500 errors on AJAX requests
         
-        // Initialize deprecation wrapper
-        $this->ajax_deprecation_wrapper = new MAS_AJAX_Deprecation_Wrapper($this);
+        // Load required classes for other functionality
+        require_once MAS_V2_PLUGIN_DIR . 'includes/services/class-mas-feature-flags-service.php';
+        require_once MAS_V2_PLUGIN_DIR . 'includes/admin/class-mas-feature-flags-admin.php';
+        
+        // Deprecation wrapper temporarily disabled
+        // $this->ajax_deprecation_wrapper = new MAS_AJAX_Deprecation_Wrapper($this);
     }
 }
 
