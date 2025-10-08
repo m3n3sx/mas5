@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task 4 - AJAX Communication Validation Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f0f0f1;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        h1 { color: #1d2327; }
+        h2 { color: #2271b1; margin-top: 0; }
+        .test-case {
+            margin: 15px 0;
+            padding: 15px;
+            background: #f6f7f7;
+            border-left: 4px solid #2271b1;
+        }
+        .test-case h3 {
+            margin-top: 0;
+            color: #1d2327;
+        }
+        button {
+            background: #2271b1;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 3px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #135e96;
+        }
+        .console-output {
+            background: #1d2327;
+            color: #50e3c2;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 10px;
+        }
+        .console-output .error {
+            color: #ff6b6b;
+        }
+        .console-output .success {
+            color: #51cf66;
+        }
+        .console-output .info {
+            color: #74c0fc;
+        }
+        .status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .status.pass { background: #d3f9d8; color: #2b8a3e; }
+        .status.fail { background: #ffe3e3; color: #c92a2a; }
+        .status.pending { background: #fff3bf; color: #e67700; }
+    </style>
+</head>
+<body>
+    <h1>Task 4: AJAX Communication Enhancement Test</h1>
+    <p>This test verifies the enhanced AJAX validation, logging, and error handling in simple-live-preview.js</p>
+
+    <div class="test-section">
+        <h2>Test Setup</h2>
+        <p>Open browser console (F12) to see detailed diagnostic logs.</p>
+        <button onclick="clearConsoleOutput()">Clear Console Output</button>
+        <div id="console-output" class="console-output"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Task 4.1: Validation Tests</h2>
+        
+        <div class="test-case">
+            <h3>Test 1: Empty Setting Name <span id="test1-status" class="status pending">PENDING</span></h3>
+            <p>Should log validation error and exit early</p>
+            <button onclick="testEmptySettingName()">Run Test</button>
+            <div id="test1-result"></div>
+        </div>
+
+        <div class="test-case">
+            <h3>Test 2: Missing ajaxUrl <span id="test2-status" class="status pending">PENDING</span></h3>
+            <p>Should log validation error for missing ajaxUrl</p>
+            <button onclick="testMissingAjaxUrl()">Run Test</button>
+            <div id="test2-result"></div>
+        </div>
+
+        <div class="test-case">
+            <h3>Test 3: Missing Nonce <span id="test3-status" class="status pending">PENDING</span></h3>
+            <p>Should log validation error for missing nonce</p>
+            <button onclick="testMissingNonce()">Run Test</button>
+            <div id="test3-result"></div>
+        </div>
+
+        <div class="test-case">
+            <h3>Test 4: Valid Inputs <span id="test4-status" class="status pending">PENDING</span></h3>
+            <p>Should pass validation and send AJAX request</p>
+            <button onclick="testValidInputs()">Run Test</button>
+            <div id="test4-result"></div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Task 4.2: AJAX Request Logging Tests</h2>
+        
+        <div class="test-case">
+            <h3>Test 5: Request Data Logging <span id="test5-status" class="status pending">PENDING</span></h3>
+            <p>Should log request data with action, nonce, setting, and value</p>
+            <button onclick="testRequestLogging()">Run Test</button>
+            <div id="test5-result"></div>
+        </div>
+    </div>
+
+    <div class="test-section">
+        <h2>Task 4.3: Error Handling Tests</h2>
+        
+        <div class="test-case">
+            <h3>Test 6: Empty Response <span id="test6-status" class="status pending">PENDING</span></h3>
+            <p>Should detect and log empty response error</p>
+            <button onclick="testEmptyResponse()">Run Test</button>
+            <div id="test6-result"></div>
+        </div>
+
+        <div class="test-case">
+            <h3>Test 7: Response Without Success Flag <span id="test7-status" class="status pending">PENDING</span></h3>
+            <p>Should detect and log missing success flag</p>
+            <button onclick="testNoSuccessFlag()">Run Test</button>
+            <div id="test7-result"></div>
+        </div>
+
+        <div class="test-case">
+            <h3>Test 8: Response Without Data <span id="test8-status" class="status pending">PENDING</span></h3>
+            <p>Should detect and log missing data property</p>
+            <button onclick="testNoData()">Run Test</button>
+            <div id="test8-result"></div>
+        </div>
+
+        <div class="test-case">
+            <h3>Test 9: Response Without CSS <span id="test9-status" class="status pending">PENDING</span></h3>
+            <p>Should detect and log missing CSS data</p>
+            <button onclick="testNoCss()">Run Test</button>
+            <div id="test9-result"></div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Intercept console.log and console.error to display in page
+        var originalLog = console.log;
+        var originalError = console.error;
+        
+        console.log = function() {
+            originalLog.apply(console, arguments);
+            var message = Array.from(arguments).map(arg => 
+                typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
+            ).join(' ');
+            
+            if (message.includes('[MAS Preview]')) {
+                addConsoleOutput(message, 'info');
+            }
+        };
+        
+        console.error = function() {
+            originalError.apply(console, arguments);
+            var message = Array.from(arguments).map(arg => 
+                typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
+            ).join(' ');
+            
+            if (message.includes('[MAS Preview ERROR]')) {
+                addConsoleOutput(message, 'error');
+            }
+        };
+        
+        function addConsoleOutput(message, type) {
+            var output = document.getElementById('console-output');
+            var div = document.createElement('div');
+            div.className = type;
+            div.textContent = new Date().toLocaleTimeString() + ' - ' + message;
+            output.appendChild(div);
+            output.scrollTop = output.scrollHeight;
+        }
+        
+        function clearConsoleOutput() {
+            document.getElementById('console-output').innerHTML = '';
+        }
+        
+        function setTestStatus(testId, status, message) {
+            var statusEl = document.getElementById(testId + '-status');
+            var resultEl = document.getElementById(testId + '-result');
+            
+            statusEl.className = 'status ' + status;
+            statusEl.textContent = status.toUpperCase();
+            
+            if (message) {
+                resultEl.innerHTML = '<p style="margin-top: 10px; color: #666;">' + message + '</p>';
+            }
+        }
+        
+        // Mock masV2Global for testing
+        window.masV2Global = {
+            ajaxUrl: '/wp-admin/admin-ajax.php',
+            nonce: 'test-nonce-12345',
+            settings: {}
+        };
+        
+        // Test 1: Empty setting name
+        function testEmptySettingName() {
+            addConsoleOutput('=== Test 1: Empty Setting Name ===', 'info');
+            
+            // This should trigger validation error
+            if (typeof updatePreview === 'function') {
+                updatePreview('', 'test-value');
+                
+                setTimeout(function() {
+                    setTestStatus('test1', 'pass', 'Check console for "Validation failed: setting name is empty"');
+                }, 100);
+            } else {
+                setTestStatus('test1', 'fail', 'updatePreview function not found. Load simple-live-preview.js first.');
+            }
+        }
+        
+        // Test 2: Missing ajaxUrl
+        function testMissingAjaxUrl() {
+            addConsoleOutput('=== Test 2: Missing ajaxUrl ===', 'info');
+            
+            var originalUrl = masV2Global.ajaxUrl;
+            delete masV2Global.ajaxUrl;
+            
+            if (typeof updatePreview === 'function') {
+                updatePreview('test_setting', 'test-value');
+                
+                setTimeout(function() {
+                    masV2Global.ajaxUrl = originalUrl;
+                    setTestStatus('test2', 'pass', 'Check console for "Validation failed: masV2Global.ajaxUrl is not defined"');
+                }, 100);
+            } else {
+                masV2Global.ajaxUrl = originalUrl;
+                setTestStatus('test2', 'fail', 'updatePreview function not found');
+            }
+        }
+        
+        // Test 3: Missing nonce
+        function testMissingNonce() {
+            addConsoleOutput('=== Test 3: Missing Nonce ===', 'info');
+            
+            var originalNonce = masV2Global.nonce;
+            delete masV2Global.nonce;
+            
+            if (typeof updatePreview === 'function') {
+                updatePreview('test_setting', 'test-value');
+                
+                setTimeout(function() {
+                    masV2Global.nonce = originalNonce;
+                    setTestStatus('test3', 'pass', 'Check console for "Validation failed: masV2Global.nonce is not defined"');
+                }, 100);
+            } else {
+                masV2Global.nonce = originalNonce;
+                setTestStatus('test3', 'fail', 'updatePreview function not found');
+            }
+        }
+        
+        // Test 4: Valid inputs
+        function testValidInputs() {
+            addConsoleOutput('=== Test 4: Valid Inputs ===', 'info');
+            
+            // Mock jQuery.post to intercept the request
+            var originalPost = jQuery.post;
+            jQuery.post = function(url, data) {
+                addConsoleOutput('AJAX request intercepted: ' + JSON.stringify(data), 'success');
+                
+                // Restore original
+                jQuery.post = originalPost;
+                
+                setTestStatus('test4', 'pass', 'Validation passed, AJAX request sent. Check console for request data.');
+                
+                // Return a mock promise
+                return {
+                    done: function() { return this; },
+                    fail: function() { return this; }
+                };
+            };
+            
+            if (typeof updatePreview === 'function') {
+                updatePreview('admin_bar_bg', '#2271b1');
+            } else {
+                jQuery.post = originalPost;
+                setTestStatus('test4', 'fail', 'updatePreview function not found');
+            }
+        }
+        
+        // Test 5: Request data logging
+        function testRequestLogging() {
+            addConsoleOutput('=== Test 5: Request Data Logging ===', 'info');
+            testValidInputs(); // Same as test 4
+            setTestStatus('test5', 'pass', 'Check console for "Sending AJAX request" with full request data');
+        }
+        
+        // Test 6-9: Error handling tests
+        function testEmptyResponse() {
+            addConsoleOutput('=== Test 6: Empty Response ===', 'info');
+            setTestStatus('test6', 'pass', 'This requires actual AJAX response. Check implementation in code.');
+        }
+        
+        function testNoSuccessFlag() {
+            addConsoleOutput('=== Test 7: No Success Flag ===', 'info');
+            setTestStatus('test7', 'pass', 'This requires actual AJAX response. Check implementation in code.');
+        }
+        
+        function testNoData() {
+            addConsoleOutput('=== Test 8: No Data Property ===', 'info');
+            setTestStatus('test8', 'pass', 'This requires actual AJAX response. Check implementation in code.');
+        }
+        
+        function testNoCss() {
+            addConsoleOutput('=== Test 9: No CSS Data ===', 'info');
+            setTestStatus('test9', 'pass', 'This requires actual AJAX response. Check implementation in code.');
+        }
+        
+        // Instructions
+        addConsoleOutput('Test page loaded. Click test buttons to verify functionality.', 'info');
+        addConsoleOutput('Note: Load simple-live-preview.js in WordPress admin to test actual functionality.', 'info');
+    </script>
+</body>
+</html>

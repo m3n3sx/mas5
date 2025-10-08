@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task 7 - Form Handler Functional Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background: #f1f1f1;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+        .pass { color: #0073aa; }
+        .fail { color: #d63638; }
+        .warning { color: #dba617; }
+        .info { color: #72777c; }
+        
+        /* Mock WordPress admin styles */
+        .wrap {
+            margin: 10px 0 0 -20px;
+        }
+        .wrap h1 {
+            font-size: 23px;
+            font-weight: 400;
+            margin: 0;
+            padding: 9px 0 4px;
+            line-height: 1.3;
+        }
+        
+        /* Form styles */
+        #mas-v2-settings-form {
+            background: #fff;
+            border: 1px solid #c3c4c7;
+            border-radius: 4px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .form-table {
+            width: 100%;
+        }
+        
+        .form-table th {
+            text-align: left;
+            padding: 20px 10px 20px 0;
+            width: 200px;
+            vertical-align: top;
+        }
+        
+        .form-table td {
+            padding: 15px 10px;
+        }
+        
+        input[type="text"], input[type="color"], select {
+            width: 200px;
+            padding: 3px 5px;
+            font-size: 13px;
+        }
+        
+        input[type="checkbox"] {
+            margin-right: 5px;
+        }
+        
+        .button-primary {
+            background: #2271b1;
+            border-color: #2271b1;
+            color: #fff;
+            text-decoration: none;
+            text-shadow: none;
+            display: inline-block;
+            font-size: 13px;
+            line-height: 2.15384615;
+            min-height: 30px;
+            margin: 0;
+            padding: 0 10px;
+            cursor: pointer;
+            border-width: 1px;
+            border-style: solid;
+            border-radius: 3px;
+            white-space: nowrap;
+            box-sizing: border-box;
+        }
+        
+        .button-primary:hover {
+            background: #135e96;
+            border-color: #135e96;
+        }
+        
+        .button-primary:disabled {
+            background: #a7aaad !important;
+            border-color: #a7aaad !important;
+            cursor: default;
+        }
+        
+        /* Notification styles */
+        .notice {
+            background: #fff;
+            border-left: 4px solid #00a0d2;
+            box-shadow: 0 1px 1px 0 rgba(0,0,0,.1);
+            margin: 5px 0 15px;
+            padding: 1px 12px;
+        }
+        
+        .notice-success {
+            border-left-color: #00a32a;
+        }
+        
+        .notice-error {
+            border-left-color: #d63638;
+        }
+        
+        .notice-warning {
+            border-left-color: #dba617;
+        }
+        
+        /* Test results */
+        .test-results {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 3px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .test-button {
+            margin: 5px;
+            padding: 8px 15px;
+            background: #f0f0f1;
+            border: 1px solid #c3c4c7;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        
+        .test-button:hover {
+            background: #e9e9ea;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="wrap">
+            <h1>🔧 Task 7 - Form Handler Functional Test</h1>
+            <p><strong>Purpose:</strong> Test mas-settings-form-handler.js functionality with REST API and AJAX fallback</p>
+        </div>
+
+        <!-- Test Controls -->
+        <div class="test-section">
+            <h2>Test Controls</h2>
+            <button class="test-button" onclick="runDiagnostics()">Run Diagnostics</button>
+            <button class="test-button" onclick="testRestAPI()">Test REST API</button>
+            <button class="test-button" onclick="testAjaxFallback()">Test AJAX Fallback</button>
+            <button class="test-button" onclick="testErrorHandling()">Test Error Handling</button>
+            <button class="test-button" onclick="clearResults()">Clear Results</button>
+        </div>
+
+        <!-- Test Results -->
+        <div class="test-section">
+            <h2>Test Results</h2>
+            <div id="test-results" class="test-results">
+                Click a test button to see results...
+            </div>
+        </div>
+
+        <!-- Mock WordPress Admin Form -->
+        <div class="test-section">
+            <h2>Mock Settings Form</h2>
+            <form id="mas-v2-settings-form" method="post">
+                <table class="form-table">
+                    <tr>
+                        <th scope="row">Menu Background Color</th>
+                        <td>
+                            <input type="color" name="menu_background" value="#23282d" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Menu Text Color</th>
+                        <td>
+                            <input type="color" name="menu_text_color" value="#a7aaad" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Enable Live Preview</th>
+                        <td>
+                            <input type="checkbox" name="enable_live_preview" value="1" checked />
+                            <label>Enable real-time preview of changes</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Debug Mode</th>
+                        <td>
+                            <input type="checkbox" name="debug_mode" value="1" />
+                            <label>Enable debug logging</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">Theme Preset</th>
+                        <td>
+                            <select name="theme_preset">
+                                <option value="">Select a preset...</option>
+                                <option value="dark">Dark Theme</option>
+                                <option value="light">Light Theme</option>
+                                <option value="blue">Blue Theme</option>
+                            </select>
+                        </td>
+                    </tr>
+                </table>
+                
+                <p class="submit">
+                    <button type="submit" class="button-primary">Save Settings</button>
+                    <button type="button" class="mas-reset-settings button">Reset to Defaults</button>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Mock WordPress globals -->
+    <script>
+        // Mock WordPress API settings
+        window.wpApiSettings = {
+            root: '/wp-json/',
+            nonce: 'mock-nonce-12345',
+            versionString: 'wp/v2/'
+        };
+        
+        // Mock MAS global data
+        window.masV2Global = {
+            ajaxUrl: '/wp-admin/admin-ajax.php',
+            nonce: 'mock-mas-nonce-67890',
+            debug_mode: true,
+            rest_url: '/wp-json/mas-v2/v1/',
+            version: '2.2.0'
+        };
+        
+        // Mock jQuery (simplified)
+        if (typeof jQuery === 'undefined') {
+            window.jQuery = window.$ = {
+                ajax: function(options) {
+                    log('Mock AJAX call:', options);
+                    
+                    // Simulate AJAX response
+                    setTimeout(() => {
+                        if (options.url && options.url.includes('admin-ajax.php')) {
+                            // Mock successful AJAX response
+                            if (options.success) {
+                                options.success({
+                                    success: true,
+                                    data: {
+                                        message: 'Settings saved via AJAX fallback',
+                                        settings_count: 5
+                                    }
+                                });
+                            }
+                        } else {
+                            // Mock AJAX error
+                            if (options.error) {
+                                options.error({}, 'error', 'Mock AJAX error');
+                            }
+                        }
+                    }, 500);
+                },
+                fn: {}
+            };
+        }
+        
+        // Mock Fetch API for REST calls
+        const originalFetch = window.fetch;
+        window.fetch = function(url, options) {
+            log('Mock Fetch call:', { url, options });
+            
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    if (url.includes('/wp-json/mas-v2/v1/')) {
+                        // Mock successful REST API response
+                        resolve({
+                            ok: true,
+                            status: 200,
+                            json: () => Promise.resolve({
+                                success: true,
+                                data: {
+                                    message: 'Settings saved via REST API',
+                                    settings_count: 5
+                                }
+                            }),
+                            headers: {
+                                get: (name) => {
+                                    if (name === 'ETag') return '"mock-etag-123"';
+                                    if (name === 'Last-Modified') return new Date().toUTCString();
+                                    return null;
+                                }
+                            }
+                        });
+                    } else {
+                        // Mock REST API error
+                        resolve({
+                            ok: false,
+                            status: 500,
+                            json: () => Promise.resolve({
+                                success: false,
+                                message: 'Mock REST API error'
+                            })
+                        });
+                    }
+                }, 300);
+            });
+        };
+    </script>
+
+    <!-- Load the actual form handler -->
+    <script src="assets/js/mas-settings-form-handler.js"></script>
+
+    <!-- Test functions -->
+    <script>
+        function log(...args) {
+            const results = document.getElementById('test-results');
+            const timestamp = new Date().toLocaleTimeString();
+            results.innerHTML += `[${timestamp}] ${args.map(arg => 
+                typeof arg === 'object' ? JSON.stringify(arg, null, 2) : arg
+            ).join(' ')}\n`;
+            results.scrollTop = results.scrollHeight;
+        }
+
+        function clearResults() {
+            document.getElementById('test-results').innerHTML = 'Results cleared...\n';
+        }
+
+        function runDiagnostics() {
+            log('=== RUNNING DIAGNOSTICS ===');
+            
+            // Check if handler is loaded
+            if (typeof window.masFormHandler !== 'undefined') {
+                log('✅ PASS: MAS Form Handler is loaded');
+                log('Handler object:', window.masFormHandler);
+            } else {
+                log('❌ FAIL: MAS Form Handler not found');
+            }
+            
+            // Check if form is found
+            const form = document.querySelector('#mas-v2-settings-form');
+            if (form) {
+                log('✅ PASS: Settings form found');
+            } else {
+                log('❌ FAIL: Settings form not found');
+            }
+            
+            // Check dependencies
+            if (typeof jQuery !== 'undefined') {
+                log('✅ PASS: jQuery available');
+            } else {
+                log('❌ FAIL: jQuery not available');
+            }
+            
+            if (typeof window.wpApiSettings !== 'undefined') {
+                log('✅ PASS: WordPress API settings available');
+            } else {
+                log('❌ FAIL: WordPress API settings not available');
+            }
+            
+            if (typeof window.masV2Global !== 'undefined') {
+                log('✅ PASS: MAS global data available');
+            } else {
+                log('❌ FAIL: MAS global data not available');
+            }
+            
+            log('=== DIAGNOSTICS COMPLETE ===');
+        }
+
+        function testRestAPI() {
+            log('=== TESTING REST API ===');
+            
+            // Trigger form submission
+            const form = document.querySelector('#mas-v2-settings-form');
+            if (form) {
+                log('Triggering form submission...');
+                const event = new Event('submit', { bubbles: true, cancelable: true });
+                form.dispatchEvent(event);
+            } else {
+                log('❌ FAIL: Form not found');
+            }
+        }
+
+        function testAjaxFallback() {
+            log('=== TESTING AJAX FALLBACK ===');
+            
+            // Temporarily disable REST API
+            const originalWpApiSettings = window.wpApiSettings;
+            delete window.wpApiSettings;
+            
+            log('Disabled REST API settings to force AJAX fallback');
+            
+            // Trigger form submission
+            const form = document.querySelector('#mas-v2-settings-form');
+            if (form) {
+                log('Triggering form submission...');
+                const event = new Event('submit', { bubbles: true, cancelable: true });
+                form.dispatchEvent(event);
+            }
+            
+            // Restore REST API settings after test
+            setTimeout(() => {
+                window.wpApiSettings = originalWpApiSettings;
+                log('Restored REST API settings');
+            }, 2000);
+        }
+
+        function testErrorHandling() {
+            log('=== TESTING ERROR HANDLING ===');
+            
+            // Mock fetch to return error
+            const originalFetch = window.fetch;
+            window.fetch = function() {
+                return Promise.reject(new Error('Mock network error'));
+            };
+            
+            log('Mocked fetch to return error');
+            
+            // Trigger form submission
+            const form = document.querySelector('#mas-v2-settings-form');
+            if (form) {
+                log('Triggering form submission...');
+                const event = new Event('submit', { bubbles: true, cancelable: true });
+                form.dispatchEvent(event);
+            }
+            
+            // Restore fetch after test
+            setTimeout(() => {
+                window.fetch = originalFetch;
+                log('Restored original fetch');
+            }, 2000);
+        }
+
+        // Listen for custom events from the form handler
+        document.addEventListener('mas-settings-saved', function(e) {
+            log('🎉 Settings saved event received:', e.detail);
+        });
+
+        document.addEventListener('mas-settings-error', function(e) {
+            log('❌ Settings error event received:', e.detail);
+        });
+
+        // Auto-run diagnostics on load
+        window.addEventListener('load', function() {
+            setTimeout(runDiagnostics, 1000);
+        });
+    </script>
+</body>
+</html>

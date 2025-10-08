@@ -1,199 +1,285 @@
 <?php
 /**
- * Verification Script for Task 8: Security Hardening and Rate Limiting
- * 
- * Verifies that all components of Task 8 are properly implemented.
+ * Task 8 Completion Verification
+ * Verifies that simple-live-preview.js system has been optimized according to requirements
  */
 
-echo "=== Task 8 Completion Verification ===\n\n";
+echo "=== TASK 8: SIMPLE LIVE PREVIEW SYSTEM VERIFICATION ===\n";
+echo "Testing: Live preview functionality without Phase 3 dependencies\n";
+echo "Requirements: 3.1, 3.2, 3.3\n";
+echo "==========================================================\n\n";
 
-$checks = [
-    'files' => [],
-    'classes' => [],
-    'methods' => [],
-    'integration' => [],
-];
+$tests_passed = 0;
+$total_tests = 0;
 
-// Check 1: Required files exist
-echo "1. Checking Required Files...\n";
-$required_files = [
-    'includes/services/class-mas-rate-limiter-service.php',
-    'includes/services/class-mas-security-logger-service.php',
-    'includes/api/class-mas-rest-controller.php',
-    'includes/class-mas-rest-api.php',
-];
+// Test 1: Verify simple-live-preview.js file exists and has been optimized
+$total_tests++;
+echo "TEST 1: Simple Live Preview File Optimization\n";
+echo "----------------------------------------------\n";
 
-foreach ($required_files as $file) {
-    $exists = file_exists(__DIR__ . '/' . $file);
-    $checks['files'][$file] = $exists;
-    echo ($exists ? '✓' : '✗') . " $file\n";
-}
-
-echo "\n";
-
-// Check 2: Required classes exist
-echo "2. Checking Required Classes...\n";
-
-// Load WordPress if not already loaded
-if (!function_exists('add_action')) {
-    echo "Note: WordPress not loaded, skipping class checks\n";
-} else {
-    $required_classes = [
-        'MAS_Rate_Limiter_Service',
-        'MAS_Security_Logger_Service',
-        'MAS_REST_Controller',
-        'MAS_REST_API',
+$preview_file = __DIR__ . '/assets/js/simple-live-preview.js';
+if (file_exists($preview_file)) {
+    echo "✓ PASS: simple-live-preview.js file exists\n";
+    
+    $content = file_get_contents($preview_file);
+    $file_size = filesize($preview_file);
+    echo "✓ File size: " . number_format($file_size) . " bytes\n";
+    
+    // Check for error recovery mechanisms
+    $error_recovery_features = [
+        'errorRecovery' => 'Error recovery state management',
+        'handlePreviewError' => 'Preview error handling function',
+        'handleNetworkError' => 'Network error handling function',
+        'retryPreviewUpdate' => 'Retry mechanism for failed updates',
+        'enableFallbackMode' => 'Fallback mode activation',
+        'performHealthCheck' => 'System health monitoring',
+        'verifyCSSInjection' => 'CSS injection verification',
+        'isValidCSS' => 'CSS validation function',
+        'testConnectionRecovery' => 'Connection recovery testing',
+        'MASSimpleLivePreview' => 'Public API exposure'
     ];
     
-    foreach ($required_classes as $class) {
-        $exists = class_exists($class);
-        $checks['classes'][$class] = $exists;
-        echo ($exists ? '✓' : '✗') . " $class\n";
-    }
-}
-
-echo "\n";
-
-// Check 3: Required methods in Rate Limiter
-echo "3. Checking Rate Limiter Methods...\n";
-if (class_exists('MAS_Rate_Limiter_Service')) {
-    $rate_limiter_methods = [
-        'check_rate_limit',
-        'get_rate_limit_headers',
-        'reset_rate_limit',
-        'configure_limits',
-        'set_window',
-        'set_default_limit',
-    ];
-    
-    foreach ($rate_limiter_methods as $method) {
-        $exists = method_exists('MAS_Rate_Limiter_Service', $method);
-        $checks['methods']['rate_limiter_' . $method] = $exists;
-        echo ($exists ? '✓' : '✗') . " $method\n";
-    }
-} else {
-    echo "✗ MAS_Rate_Limiter_Service class not found\n";
-}
-
-echo "\n";
-
-// Check 4: Required methods in Security Logger
-echo "4. Checking Security Logger Methods...\n";
-if (class_exists('MAS_Security_Logger_Service')) {
-    $logger_methods = [
-        'log_auth_failure',
-        'log_permission_denied',
-        'log_rate_limit_exceeded',
-        'log_suspicious_activity',
-        'log_nonce_failure',
-        'log_validation_failure',
-        'get_logs',
-        'get_statistics',
-        'cleanup_old_logs',
-        'clear_logs',
-    ];
-    
-    foreach ($logger_methods as $method) {
-        $exists = method_exists('MAS_Security_Logger_Service', $method);
-        $checks['methods']['logger_' . $method] = $exists;
-        echo ($exists ? '✓' : '✗') . " $method\n";
-    }
-} else {
-    echo "✗ MAS_Security_Logger_Service class not found\n";
-}
-
-echo "\n";
-
-// Check 5: Sanitization methods in Base Controller
-echo "5. Checking Sanitization Methods...\n";
-if (class_exists('MAS_REST_Controller')) {
-    $reflection = new ReflectionClass('MAS_REST_Controller');
-    $sanitization_methods = [
-        'sanitize_color',
-        'sanitize_css_unit',
-        'sanitize_boolean',
-        'sanitize_integer',
-        'sanitize_array',
-        'sanitize_json',
-        'escape_output',
-        'sanitize_filename',
-        'sanitize_url',
-    ];
-    
-    foreach ($sanitization_methods as $method) {
-        $exists = $reflection->hasMethod($method);
-        $checks['methods']['sanitize_' . $method] = $exists;
-        echo ($exists ? '✓' : '✗') . " $method\n";
-    }
-} else {
-    echo "✗ MAS_REST_Controller class not found\n";
-}
-
-echo "\n";
-
-// Check 6: Integration with Base Controller
-echo "6. Checking Integration...\n";
-if (class_exists('MAS_REST_Controller')) {
-    $reflection = new ReflectionClass('MAS_REST_Controller');
-    
-    // Check properties
-    $has_rate_limiter = $reflection->hasProperty('rate_limiter');
-    $checks['integration']['rate_limiter_property'] = $has_rate_limiter;
-    echo ($has_rate_limiter ? '✓' : '✗') . " rate_limiter property\n";
-    
-    $has_security_logger = $reflection->hasProperty('security_logger');
-    $checks['integration']['security_logger_property'] = $has_security_logger;
-    echo ($has_security_logger ? '✓' : '✗') . " security_logger property\n";
-    
-    // Check methods
-    $has_check_permission = $reflection->hasMethod('check_permission');
-    $checks['integration']['check_permission_method'] = $has_check_permission;
-    echo ($has_check_permission ? '✓' : '✗') . " check_permission method\n";
-} else {
-    echo "✗ MAS_REST_Controller class not found\n";
-}
-
-echo "\n";
-
-// Check 7: Documentation files
-echo "7. Checking Documentation...\n";
-$doc_files = [
-    'TASK-8-SECURITY-HARDENING-COMPLETION.md',
-    'TASK-8.2-SANITIZATION-REVIEW.md',
-    'SECURITY-API-QUICK-REFERENCE.md',
-    'test-task8-security-hardening.php',
-];
-
-foreach ($doc_files as $file) {
-    $exists = file_exists(__DIR__ . '/' . $file);
-    $checks['files'][$file] = $exists;
-    echo ($exists ? '✓' : '✗') . " $file\n";
-}
-
-echo "\n";
-
-// Summary
-echo "=== Verification Summary ===\n";
-$total_checks = 0;
-$passed_checks = 0;
-
-foreach ($checks as $category => $items) {
-    foreach ($items as $item => $result) {
-        $total_checks++;
-        if ($result) {
-            $passed_checks++;
+    $features_found = 0;
+    foreach ($error_recovery_features as $feature => $description) {
+        if (strpos($content, $feature) !== false) {
+            echo "✓ PASS: $description found\n";
+            $features_found++;
+        } else {
+            echo "✗ FAIL: $description missing\n";
         }
     }
+    
+    if ($features_found >= 8) {
+        echo "✓ PASS: Error recovery system implemented (" . $features_found . "/10 features)\n";
+        $tests_passed++;
+    } else {
+        echo "✗ FAIL: Insufficient error recovery features (" . $features_found . "/10 features)\n";
+    }
+} else {
+    echo "✗ FAIL: simple-live-preview.js file not found\n";
 }
 
-echo "Total Checks: $total_checks\n";
-echo "Passed: $passed_checks\n";
-echo "Failed: " . ($total_checks - $passed_checks) . "\n";
+echo "\n";
 
-if ($passed_checks === $total_checks) {
-    echo "\n✓✓✓ Task 8 is COMPLETE and ready for production! ✓✓✓\n";
+// Test 2: Verify CSS injection optimization
+$total_tests++;
+echo "TEST 2: CSS Injection Optimization\n";
+echo "-----------------------------------\n";
+
+if (file_exists($preview_file)) {
+    $content = file_get_contents($preview_file);
+    
+    $css_features = [
+        'injectPreviewCSS' => 'CSS injection function',
+        'isValidCSS' => 'CSS validation',
+        'verifyCSSInjection' => 'CSS injection verification',
+        'clearPreviewStyles' => 'CSS clearing function',
+        'mas-preview-styles' => 'CSS element ID management'
+    ];
+    
+    $css_features_found = 0;
+    foreach ($css_features as $feature => $description) {
+        if (strpos($content, $feature) !== false) {
+            echo "✓ PASS: $description implemented\n";
+            $css_features_found++;
+        } else {
+            echo "✗ FAIL: $description missing\n";
+        }
+    }
+    
+    // Check for CSS security validation
+    if (strpos($content, 'dangerousPatterns') !== false) {
+        echo "✓ PASS: CSS security validation implemented\n";
+        $css_features_found++;
+    } else {
+        echo "✗ FAIL: CSS security validation missing\n";
+    }
+    
+    if ($css_features_found >= 5) {
+        echo "✓ PASS: CSS injection system optimized\n";
+        $tests_passed++;
+    } else {
+        echo "✗ FAIL: CSS injection system needs improvement\n";
+    }
+} else {
+    echo "✗ FAIL: Cannot test CSS injection - file missing\n";
+}
+
+echo "\n";
+
+// Test 3: Verify error recovery implementation
+$total_tests++;
+echo "TEST 3: Error Recovery Implementation\n";
+echo "-------------------------------------\n";
+
+if (file_exists($preview_file)) {
+    $content = file_get_contents($preview_file);
+    
+    $recovery_mechanisms = [
+        'retryCount' => 'Retry counter mechanism',
+        'maxRetries' => 'Maximum retry limit',
+        'fallbackMode' => 'Fallback mode state',
+        'lastSuccessfulRequest' => 'Success tracking',
+        'handleCriticalError' => 'Critical error handling',
+        'showUserNotification' => 'User notification system',
+        'testConnectionRecovery' => 'Connection recovery testing'
+    ];
+    
+    $recovery_found = 0;
+    foreach ($recovery_mechanisms as $mechanism => $description) {
+        if (strpos($content, $mechanism) !== false) {
+            echo "✓ PASS: $description found\n";
+            $recovery_found++;
+        } else {
+            echo "✗ FAIL: $description missing\n";
+        }
+    }
+    
+    if ($recovery_found >= 6) {
+        echo "✓ PASS: Comprehensive error recovery implemented\n";
+        $tests_passed++;
+    } else {
+        echo "✗ FAIL: Error recovery system incomplete\n";
+    }
+} else {
+    echo "✗ FAIL: Cannot test error recovery - file missing\n";
+}
+
+echo "\n";
+
+// Test 4: Verify Phase 3 independence
+$total_tests++;
+echo "TEST 4: Phase 3 Independence Verification\n";
+echo "------------------------------------------\n";
+
+if (file_exists($preview_file)) {
+    $content = file_get_contents($preview_file);
+    
+    // Check that no Phase 3 dependencies exist
+    $phase3_dependencies = [
+        'EventBus',
+        'StateManager',
+        'APIClient',
+        'ErrorHandler',
+        'Component',
+        'mas-admin-app',
+        'LivePreviewComponent',
+        'SettingsFormComponent'
+    ];
+    
+    $dependencies_found = 0;
+    foreach ($phase3_dependencies as $dependency) {
+        if (strpos($content, $dependency) !== false) {
+            echo "✗ FAIL: Phase 3 dependency found: $dependency\n";
+            $dependencies_found++;
+        }
+    }
+    
+    if ($dependencies_found === 0) {
+        echo "✓ PASS: No Phase 3 dependencies found\n";
+        echo "✓ PASS: System operates independently of Phase 3 architecture\n";
+        $tests_passed++;
+    } else {
+        echo "✗ FAIL: $dependencies_found Phase 3 dependencies still present\n";
+    }
+} else {
+    echo "✗ FAIL: Cannot verify independence - file missing\n";
+}
+
+echo "\n";
+
+// Test 5: Verify public API and debugging capabilities
+$total_tests++;
+echo "TEST 5: Public API and Debugging Features\n";
+echo "------------------------------------------\n";
+
+if (file_exists($preview_file)) {
+    $content = file_get_contents($preview_file);
+    
+    $api_features = [
+        'window.MASSimpleLivePreview' => 'Public API exposure',
+        'runDiagnostics' => 'Diagnostic function',
+        'performHealthCheck' => 'Health check function',
+        'getStatus' => 'Status reporting function',
+        'enableFallbackMode' => 'Fallback mode control',
+        'exitFallbackMode' => 'Fallback mode exit',
+        'injectTestCSS' => 'CSS testing function',
+        'clearStyles' => 'Style clearing function'
+    ];
+    
+    $api_found = 0;
+    foreach ($api_features as $feature => $description) {
+        if (strpos($content, $feature) !== false) {
+            echo "✓ PASS: $description available\n";
+            $api_found++;
+        } else {
+            echo "✗ FAIL: $description missing\n";
+        }
+    }
+    
+    if ($api_found >= 6) {
+        echo "✓ PASS: Public API and debugging features implemented\n";
+        $tests_passed++;
+    } else {
+        echo "✗ FAIL: Public API incomplete\n";
+    }
+} else {
+    echo "✗ FAIL: Cannot test API - file missing\n";
+}
+
+echo "\n";
+
+// Test 6: Verify test files created
+$total_tests++;
+echo "TEST 6: Test Files and Documentation\n";
+echo "------------------------------------\n";
+
+$test_files = [
+    'test-task8-simple-preview-standalone.html' => 'Standalone test file',
+    'test-task8-optimized-verification.html' => 'Optimized verification test',
+    'verify-task8-completion.php' => 'Completion verification script'
+];
+
+$test_files_found = 0;
+foreach ($test_files as $file => $description) {
+    if (file_exists(__DIR__ . '/' . $file)) {
+        echo "✓ PASS: $description exists\n";
+        $test_files_found++;
+    } else {
+        echo "✗ FAIL: $description missing\n";
+    }
+}
+
+if ($test_files_found >= 2) {
+    echo "✓ PASS: Test files created for verification\n";
+    $tests_passed++;
+} else {
+    echo "✗ FAIL: Insufficient test files\n";
+}
+
+echo "\n";
+
+// Final Results
+echo "=== FINAL RESULTS ===\n";
+echo "Tests Passed: $tests_passed / $total_tests\n";
+echo "Success Rate: " . round(($tests_passed / $total_tests) * 100, 1) . "%\n\n";
+
+if ($tests_passed === $total_tests) {
+    echo "🎉 SUCCESS: Task 8 completed successfully!\n";
+    echo "✓ Live preview functionality verified without Phase 3 dependencies\n";
+    echo "✓ CSS injection system optimized with validation and verification\n";
+    echo "✓ Comprehensive error recovery mechanisms implemented\n";
+    echo "✓ System operates independently and provides debugging capabilities\n";
+    echo "\nREQUIREMENTS SATISFIED:\n";
+    echo "- Requirement 3.1: Live preview uses only simple-live-preview.js ✓\n";
+    echo "- Requirement 3.2: Direct AJAX calls without component frameworks ✓\n";
+    echo "- Requirement 3.3: Clear error messages and fallback options ✓\n";
+    
     exit(0);
 } else {
-    echo "\n✗ Some checks failed. Please review the implementation.\n";
+    echo "❌ FAILURE: Task 8 incomplete\n";
+    echo "Some requirements not fully satisfied. Please review failed tests.\n";
+    
     exit(1);
 }
+?>

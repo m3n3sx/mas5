@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task 5: CSS Injection Function Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Cantarell, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f0f0f1;
+        }
+        .test-container {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #1d2327;
+            border-bottom: 2px solid #2271b1;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #2271b1;
+            margin-top: 30px;
+        }
+        .test-box {
+            padding: 15px;
+            margin: 10px 0;
+            background: #f6f7f7;
+            border-left: 4px solid #2271b1;
+        }
+        .test-target {
+            padding: 20px;
+            margin: 10px 0;
+            background: #e0e0e0;
+            border: 2px dashed #999;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        button {
+            background: #2271b1;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+        }
+        button:hover {
+            background: #135e96;
+        }
+        button.secondary {
+            background: #50575e;
+        }
+        button.secondary:hover {
+            background: #3c434a;
+        }
+        .console-output {
+            background: #1d2327;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+            margin: 10px 0;
+        }
+        .console-output .log {
+            color: #00ff00;
+        }
+        .console-output .error {
+            color: #ff4444;
+        }
+        .console-output .success {
+            color: #00ff00;
+            font-weight: bold;
+        }
+        .status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .status.pass {
+            background: #00a32a;
+            color: white;
+        }
+        .status.fail {
+            background: #d63638;
+            color: white;
+        }
+        .status.pending {
+            background: #dba617;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Task 5: CSS Injection Function Test</h1>
+    
+    <div class="test-container">
+        <h2>Test Overview</h2>
+        <p>This test verifies the <code>injectPreviewCSS()</code> function implementation:</p>
+        <ul>
+            <li><strong>Task 5.1:</strong> Implement injectPreviewCSS() function</li>
+            <li><strong>Task 5.2:</strong> Add CSS injection verification</li>
+        </ul>
+    </div>
+
+    <div class="test-container">
+        <h2>Test Target Element</h2>
+        <div id="test-target" class="test-target">
+            This element will change appearance when CSS is injected
+        </div>
+    </div>
+
+    <div class="test-container">
+        <h2>Test Controls</h2>
+        <div class="test-box">
+            <button onclick="testBasicInjection()">Test 1: Basic CSS Injection</button>
+            <span id="test1-status" class="status pending">PENDING</span>
+            <p>Injects CSS to change the test target background to blue</p>
+        </div>
+
+        <div class="test-box">
+            <button onclick="testEmptyCSS()">Test 2: Empty CSS Handling</button>
+            <span id="test2-status" class="status pending">PENDING</span>
+            <p>Tests that empty CSS is handled gracefully (should skip injection)</p>
+        </div>
+
+        <div class="test-box">
+            <button onclick="testReplaceCSS()">Test 3: Replace Existing CSS</button>
+            <span id="test3-status" class="status pending">PENDING</span>
+            <p>Tests that old styles are removed before new ones are added</p>
+        </div>
+
+        <div class="test-box">
+            <button onclick="testVerification()">Test 4: CSS Injection Verification</button>
+            <span id="test4-status" class="status pending">PENDING</span>
+            <p>Tests that verification runs after 100ms and confirms element exists</p>
+        </div>
+
+        <div class="test-box">
+            <button onclick="testMultipleInjections()">Test 5: Multiple Rapid Injections</button>
+            <span id="test5-status" class="status pending">PENDING</span>
+            <p>Tests that multiple injections work correctly (simulates rapid setting changes)</p>
+        </div>
+
+        <div class="test-box">
+            <button class="secondary" onclick="clearConsole()">Clear Console</button>
+            <button class="secondary" onclick="resetTarget()">Reset Target</button>
+            <button class="secondary" onclick="runAllTests()">Run All Tests</button>
+        </div>
+    </div>
+
+    <div class="test-container">
+        <h2>Console Output</h2>
+        <div id="console" class="console-output">
+            <div class="log">Console ready. Click a test button to begin...</div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Mock the MASPreviewDiagnostics object from simple-live-preview.js
+        var MASPreviewDiagnostics = {
+            enabled: true,
+            
+            log: function(message, data) {
+                if (!this.enabled) return;
+                var output = '[MAS Preview] ' + message;
+                if (data !== undefined) {
+                    output += ' ' + JSON.stringify(data);
+                }
+                console.log(output);
+                logToConsole(output, 'log');
+            },
+            
+            error: function(message, error) {
+                var output = '[MAS Preview ERROR] ' + message;
+                if (error !== undefined) {
+                    output += ' ' + JSON.stringify(error);
+                }
+                console.error(output);
+                logToConsole(output, 'error');
+            }
+        };
+
+        // Copy the injectPreviewCSS function from simple-live-preview.js
+        function injectPreviewCSS(css) {
+            // Check if CSS is not empty
+            if (!css || css.trim() === '') {
+                MASPreviewDiagnostics.log('Empty CSS, skipping injection');
+                return;
+            }
+            
+            MASPreviewDiagnostics.log('Injecting CSS (' + css.length + ' characters)');
+            
+            // Remove old #mas-preview-styles element
+            var oldStyles = $('#mas-preview-styles');
+            if (oldStyles.length > 0) {
+                MASPreviewDiagnostics.log('Removing old preview styles');
+                oldStyles.remove();
+            }
+            
+            // Create new <style> element with id="mas-preview-styles"
+            var styleElement = $('<style>', {
+                id: 'mas-preview-styles',
+                type: 'text/css'
+            }).text(css);
+            
+            // Append to <head>
+            $('head').append(styleElement);
+            
+            // Log injection success
+            MASPreviewDiagnostics.log('✓ CSS injected successfully');
+            
+            // Task 5.2: Add CSS injection verification
+            // Wait 100ms after injection
+            setTimeout(function() {
+                // Check if #mas-preview-styles exists in DOM
+                var injected = $('#mas-preview-styles');
+                
+                if (injected.length === 0) {
+                    // Log error if verification fails
+                    MASPreviewDiagnostics.error('CSS injection verification failed - element not found in DOM');
+                } else {
+                    // Log verification result
+                    MASPreviewDiagnostics.log('✓ CSS injection verified - element exists in DOM');
+                }
+            }, 100);
+        }
+
+        // Helper function to log to the console div
+        function logToConsole(message, type) {
+            var consoleDiv = document.getElementById('console');
+            var logEntry = document.createElement('div');
+            logEntry.className = type || 'log';
+            logEntry.textContent = message;
+            consoleDiv.appendChild(logEntry);
+            consoleDiv.scrollTop = consoleDiv.scrollHeight;
+        }
+
+        function clearConsole() {
+            document.getElementById('console').innerHTML = '<div class="log">Console cleared.</div>';
+        }
+
+        function resetTarget() {
+            $('#mas-preview-styles').remove();
+            logToConsole('Target reset - preview styles removed', 'log');
+        }
+
+        function updateStatus(testId, passed) {
+            var statusEl = document.getElementById(testId + '-status');
+            statusEl.className = 'status ' + (passed ? 'pass' : 'fail');
+            statusEl.textContent = passed ? 'PASS' : 'FAIL';
+        }
+
+        // Test 1: Basic CSS Injection
+        function testBasicInjection() {
+            logToConsole('=== Test 1: Basic CSS Injection ===', 'log');
+            
+            var testCSS = '#test-target { background: #2271b1 !important; color: white !important; }';
+            injectPreviewCSS(testCSS);
+            
+            // Check after 200ms (after verification runs)
+            setTimeout(function() {
+                var styleEl = $('#mas-preview-styles');
+                var passed = styleEl.length > 0 && styleEl.text().includes('#test-target');
+                updateStatus('test1', passed);
+                logToConsole('Test 1: ' + (passed ? 'PASSED' : 'FAILED'), passed ? 'success' : 'error');
+            }, 200);
+        }
+
+        // Test 2: Empty CSS Handling
+        function testEmptyCSS() {
+            logToConsole('=== Test 2: Empty CSS Handling ===', 'log');
+            
+            // Remove any existing styles first
+            $('#mas-preview-styles').remove();
+            
+            // Try to inject empty CSS
+            injectPreviewCSS('');
+            
+            // Check immediately
+            setTimeout(function() {
+                var styleEl = $('#mas-preview-styles');
+                var passed = styleEl.length === 0; // Should NOT create element for empty CSS
+                updateStatus('test2', passed);
+                logToConsole('Test 2: ' + (passed ? 'PASSED' : 'FAILED'), passed ? 'success' : 'error');
+            }, 50);
+        }
+
+        // Test 3: Replace Existing CSS
+        function testReplaceCSS() {
+            logToConsole('=== Test 3: Replace Existing CSS ===', 'log');
+            
+            // First injection
+            var css1 = '#test-target { background: red !important; }';
+            injectPreviewCSS(css1);
+            
+            // Second injection after 300ms
+            setTimeout(function() {
+                var css2 = '#test-target { background: green !important; }';
+                injectPreviewCSS(css2);
+                
+                // Check after another 200ms
+                setTimeout(function() {
+                    var styleEl = $('#mas-preview-styles');
+                    var passed = styleEl.length === 1 && styleEl.text().includes('green') && !styleEl.text().includes('red');
+                    updateStatus('test3', passed);
+                    logToConsole('Test 3: ' + (passed ? 'PASSED' : 'FAILED'), passed ? 'success' : 'error');
+                }, 200);
+            }, 300);
+        }
+
+        // Test 4: CSS Injection Verification
+        function testVerification() {
+            logToConsole('=== Test 4: CSS Injection Verification ===', 'log');
+            
+            var testCSS = '#test-target { border: 5px solid orange !important; }';
+            injectPreviewCSS(testCSS);
+            
+            // The verification runs at 100ms, we check at 150ms
+            setTimeout(function() {
+                // Check console for verification message
+                var consoleText = document.getElementById('console').textContent;
+                var passed = consoleText.includes('✓ CSS injection verified');
+                updateStatus('test4', passed);
+                logToConsole('Test 4: ' + (passed ? 'PASSED' : 'FAILED'), passed ? 'success' : 'error');
+            }, 150);
+        }
+
+        // Test 5: Multiple Rapid Injections
+        function testMultipleInjections() {
+            logToConsole('=== Test 5: Multiple Rapid Injections ===', 'log');
+            
+            var colors = ['#ff0000', '#00ff00', '#0000ff', '#ffff00', '#ff00ff'];
+            var delay = 0;
+            
+            colors.forEach(function(color, index) {
+                setTimeout(function() {
+                    var css = '#test-target { background: ' + color + ' !important; }';
+                    injectPreviewCSS(css);
+                }, delay);
+                delay += 100;
+            });
+            
+            // Check after all injections complete
+            setTimeout(function() {
+                var styleEl = $('#mas-preview-styles');
+                var passed = styleEl.length === 1 && styleEl.text().includes('#ff00ff'); // Last color
+                updateStatus('test5', passed);
+                logToConsole('Test 5: ' + (passed ? 'PASSED' : 'FAILED'), passed ? 'success' : 'error');
+            }, 1000);
+        }
+
+        // Run all tests sequentially
+        function runAllTests() {
+            clearConsole();
+            logToConsole('=== Running All Tests ===', 'log');
+            
+            testBasicInjection();
+            setTimeout(testEmptyCSS, 1000);
+            setTimeout(testReplaceCSS, 2000);
+            setTimeout(testVerification, 3500);
+            setTimeout(testMultipleInjections, 4500);
+            
+            setTimeout(function() {
+                logToConsole('=== All Tests Complete ===', 'success');
+            }, 6000);
+        }
+
+        // Initial log
+        $(document).ready(function() {
+            logToConsole('jQuery loaded: v' + $.fn.jquery, 'log');
+            logToConsole('Test page ready. Click a test button to begin.', 'log');
+        });
+    </script>
+</body>
+</html>

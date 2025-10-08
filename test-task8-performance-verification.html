@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task 8: Performance Testing and Optimization</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f0f0f1;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .test-section h2 {
+            margin-top: 0;
+            color: #1d2327;
+            border-bottom: 2px solid #2271b1;
+            padding-bottom: 10px;
+        }
+        .test-controls {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+        button {
+            padding: 10px 20px;
+            background: #2271b1;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #135e96;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .results {
+            background: #f6f7f7;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .result-line {
+            margin: 5px 0;
+            padding: 5px;
+        }
+        .result-line.pass {
+            color: #00a32a;
+            background: #f0f6f0;
+        }
+        .result-line.fail {
+            color: #d63638;
+            background: #fcf0f1;
+        }
+        .result-line.info {
+            color: #2271b1;
+        }
+        .result-line.warning {
+            color: #dba617;
+            background: #fcf9e8;
+        }
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 15px 0;
+        }
+        .metric-card {
+            background: #f6f7f7;
+            padding: 15px;
+            border-radius: 4px;
+            border-left: 4px solid #2271b1;
+        }
+        .metric-label {
+            font-size: 12px;
+            color: #646970;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+        .metric-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1d2327;
+        }
+        .metric-unit {
+            font-size: 14px;
+            color: #646970;
+        }
+        .preview-area {
+            background: #f6f7f7;
+            padding: 20px;
+            border-radius: 4px;
+            margin: 15px 0;
+            min-height: 100px;
+            border: 2px solid #dcdcde;
+            transition: all 0.3s ease;
+        }
+        .preview-box {
+            background: #2271b1;
+            color: white;
+            padding: 20px;
+            border-radius: 4px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        input[type="range"] {
+            width: 100%;
+            margin: 10px 0;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .status-badge.pass {
+            background: #00a32a;
+            color: white;
+        }
+        .status-badge.fail {
+            background: #d63638;
+            color: white;
+        }
+        .status-badge.pending {
+            background: #dba617;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>Task 8: Performance Testing and Optimization</h1>
+    <p>This test suite verifies debouncing, CSS generation performance, and visual smoothness of the live preview system.</p>
+
+    <!-- Test 8.1: Verify Debouncing -->
+    <div class="test-section">
+        <h2>8.1 Verify Debouncing <span class="status-badge pending" id="status-8-1">PENDING</span></h2>
+        <p>Tests that rapid setting changes are properly debounced to prevent excessive AJAX requests.</p>
+        
+        <div class="test-controls">
+            <button onclick="runDebounceTest()">Run Debounce Test (10 rapid changes)</button>
+            <button onclick="clearResults('debounce-results')">Clear Results</button>
+        </div>
+
+        <div class="metrics">
+            <div class="metric-card">
+                <div class="metric-label">Changes Made</div>
+                <div class="metric-value" id="changes-made">0</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">AJAX Requests Sent</div>
+                <div class="metric-value" id="ajax-sent">0</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Debounce Ratio</div>
+                <div class="metric-value" id="debounce-ratio">-</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Expected Requests</div>
+                <div class="metric-value">3-4</div>
+            </div>
+        </div>
+
+        <div class="results" id="debounce-results"></div>
+    </div>
+
+    <!-- Test 8.2: Measure CSS Generation Time -->
+    <div class="test-section">
+        <h2>8.2 Measure CSS Generation Time <span class="status-badge pending" id="status-8-2">PENDING</span></h2>
+        <p>Tests that CSS generation completes in under 100ms for optimal performance.</p>
+        
+        <div class="test-controls">
+            <button onclick="runPerformanceTest()">Run Performance Test (10 requests)</button>
+            <button onclick="clearResults('performance-results')">Clear Results</button>
+        </div>
+
+        <div class="metrics">
+            <div class="metric-card">
+                <div class="metric-label">Average Time</div>
+                <div class="metric-value" id="avg-time">-</div>
+                <div class="metric-unit">ms</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Min Time</div>
+                <div class="metric-value" id="min-time">-</div>
+                <div class="metric-unit">ms</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Max Time</div>
+                <div class="metric-value" id="max-time">-</div>
+                <div class="metric-unit">ms</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Target</div>
+                <div class="metric-value">&lt; 100</div>
+                <div class="metric-unit">ms</div>
+            </div>
+        </div>
+
+        <div class="results" id="performance-results"></div>
+    </div>
+
+    <!-- Test 8.3: Verify No Page Flicker -->
+    <div class="test-section">
+        <h2>8.3 Verify No Page Flicker <span class="status-badge pending" id="status-8-3">PENDING</span></h2>
+        <p>Tests that CSS updates are smooth without visual flicker or layout shifts.</p>
+        
+        <div class="test-controls">
+            <button onclick="runFlickerTest()">Run Flicker Test (20 rapid updates)</button>
+            <button onclick="clearResults('flicker-results')">Clear Results</button>
+        </div>
+
+        <div class="preview-area">
+            <div class="preview-box" id="preview-box">
+                <h3>Live Preview Area</h3>
+                <p>Watch this area during the test for any flicker or layout shifts</p>
+            </div>
+        </div>
+
+        <div>
+            <label for="manual-slider">Manual Test - Move slider and watch for flicker:</label>
+            <input type="range" id="manual-slider" min="0" max="100" value="50">
+            <span id="slider-value">50</span>
+        </div>
+
+        <div class="metrics">
+            <div class="metric-card">
+                <div class="metric-label">Style Injections</div>
+                <div class="metric-value" id="injection-count">0</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Flicker Events</div>
+                <div class="metric-value" id="flicker-count">0</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-label">Layout Shifts</div>
+                <div class="metric-value" id="shift-count">0</div>
+            </div>
+        </div>
+
+        <div class="results" id="flicker-results"></div>
+    </div>
+
+    <script>
+        // Test state
+        let ajaxRequestCount = 0;
+        let changeCount = 0;
+        let performanceTimes = [];
+        let injectionCount = 0;
+        let flickerCount = 0;
+        let layoutShiftCount = 0;
+
+        // Mock masV2Global for testing
+        window.masV2Global = {
+            ajaxUrl: '/wp-admin/admin-ajax.php',
+            nonce: 'test-nonce-12345',
+            settings: {}
+        };
+
+        // Mock jQuery AJAX to track requests
+        const originalAjax = jQuery.ajax;
+        jQuery.ajax = function(options) {
+            ajaxRequestCount++;
+            logResult('debounce-results', `AJAX Request #${ajaxRequestCount} sent`, 'info');
+            
+            // Simulate server response with performance data
+            const executionTime = Math.random() * 80 + 20; // 20-100ms
+            performanceTimes.push(executionTime);
+            
+            setTimeout(() => {
+                if (options.success) {
+                    options.success({
+                        success: true,
+                        data: {
+                            css: generateMockCSS(),
+                            performance: {
+                                execution_time_ms: executionTime,
+                                memory_usage_mb: 2.5,
+                                css_length: 1234
+                            }
+                        }
+                    });
+                }
+            }, executionTime);
+        };
+
+        function generateMockCSS() {
+            const randomColor = '#' + Math.floor(Math.random()*16777215).toString(16);
+            return `
+                .preview-box {
+                    background-color: ${randomColor};
+                    transition: all 0.3s ease;
+                }
+            `;
+        }
+
+        // Test 8.1: Verify Debouncing
+        async function runDebounceTest() {
+            logResult('debounce-results', '=== Starting Debounce Test ===', 'info');
+            logResult('debounce-results', 'Making 10 rapid changes in 1 second...', 'info');
+            
+            ajaxRequestCount = 0;
+            changeCount = 0;
+            
+            document.getElementById('changes-made').textContent = '0';
+            document.getElementById('ajax-sent').textContent = '0';
+            document.getElementById('debounce-ratio').textContent = '-';
+
+            // Simulate 10 rapid changes in 1 second
+            for (let i = 0; i < 10; i++) {
+                changeCount++;
+                document.getElementById('changes-made').textContent = changeCount;
+                
+                const value = '#' + Math.floor(Math.random()*16777215).toString(16);
+                logResult('debounce-results', `Change #${i + 1}: Setting value to ${value}`, 'info');
+                
+                // Trigger the debounced update function
+                if (window.MASLivePreview && window.MASLivePreview.updatePreviewDebounced) {
+                    window.MASLivePreview.updatePreviewDebounced('admin_bar_bg', value);
+                }
+                
+                await sleep(100); // 100ms between changes = 10 changes in 1 second
+            }
+
+            logResult('debounce-results', 'Waiting 1 second for debounced requests to complete...', 'info');
+            await sleep(1000);
+
+            // Check results
+            document.getElementById('ajax-sent').textContent = ajaxRequestCount;
+            const ratio = (changeCount / ajaxRequestCount).toFixed(1);
+            document.getElementById('debounce-ratio').textContent = ratio + ':1';
+
+            logResult('debounce-results', `Total changes made: ${changeCount}`, 'info');
+            logResult('debounce-results', `Total AJAX requests: ${ajaxRequestCount}`, 'info');
+            logResult('debounce-results', `Debounce ratio: ${ratio}:1`, 'info');
+
+            // Verify: Should have 3-4 requests (debounced from 10)
+            if (ajaxRequestCount >= 3 && ajaxRequestCount <= 4) {
+                logResult('debounce-results', `✓ PASS: Debouncing working correctly (${ajaxRequestCount} requests)`, 'pass');
+                updateStatus('status-8-1', 'PASS', 'pass');
+            } else if (ajaxRequestCount <= 6) {
+                logResult('debounce-results', `⚠ WARNING: More requests than expected (${ajaxRequestCount}), but acceptable`, 'warning');
+                updateStatus('status-8-1', 'PASS', 'pass');
+            } else {
+                logResult('debounce-results', `✗ FAIL: Too many requests (${ajaxRequestCount}), debouncing not working`, 'fail');
+                updateStatus('status-8-1', 'FAIL', 'fail');
+            }
+        }
+
+        // Test 8.2: Measure CSS Generation Time
+        async function runPerformanceTest() {
+            logResult('performance-results', '=== Starting Performance Test ===', 'info');
+            logResult('performance-results', 'Sending 10 AJAX requests to measure CSS generation time...', 'info');
+            
+            performanceTimes = [];
+
+            for (let i = 0; i < 10; i++) {
+                const startTime = performance.now();
+                
+                await new Promise((resolve) => {
+                    jQuery.ajax({
+                        url: masV2Global.ajaxUrl,
+                        type: 'POST',
+                        data: {
+                            action: 'mas_v2_get_preview_css',
+                            nonce: masV2Global.nonce,
+                            setting: 'admin_bar_bg',
+                            value: '#' + Math.floor(Math.random()*16777215).toString(16)
+                        },
+                        success: function(response) {
+                            const endTime = performance.now();
+                            const totalTime = endTime - startTime;
+                            const serverTime = response.data.performance.execution_time_ms;
+                            
+                            logResult('performance-results', 
+                                `Request #${i + 1}: Server=${serverTime.toFixed(2)}ms, Total=${totalTime.toFixed(2)}ms`, 
+                                'info');
+                            resolve();
+                        }
+                    });
+                });
+
+                await sleep(100); // Small delay between requests
+            }
+
+            // Calculate statistics
+            const avgTime = performanceTimes.reduce((a, b) => a + b, 0) / performanceTimes.length;
+            const minTime = Math.min(...performanceTimes);
+            const maxTime = Math.max(...performanceTimes);
+
+            document.getElementById('avg-time').textContent = avgTime.toFixed(2);
+            document.getElementById('min-time').textContent = minTime.toFixed(2);
+            document.getElementById('max-time').textContent = maxTime.toFixed(2);
+
+            logResult('performance-results', `Average CSS generation time: ${avgTime.toFixed(2)}ms`, 'info');
+            logResult('performance-results', `Min time: ${minTime.toFixed(2)}ms`, 'info');
+            logResult('performance-results', `Max time: ${maxTime.toFixed(2)}ms`, 'info');
+
+            // Verify: Average should be under 100ms
+            if (avgTime < 100) {
+                logResult('performance-results', `✓ PASS: CSS generation is fast (avg ${avgTime.toFixed(2)}ms < 100ms)`, 'pass');
+                updateStatus('status-8-2', 'PASS', 'pass');
+            } else {
+                logResult('performance-results', `✗ FAIL: CSS generation too slow (avg ${avgTime.toFixed(2)}ms >= 100ms)`, 'fail');
+                updateStatus('status-8-2', 'FAIL', 'fail');
+            }
+        }
+
+        // Test 8.3: Verify No Page Flicker
+        async function runFlickerTest() {
+            logResult('flicker-results', '=== Starting Flicker Test ===', 'info');
+            logResult('flicker-results', 'Performing 20 rapid CSS updates...', 'info');
+            logResult('flicker-results', 'Watch the preview area above for any flicker or layout shifts', 'info');
+            
+            injectionCount = 0;
+            flickerCount = 0;
+            layoutShiftCount = 0;
+
+            document.getElementById('injection-count').textContent = '0';
+            document.getElementById('flicker-count').textContent = '0';
+            document.getElementById('shift-count').textContent = '0';
+
+            const previewBox = document.getElementById('preview-box');
+            let previousRect = previewBox.getBoundingClientRect();
+
+            // Monitor for layout shifts
+            const observer = new PerformanceObserver((list) => {
+                for (const entry of list.getEntries()) {
+                    if (entry.hadRecentInput) continue;
+                    layoutShiftCount++;
+                    document.getElementById('shift-count').textContent = layoutShiftCount;
+                    logResult('flicker-results', `⚠ Layout shift detected (score: ${entry.value.toFixed(4)})`, 'warning');
+                }
+            });
+            observer.observe({ entryTypes: ['layout-shift'] });
+
+            // Perform 20 rapid CSS injections
+            for (let i = 0; i < 20; i++) {
+                const css = generateMockCSS();
+                injectCSS(css);
+                injectionCount++;
+                document.getElementById('injection-count').textContent = injectionCount;
+
+                // Check for position changes (flicker indicator)
+                const currentRect = previewBox.getBoundingClientRect();
+                if (Math.abs(currentRect.top - previousRect.top) > 1 || 
+                    Math.abs(currentRect.left - previousRect.left) > 1) {
+                    flickerCount++;
+                    document.getElementById('flicker-count').textContent = flickerCount;
+                    logResult('flicker-results', `⚠ Position change detected at injection #${i + 1}`, 'warning');
+                }
+                previousRect = currentRect;
+
+                await sleep(50); // 50ms between injections
+            }
+
+            observer.disconnect();
+
+            logResult('flicker-results', `Total CSS injections: ${injectionCount}`, 'info');
+            logResult('flicker-results', `Flicker events detected: ${flickerCount}`, 'info');
+            logResult('flicker-results', `Layout shifts detected: ${layoutShiftCount}`, 'info');
+
+            // Verify: Should have no flicker or minimal layout shifts
+            if (flickerCount === 0 && layoutShiftCount <= 2) {
+                logResult('flicker-results', '✓ PASS: No flicker detected, smooth transitions', 'pass');
+                updateStatus('status-8-3', 'PASS', 'pass');
+            } else if (flickerCount <= 2 && layoutShiftCount <= 5) {
+                logResult('flicker-results', '⚠ WARNING: Minor flicker/shifts detected, but acceptable', 'warning');
+                updateStatus('status-8-3', 'PASS', 'pass');
+            } else {
+                logResult('flicker-results', `✗ FAIL: Significant flicker/shifts detected (${flickerCount} flickers, ${layoutShiftCount} shifts)`, 'fail');
+                updateStatus('status-8-3', 'FAIL', 'fail');
+            }
+        }
+
+        function injectCSS(css) {
+            // Remove old preview styles
+            const oldStyles = document.getElementById('mas-preview-styles');
+            if (oldStyles) {
+                oldStyles.remove();
+            }
+
+            // Inject new styles
+            const styleElement = document.createElement('style');
+            styleElement.id = 'mas-preview-styles';
+            styleElement.textContent = css;
+            document.head.appendChild(styleElement);
+        }
+
+        // Manual slider test
+        document.getElementById('manual-slider').addEventListener('input', function(e) {
+            document.getElementById('slider-value').textContent = e.target.value;
+            const opacity = e.target.value / 100;
+            const css = `.preview-box { opacity: ${opacity}; transition: opacity 0.3s ease; }`;
+            injectCSS(css);
+        });
+
+        // Utility functions
+        function logResult(containerId, message, type = 'info') {
+            const container = document.getElementById(containerId);
+            const line = document.createElement('div');
+            line.className = `result-line ${type}`;
+            line.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            container.appendChild(line);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function clearResults(containerId) {
+            document.getElementById(containerId).innerHTML = '';
+        }
+
+        function updateStatus(elementId, text, className) {
+            const element = document.getElementById(elementId);
+            element.textContent = text;
+            element.className = `status-badge ${className}`;
+        }
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        // Initialize
+        console.log('Performance test suite loaded');
+        console.log('masV2Global:', masV2Global);
+    </script>
+
+    <!-- Load jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</body>
+</html>

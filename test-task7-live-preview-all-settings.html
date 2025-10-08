@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task 7: Live Preview - All Setting Types Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f0f0f1;
+        }
+        
+        .test-container {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #1d2327;
+            border-bottom: 3px solid #2271b1;
+            padding-bottom: 10px;
+        }
+        
+        h2 {
+            color: #2271b1;
+            margin-top: 30px;
+            border-left: 4px solid #2271b1;
+            padding-left: 15px;
+        }
+        
+        h3 {
+            color: #50575e;
+            margin-top: 20px;
+        }
+        
+        .test-section {
+            background: #f6f7f7;
+            padding: 20px;
+            border-radius: 4px;
+            margin: 15px 0;
+        }
+        
+        .test-control {
+            margin: 15px 0;
+            padding: 15px;
+            background: white;
+            border-radius: 4px;
+            border-left: 3px solid #2271b1;
+        }
+        
+        .test-control label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #1d2327;
+        }
+        
+        .test-control input[type="color"],
+        .test-control input[type="text"],
+        .test-control input[type="number"],
+        .test-control select {
+            padding: 8px;
+            border: 1px solid #8c8f94;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .test-control input[type="range"] {
+            width: 100%;
+            margin: 10px 0;
+        }
+        
+        .test-control input[type="checkbox"] {
+            margin-right: 8px;
+        }
+        
+        .value-display {
+            display: inline-block;
+            background: #2271b1;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+        
+        .console-output {
+            background: #1d2327;
+            color: #00ff00;
+            padding: 20px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+        
+        .console-output .log {
+            color: #00ff00;
+            margin: 2px 0;
+        }
+        
+        .console-output .error {
+            color: #ff4444;
+            margin: 2px 0;
+        }
+        
+        .console-output .success {
+            color: #00ffff;
+            margin: 2px 0;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-indicator.pending {
+            background: #f0b849;
+        }
+        
+        .status-indicator.success {
+            background: #00a32a;
+        }
+        
+        .status-indicator.error {
+            background: #d63638;
+        }
+        
+        .test-results {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f6f7f7;
+            border-radius: 4px;
+        }
+        
+        .test-result-item {
+            padding: 10px;
+            margin: 5px 0;
+            background: white;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .instructions {
+            background: #e7f5fe;
+            border-left: 4px solid #2271b1;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        
+        .instructions h4 {
+            margin-top: 0;
+            color: #2271b1;
+        }
+        
+        .instructions ol {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        
+        .instructions li {
+            margin: 8px 0;
+        }
+        
+        button {
+            background: #2271b1;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin: 5px;
+        }
+        
+        button:hover {
+            background: #135e96;
+        }
+        
+        button.secondary {
+            background: #50575e;
+        }
+        
+        button.secondary:hover {
+            background: #3c434a;
+        }
+        
+        .rapid-test-controls {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .network-monitor {
+            background: #f6f7f7;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 15px;
+        }
+        
+        .network-request {
+            background: white;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+            font-size: 12px;
+            border-left: 3px solid #2271b1;
+        }
+        
+        .network-request .timestamp {
+            color: #50575e;
+            font-size: 11px;
+        }
+        
+        .preview-area {
+            background: #f0f0f1;
+            padding: 20px;
+            border-radius: 4px;
+            margin-top: 20px;
+            min-height: 200px;
+        }
+        
+        .preview-admin-bar {
+            background: #23282d;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        
+        .preview-menu {
+            background: #23282d;
+            color: #fff;
+            padding: 20px;
+            border-radius: 4px;
+            width: 200px;
+        }
+        
+        .preview-menu-item {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        
+        .preview-menu-item:hover {
+            background: rgba(255,255,255,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 Task 7: Live Preview - All Setting Types Test</h1>
+        
+        <div class="instructions">
+            <h4>📋 Test Instructions</h4>
+            <ol>
+                <li>Open browser console (F12) to see diagnostic logs</li>
+                <li>Test each setting type in the sections below</li>
+                <li>Verify that console shows proper logging for each change</li>
+                <li>Check that AJAX requests are sent and responses received</li>
+                <li>Verify that CSS is injected into the page</li>
+                <li>For rapid changes test, verify debouncing works (max 1 request per 300ms)</li>
+            </ol>
+        </div>
+
+        <!-- TASK 7.1: COLOR SETTINGS TEST -->
+        <h2>🎨 Task 7.1: Color Settings Test</h2>
+        <div class="test-section">
+            <h3>Test Color Inputs</h3>
+            <p>Change these colors and verify preview updates immediately</p>
+            
+            <div class="test-control">
+                <label>
+                    Admin Bar Background Color
+                    <span class="value-display" id="admin-bar-bg-value">#23282d</span>
+                </label>
+                <input type="color" 
+                       name="mas_v2_settings[admin_bar_background]" 
+                       class="mas-v2-color"
+                       value="#23282d"
+                       id="admin-bar-bg">
+            </div>
+            
+            <div class="test-control">
+                <label>
+                    Menu Background Color
+                    <span class="value-display" id="menu-bg-value">#23282d</span>
+                </label>
+                <input type="color" 
+                       name="mas_v2_settings[menu_background_color]" 
+                       class="mas-v2-color"
+                       value="#23282d"
+                       id="menu-bg">
+            </div>
+            
+            <div class="test-control">
+                <label>
+                    Admin Bar Text Color
+                    <span class="value-display" id="admin-bar-text-value">#ffffff</span>
+                </label>
+                <input type="color" 
+                       name="mas_v2_settings[admin_bar_text_color]" 
+                       class="mas-v2-color"
+                       value="#ffffff"
+                       id="admin-bar-text">
+            </div>
+            
+            <div class="test-control">
+                <label>
+                    Menu Text Color
+                    <span class="value-display" id="menu-text-value">#ffffff</span>
+                </label>
+                <input type="color" 
+                       name="mas_v2_settings[menu_text_color]" 
+                       class="mas-v2-color"
+                       value="#ffffff"
+                       id="menu-text">
+            </div>
+            
+            <div class="test-results">
+                <h4>Expected Console Output:</h4>
+                <ul>
+                    <li><span class="status-indicator pending"></span> [MAS Preview] Color changed: admin_bar_background = #...</li>
+                    <li><span class="status-indicator pending"></span> [MAS Preview] Sending AJAX request</li>
+                    <li><span class="status-indicator pending"></span> [MAS Preview] AJAX response received</li>
+                    <li><span class="status-indicator pending"></span> [MAS Preview] ✓ CSS injected successfully</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- TASK 7.2: SIZE SETTINGS TEST -->
+        <h2>📏 Task 7.2: Size Settings Test</h2>
+        <div class="test-section">
+            <h3>Test Range Sliders (Size Settings)</h3>
+            <p>Move these sliders and verify preview updates immediately</p>
+            
+            <div class="test-control">
+                <label>
+                    Menu Width
+                    <span class="value-display" id="menu-width-value">200</span>px
+                </label>
+                <input type="range" 
+                       name="mas_v2_settings[menu_width]" 
+                       class="mas-v2-slider"
+                       min="200" 
+                       max="400" 
+                       value="200"
+                       id="menu-width">
+            </div>
+            
+            <div class="test-control">
+                <label>
+                    Menu Item Height
+                    <span class="value-display" id="menu-item-height-value">40</span>px
+                </label>
+                <input type="range" 
+                       name="mas_v2_settings[menu_item_height]" 
+                       class="mas-v2-slider"
+                       min="30" 
+                       max="60" 
+                       value="40"
+                       id="menu-item-height">
+            </div>
+            
+            <div class="test-control">
+                <label>
+                    Menu Item Padding
+                    <span class="value-display" id="menu-padding-value">10</span>px
+                </label>
+                <input type="range" 
+                       name="mas_v2_settings[menu_item_padding]" 
+                       class="mas-v2-slider"
+                       min="5" 
+                       max="20" 
+                       value="10"
+                       id="menu-padding">
+            </div>
+            
+            <div class="test-control">
+                <label>
+                    Admin Bar Height
+                    <span class="value-display" id="admin-bar-height-value">32</span>px
+                </label>
+                <input type="range" 
+                       name="mas_v2_settings[admin_bar_height]" 
+                       class="mas-v2-slider"
+                       min="20" 
+                       max="60" 
+                       value="32"
+                       id="admin-bar-height">
+            </div>
+            
+            <div class="test-results">
+                <h4>Expected Console Output:</h4>
+                <ul>
+                    <li><span class="status-indicator pending"></span> [MAS Preview] Slider changed: menu_width = 250</li>
+                    <li><span class="status-indicator pending"></span> [MAS Preview] Sending AJAX request</li>
+                    <li><span class="status-indicator pending"></span> [MAS Preview] AJAX response received</li>
+                    <li><span class="status-indicator pending"></span> [MAS Preview] ✓ CSS injected successfully</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- TASK 7.3: BOOLEAN SETTINGS TEST -->
+        <h2>✅ Task 7.3: Boolean Settings Test</h2>
+        <div class="test-section">
+            <h3>Test Checkboxes (Boolean Settings)</h3>
+            <p>Toggle these checkboxes and verify preview updates immediately</p>
+            
+            <div class="test-control">
+                <label>
+                    <input type="checkbox" 
+                           name="mas_v2_settings[animations]" 
+                           class="mas-v2-checkbox"
+                           id="animations">
+                    Enable Animations
+                </label>
+            </div>
+            
+            <div class="test-control">
+                <label>
+                    <input type="checkbox" 
+                           name="mas_v2_settings[menu_show_icons]" 
+                           class="mas-v2-checkbox"
+                           id="menu-show-icons"
+                           checked>
+                    Show Menu Icons
+                </label>
+            </div>
+            
+            <div class="test-control">
+                <label>
+                    <input type="checkbox" 
+                           name="mas_v2_settings[admin_bar_detached]" 
+                           class="mas-v2-checkbox"
+                           id="admin-bar-detached">
+                    Floating Admin Bar
+                </label>
+            </div>
+            
+            <div class="test-control">
+                <label>
+                    <input type="checkbox" 
+                           name="mas_v2_settings[menu_glassmorphism]" 
+                           class="mas-v2-checkbox"
+                           id="menu-glassmorphism">
+                    Menu Glassmorphism Effect
+                </label>
+            </div>
+            
+            <div class="test-results">
+                <h4>Expected Console Output:</h4>
+                <ul>
+                    <li><span class="status-indicator pending"></span> [MAS Preview] Checkbox changed: animations = true</li>
+                    <li><span class="status-indicator pending"></span> [MAS Preview] Sending AJAX request</li>
+                    <li><span class="status-indicator pending"></span> [MAS Preview] AJAX response received</li>
+                    <li><span class="status-indicator pending"></span> [MAS Preview] ✓ CSS injected successfully</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- TASK 7.4: RAPID CHANGES TEST -->
+        <h2>⚡ Task 7.4: Rapid Changes Test (Debouncing)</h2>
+        <div class="test-section">
+            <h3>Test Debouncing with Rapid Changes</h3>
+            <p>Click the button to rapidly change a setting 10 times. Verify only 3-4 AJAX requests are sent (debounced to 300ms).</p>
+            
+            <div class="test-control">
+                <label>
+                    Test Slider (for rapid changes)
+                    <span class="value-display" id="rapid-test-value">50</span>
+                </label>
+                <input type="range" 
+                       name="mas_v2_settings[test_rapid_slider]" 
+                       class="mas-v2-slider"
+                       min="0" 
+                       max="100" 
+                       value="50"
+                       id="rapid-test-slider">
+            </div>
+            
+            <div class="rapid-test-controls">
+                <button onclick="runRapidChangeTest()">🚀 Run Rapid Change Test (10 changes in 1 second)</button>
+                <button onclick="clearNetworkMonitor()" class="secondary">🗑️ Clear Network Monitor</button>
+            </div>
+            
+            <div class="network-monitor">
+                <h4>📡 Network Monitor (AJAX Requests)</h4>
+                <p>Watch for debouncing - should see only 3-4 requests instead of 10</p>
+                <div id="network-log"></div>
+            </div>
+            
+            <div class="test-results">
+                <h4>Expected Behavior:</h4>
+                <ul>
+                    <li><span class="status-indicator pending"></span> 10 rapid changes triggered</li>
+                    <li><span class="status-indicator pending"></span> Only 3-4 AJAX requests sent (debounced)</li>
+                    <li><span class="status-indicator pending"></span> Final value is correct (100)</li>
+                    <li><span class="status-indicator pending"></span> All changes applied smoothly</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- CONSOLE OUTPUT -->
+        <h2>📊 Console Output Monitor</h2>
+        <div class="console-output" id="console-monitor">
+            <div class="log">[Console Monitor] Waiting for events...</div>
+            <div class="log">[Console Monitor] Open browser console (F12) for full diagnostic output</div>
+        </div>
+
+        <!-- PREVIEW AREA -->
+        <h2>👁️ Visual Preview Area</h2>
+        <div class="preview-area">
+            <div class="preview-admin-bar" id="preview-admin-bar">
+                Admin Bar Preview
+            </div>
+            <div class="preview-menu" id="preview-menu">
+                <div class="preview-menu-item">Dashboard</div>
+                <div class="preview-menu-item">Posts</div>
+                <div class="preview-menu-item">Pages</div>
+                <div class="preview-menu-item">Settings</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Mock masV2Global for testing
+        window.masV2Global = {
+            ajaxUrl: '/wp-admin/admin-ajax.php',
+            nonce: 'test-nonce-12345',
+            settings: {}
+        };
+
+        // Network request counter
+        let networkRequests = [];
+        let requestCounter = 0;
+
+        // Console monitor
+        function addConsoleLog(message, type = 'log') {
+            const monitor = document.getElementById('console-monitor');
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.className = type;
+            logEntry.textContent = `[${timestamp}] ${message}`;
+            monitor.appendChild(logEntry);
+            monitor.scrollTop = monitor.scrollHeight;
+        }
+
+        // Network monitor
+        function addNetworkRequest(setting, value) {
+            requestCounter++;
+            const timestamp = new Date().toLocaleTimeString();
+            const networkLog = document.getElementById('network-log');
+            const request = document.createElement('div');
+            request.className = 'network-request';
+            request.innerHTML = `
+                <strong>Request #${requestCounter}</strong>
+                <span class="timestamp">${timestamp}</span><br>
+                Setting: ${setting}<br>
+                Value: ${value}
+            `;
+            networkLog.appendChild(request);
+            networkRequests.push({ timestamp, setting, value });
+        }
+
+        function clearNetworkMonitor() {
+            document.getElementById('network-log').innerHTML = '';
+            networkRequests = [];
+            requestCounter = 0;
+            addConsoleLog('Network monitor cleared', 'log');
+        }
+
+        // Update value displays
+        function updateValueDisplay(inputId, displayId) {
+            const input = document.getElementById(inputId);
+            const display = document.getElementById(displayId);
+            if (input && display) {
+                input.addEventListener('input', function() {
+                    display.textContent = this.value;
+                });
+                input.addEventListener('change', function() {
+                    display.textContent = this.value;
+                });
+            }
+        }
+
+        // Initialize value displays
+        updateValueDisplay('admin-bar-bg', 'admin-bar-bg-value');
+        updateValueDisplay('menu-bg', 'menu-bg-value');
+        updateValueDisplay('admin-bar-text', 'admin-bar-text-value');
+        updateValueDisplay('menu-text', 'menu-text-value');
+        updateValueDisplay('menu-width', 'menu-width-value');
+        updateValueDisplay('menu-item-height', 'menu-item-height-value');
+        updateValueDisplay('menu-padding', 'menu-padding-value');
+        updateValueDisplay('admin-bar-height', 'admin-bar-height-value');
+        updateValueDisplay('rapid-test-slider', 'rapid-test-value');
+
+        // Intercept console.log to show in monitor
+        const originalLog = console.log;
+        const originalError = console.error;
+
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            const message = args.map(arg => 
+                typeof arg === 'object' ? JSON.stringify(arg) : String(arg)
+            ).join(' ');
+            if (message.includes('[MAS Preview]')) {
+                addConsoleLog(message, 'log');
+            }
+        };
+
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            const message = args.map(arg => 
+                typeof arg === 'object' ? JSON.stringify(arg) : String(arg)
+            ).join(' ');
+            if (message.includes('[MAS Preview')) {
+                addConsoleLog(message, 'error');
+            }
+        };
+
+        // Mock AJAX for testing
+        const originalPost = jQuery ? jQuery.post : null;
+        if (jQuery) {
+            jQuery.post = function(url, data) {
+                addConsoleLog(`AJAX Request: ${data.action}`, 'log');
+                addNetworkRequest(data.setting, data.value);
+                
+                // Simulate server response
+                return {
+                    done: function(callback) {
+                        setTimeout(() => {
+                            const response = {
+                                success: true,
+                                data: {
+                                    css: `/* Generated CSS for ${data.setting} */`,
+                                    setting: data.setting,
+                                    value: data.value,
+                                    performance: {
+                                        execution_time_ms: 45.23
+                                    }
+                                }
+                            };
+                            addConsoleLog(`AJAX Response received for ${data.setting}`, 'success');
+                            callback(response);
+                        }, 100);
+                        return this;
+                    },
+                    fail: function(callback) {
+                        return this;
+                    }
+                };
+            };
+        }
+
+        // Rapid change test
+        function runRapidChangeTest() {
+            addConsoleLog('🚀 Starting rapid change test...', 'log');
+            clearNetworkMonitor();
+            
+            const slider = document.getElementById('rapid-test-slider');
+            let value = 0;
+            
+            const interval = setInterval(() => {
+                value += 10;
+                slider.value = value;
+                slider.dispatchEvent(new Event('input', { bubbles: true }));
+                
+                if (value >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        addConsoleLog(`✅ Rapid test complete. Sent ${requestCounter} requests (should be 3-4 due to debouncing)`, 'success');
+                    }, 1000);
+                }
+            }, 100); // 10 changes in 1 second
+        }
+
+        // Initial log
+        addConsoleLog('Test page loaded. Ready to test live preview.', 'log');
+        addConsoleLog('Make sure simple-live-preview.js is loaded on the actual WordPress admin page.', 'log');
+    </script>
+    
+    <!-- Load jQuery for testing -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</body>
+</html>

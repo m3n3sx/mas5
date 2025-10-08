@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task 8: Simple Live Preview Standalone Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f1f1f1;
+        }
+        
+        .test-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .test-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 20px 0;
+        }
+        
+        .form-section {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        
+        .preview-section {
+            background: #2c3338;
+            padding: 20px;
+            border-radius: 8px;
+            color: white;
+        }
+        
+        .admin-bar-demo {
+            background: #23282d;
+            height: 32px;
+            border-radius: 4px;
+            margin: 10px 0;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            font-size: 13px;
+        }
+        
+        .console-output {
+            background: #1e1e1e;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+        
+        .test-status {
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        
+        .test-pass { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .test-fail { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .test-info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        
+        .error-test-section {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 15px 0;
+        }
+        
+        button {
+            background: #0073aa;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        
+        button:hover {
+            background: #005a87;
+        }
+        
+        button.danger {
+            background: #dc3545;
+        }
+        
+        button.danger:hover {
+            background: #c82333;
+        }
+        
+        .range-display {
+            display: inline-block;
+            margin-left: 10px;
+            font-weight: bold;
+            color: #0073aa;
+        }
+        
+        .injected-styles-display {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>Task 8: Simple Live Preview System Verification</h1>
+        <p><strong>Requirements:</strong> Test live preview functionality without Phase 3 dependencies, ensure CSS injection works correctly, implement error recovery for preview failures</p>
+        
+        <div id="test-results"></div>
+        
+        <div class="test-grid">
+            <div class="form-section">
+                <h3>Live Preview Controls</h3>
+                
+                <div class="form-group">
+                    <label for="primary_color">Primary Color</label>
+                    <input type="color" id="primary_color" name="mas_v2_settings[primary_color]" 
+                           class="mas-v2-color" value="#0073aa">
+                </div>
+                
+                <div class="form-group">
+                    <label for="secondary_color">Secondary Color</label>
+                    <input type="color" id="secondary_color" name="mas_v2_settings[secondary_color]" 
+                           class="mas-v2-color" value="#23282d">
+                </div>
+                
+                <div class="form-group">
+                    <label for="font_size">Font Size (px)</label>
+                    <input type="number" id="font_size" name="mas_v2_settings[font_size]" 
+                           class="mas-v2-input" value="14" min="10" max="24">
+                </div>
+                
+                <div class="form-group">
+                    <label for="border_radius">Border Radius (px)</label>
+                    <input type="range" id="border_radius" name="mas_v2_settings[border_radius]" 
+                           class="mas-v2-slider" min="0" max="20" value="4">
+                    <span class="range-display" id="border-radius-value">4px</span>
+                </div>
+                
+                <div class="form-group">
+                    <label for="enable_animations">
+                        <input type="checkbox" id="enable_animations" name="mas_v2_settings[enable_animations]" 
+                               class="mas-v2-checkbox" checked>
+                        Enable Animations
+                    </label>
+                </div>
+                
+                <div class="form-group">
+                    <label for="theme_style">Theme Style</label>
+                    <select id="theme_style" name="mas_v2_settings[theme_style]" class="mas-v2-select">
+                        <option value="modern">Modern</option>
+                        <option value="classic">Classic</option>
+                        <option value="minimal">Minimal</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="preview-section">
+                <h3>Live Preview Area</h3>
+                <div class="admin-bar-demo" id="admin-bar-demo">
+                    WordPress Admin Bar Preview
+                </div>
+                <div style="background: rgba(255,255,255,0.1); padding: 15px; border-radius: 4px; margin: 10px 0;">
+                    <p>This area demonstrates live CSS injection</p>
+                    <p>Changes should appear instantly without page reload</p>
+                </div>
+                
+                <h4>Injected CSS:</h4>
+                <div class="injected-styles-display" id="injected-styles">
+                    No styles injected yet...
+                </div>
+            </div>
+        </div>
+        
+        <div class="error-test-section">
+            <h3>Error Recovery Tests</h3>
+            <p>Test how the system handles various failure scenarios:</p>
+            <button onclick="testNetworkFailure()">Network Failure</button>
+            <button onclick="testInvalidResponse()">Invalid Response</button>
+            <button onclick="testMissingNonce()">Missing Nonce</button>
+            <button onclick="testEmptyCSS()">Empty CSS Response</button>
+            <button class="danger" onclick="testCriticalFailure()">Critical Failure</button>
+            <button onclick="restoreNormalOperation()">Restore Normal</button>
+        </div>
+        
+        <div class="console-output" id="console-output">
+            <div>Console output will appear here...</div>
+        </div>
+    </div>
+
+    <!-- Load jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <!-- Mock WordPress Color Picker -->
+    <script>
+        if (typeof jQuery !== 'undefined') {
+            jQuery.fn.wpColorPicker = function(options) {
+                return this.each(function() {
+                    var $input = jQuery(this);
+                    $input.on('change', function() {
+                        if (options && options.change) {
+                            options.change.call(this, null, {
+                                color: {
+                                    toString: function() {
+                                        return $input.val();
+                                    }
+                                }
+                            });
+                        }
+                    });
+                });
+            };
+        }
+    </script>
+    
+    <!-- Mock masV2Global -->
+    <script>
+        var masV2Global = {
+            ajaxUrl: window.location.href,
+            nonce: 'test_nonce_123',
+            settings: {
+                primary_color: '#0073aa',
+                secondary_color: '#23282d',
+                font_size: '14',
+                border_radius: '4',
+                enable_animations: true,
+                theme_style: 'modern'
+            }
+        };
+        
+        // Mock AJAX handler
+        var originalPost = jQuery.post;
+        var mockAjaxEnabled = true;
+        var mockAjaxDelay = 300;
+        
+        jQuery.post = function(url, data, success, dataType) {
+            if (data.action === 'mas_v2_get_preview_css' && mockAjaxEnabled) {
+                setTimeout(function() {
+                    var css = generateMockCSS(data.setting, data.value);
+                    var response = {
+                        success: true,
+                        data: {
+                            css: css,
+                            setting: data.setting,
+                            value: data.value,
+                            performance: {
+                                execution_time_ms: Math.floor(Math.random() * 50) + 10
+                            }
+                        }
+                    };
+                    
+                    if (success) {
+                        success(response);
+                    }
+                }, mockAjaxDelay);
+                
+                return {
+                    done: function(callback) {
+                        setTimeout(function() {
+                            var css = generateMockCSS(data.setting, data.value);
+                            var response = {
+                                success: true,
+                                data: {
+                                    css: css,
+                                    setting: data.setting,
+                                    value: data.value,
+                                    performance: {
+                                        execution_time_ms: Math.floor(Math.random() * 50) + 10
+                                    }
+                                }
+                            };
+                            callback(response);
+                        }, mockAjaxDelay);
+                        return this;
+                    },
+                    fail: function(callback) {
+                        return this;
+                    },
+                    always: function(callback) {
+                        setTimeout(callback, mockAjaxDelay + 50);
+                        return this;
+                    }
+                };
+            }
+            
+            return originalPost.apply(this, arguments);
+        };
+        
+        function generateMockCSS(setting, value) {
+            switch (setting) {
+                case 'primary_color':
+                    return `.wp-admin { --primary-color: ${value}; } .admin-bar-demo { background-color: ${value}; }`;
+                case 'secondary_color':
+                    return `.wp-admin { --secondary-color: ${value}; } .preview-section { background-color: ${value}; }`;
+                case 'font_size':
+                    return `.wp-admin { font-size: ${value}px; } .admin-bar-demo { font-size: ${value}px; }`;
+                case 'border_radius':
+                    return `.wp-admin { --border-radius: ${value}px; } .admin-bar-demo { border-radius: ${value}px; }`;
+                case 'enable_animations':
+                    return value ? `.wp-admin { transition: all 0.3s ease; } .admin-bar-demo { transition: all 0.3s ease; }` : `.wp-admin { transition: none; } .admin-bar-demo { transition: none; }`;
+                case 'theme_style':
+                    var styles = {
+                        modern: '.wp-admin { --theme: modern; } .admin-bar-demo { box-shadow: 0 2px 4px rgba(0,0,0,0.2); }',
+                        classic: '.wp-admin { --theme: classic; } .admin-bar-demo { border: 1px solid #ccc; }',
+                        minimal: '.wp-admin { --theme: minimal; } .admin-bar-demo { background: transparent; border: 1px solid #666; }'
+                    };
+                    return styles[value] || styles.modern;
+                default:
+                    return `/* Setting: ${setting} = ${value} */`;
+            }
+        }
+    </script>
+    
+    <!-- Load Simple Live Preview -->
+    <script src="assets/js/simple-live-preview.js"></script>
+    
+    <script>
+        // Console output capture
+        var originalLog = console.log;
+        var originalError = console.error;
+        var consoleOutput = document.getElementById('console-output');
+        
+        function addToConsole(message, type = 'log') {
+            var div = document.createElement('div');
+            div.style.color = type === 'error' ? '#ff6b6b' : '#00ff00';
+            div.style.marginBottom = '2px';
+            div.textContent = new Date().toLocaleTimeString() + ' - ' + message;
+            consoleOutput.appendChild(div);
+            consoleOutput.scrollTop = consoleOutput.scrollHeight;
+        }
+        
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            addToConsole(args.join(' '), 'log');
+        };
+        
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            addToConsole(args.join(' '), 'error');
+        };
+        
+        // Monitor CSS injection
+        var observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.type === 'childList') {
+                    mutation.addedNodes.forEach(function(node) {
+                        if (node.nodeType === 1 && node.tagName === 'STYLE' && node.id === 'mas-preview-styles') {
+                            var injectedStyles = document.getElementById('injected-styles');
+                            injectedStyles.textContent = node.textContent || 'Empty CSS';
+                            console.log('CSS injected: ' + (node.textContent ? node.textContent.length + ' characters' : 'empty'));
+                        }
+                    });
+                }
+            });
+        });
+        
+        observer.observe(document.head, { childList: true });
+        
+        // Update range display
+        jQuery('#border_radius').on('input', function() {
+            jQuery('#border-radius-value').text(jQuery(this).val() + 'px');
+        });
+        
+        // Error testing functions
+        function testNetworkFailure() {
+            console.log('Testing network failure...');
+            var originalUrl = masV2Global.ajaxUrl;
+            masV2Global.ajaxUrl = 'http://invalid-url-that-will-fail.test';
+            
+            jQuery('#primary_color').val('#ff0000').trigger('change');
+            
+            setTimeout(() => {
+                masV2Global.ajaxUrl = originalUrl;
+                console.log('Network restored');
+            }, 3000);
+        }
+        
+        function testInvalidResponse() {
+            console.log('Testing invalid response...');
+            mockAjaxEnabled = false;
+            
+            jQuery.post = function(url, data, success) {
+                setTimeout(() => {
+                    if (success) {
+                        success({ success: false, data: { message: 'Invalid response test' } });
+                    }
+                }, 300);
+                return { done: function(cb) { return this; }, fail: function(cb) { return this; }, always: function(cb) { setTimeout(cb, 350); return this; } };
+            };
+            
+            jQuery('#secondary_color').val('#00ff00').trigger('change');
+            
+            setTimeout(() => {
+                mockAjaxEnabled = true;
+                console.log('Response handling restored');
+            }, 2000);
+        }
+        
+        function testMissingNonce() {
+            console.log('Testing missing nonce...');
+            var originalNonce = masV2Global.nonce;
+            masV2Global.nonce = '';
+            
+            jQuery('#font_size').val('18').trigger('input');
+            
+            setTimeout(() => {
+                masV2Global.nonce = originalNonce;
+                console.log('Nonce restored');
+            }, 2000);
+        }
+        
+        function testEmptyCSS() {
+            console.log('Testing empty CSS response...');
+            var originalPost = jQuery.post;
+            
+            jQuery.post = function(url, data, success) {
+                setTimeout(() => {
+                    if (success) {
+                        success({ success: true, data: { css: '', setting: data.setting, value: data.value } });
+                    }
+                }, 300);
+                return { done: function(cb) { return this; }, fail: function(cb) { return this; }, always: function(cb) { setTimeout(cb, 350); return this; } };
+            };
+            
+            jQuery('#border_radius').val('10').trigger('change');
+            
+            setTimeout(() => {
+                jQuery.post = originalPost;
+                console.log('CSS generation restored');
+            }, 2000);
+        }
+        
+        function testCriticalFailure() {
+            console.log('Testing critical failure...');
+            var backup = window.masV2Global;
+            window.masV2Global = undefined;
+            
+            jQuery('#theme_style').val('classic').trigger('change');
+            
+            setTimeout(() => {
+                window.masV2Global = backup;
+                console.log('Critical systems restored');
+            }, 3000);
+        }
+        
+        function restoreNormalOperation() {
+            console.log('Restoring normal operation...');
+            mockAjaxEnabled = true;
+            location.reload();
+        }
+        
+        // Run diagnostic tests
+        jQuery(document).ready(function() {
+            setTimeout(function() {
+                var results = document.getElementById('test-results');
+                var tests = [
+                    {
+                        name: 'jQuery Available',
+                        test: () => typeof jQuery !== 'undefined',
+                        expected: true
+                    },
+                    {
+                        name: 'masV2Global Defined',
+                        test: () => typeof masV2Global !== 'undefined',
+                        expected: true
+                    },
+                    {
+                        name: 'AJAX URL Present',
+                        test: () => masV2Global && masV2Global.ajaxUrl,
+                        expected: true
+                    },
+                    {
+                        name: 'Nonce Present',
+                        test: () => masV2Global && masV2Global.nonce,
+                        expected: true
+                    },
+                    {
+                        name: 'Form Elements Found',
+                        test: () => jQuery('.mas-v2-color, .mas-v2-input, .mas-v2-checkbox, .mas-v2-select, .mas-v2-slider').length > 0,
+                        expected: true
+                    },
+                    {
+                        name: 'Simple Live Preview Loaded',
+                        test: () => {
+                            // Check if the script has initialized by looking for event handlers
+                            var hasHandlers = false;
+                            jQuery('.mas-v2-color, .mas-v2-input, .mas-v2-checkbox, .mas-v2-select, .mas-v2-slider').each(function() {
+                                var events = jQuery._data(this, 'events');
+                                if (events && (events.change || events.input)) {
+                                    hasHandlers = true;
+                                    return false;
+                                }
+                            });
+                            return hasHandlers;
+                        },
+                        expected: true
+                    }
+                ];
+                
+                var passed = 0;
+                var total = tests.length;
+                
+                results.innerHTML = '<h3>Diagnostic Test Results</h3>';
+                
+                tests.forEach(test => {
+                    var result = test.test();
+                    var status = result === test.expected ? 'PASS' : 'FAIL';
+                    var className = result === test.expected ? 'test-pass' : 'test-fail';
+                    
+                    if (result === test.expected) passed++;
+                    
+                    results.innerHTML += `<div class="test-status ${className}">
+                        ${status}: ${test.name} (Expected: ${test.expected}, Got: ${result})
+                    </div>`;
+                });
+                
+                results.innerHTML += `<div class="test-status ${passed === total ? 'test-pass' : 'test-fail'}">
+                    Overall: ${passed}/${total} tests passed
+                </div>`;
+                
+                if (passed === total) {
+                    console.log('✅ All diagnostic tests passed - system ready for testing');
+                } else {
+                    console.error('❌ Some diagnostic tests failed - check configuration');
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

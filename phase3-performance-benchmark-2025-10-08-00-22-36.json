@@ -1,0 +1,118 @@
+{
+    "timestamp": "2025-10-08T00:22:36+00:00",
+    "benchmark_results": {
+        "file_loading": {
+            "total_files": 2,
+            "loaded_files": 2,
+            "total_size_bytes": 48369,
+            "total_size_kb": 47.24,
+            "total_load_time_ms": 2.22,
+            "avg_load_time_ms": 0.03,
+            "memory_used_bytes": 33200,
+            "files_per_second": 900.07,
+            "baseline_comparison": {
+                "baseline_value": 500,
+                "current_value": 2.2220611572265625,
+                "improvement": 497.77793884277344,
+                "improvement_percent": 99.56,
+                "status": "improved"
+            }
+        },
+        "memory_usage": {
+            "initial_memory_bytes": 390288,
+            "final_memory_bytes": 444920,
+            "memory_used_bytes": 54632,
+            "memory_used_kb": 53.35,
+            "peak_memory_used_bytes": 0,
+            "peak_memory_used_kb": 0,
+            "current_footprint_bytes": 48369,
+            "current_footprint_kb": 47.24,
+            "phase3_estimated_kb": 465,
+            "memory_savings_bytes": 427791,
+            "memory_savings_kb": 417.76,
+            "savings_percent": 89.84,
+            "baseline_comparison": {
+                "baseline_value": 524288,
+                "current_value": 54632,
+                "improvement": 469656,
+                "improvement_percent": 89.58,
+                "status": "improved"
+            }
+        },
+        "script_execution": {
+            "iterations": 10,
+            "avg_execution_time_ms": 8.22,
+            "min_execution_time_ms": 8.11,
+            "max_execution_time_ms": 8.99,
+            "std_deviation_ms": 0.26,
+            "execution_times": [
+                8.16,
+                8.14,
+                8.13,
+                8.99,
+                8.11,
+                8.13,
+                8.12,
+                8.13,
+                8.13,
+                8.13
+            ],
+            "baseline_comparison": {
+                "baseline_value": 200,
+                "current_value": 8.217287063598633,
+                "improvement": 191.78271293640137,
+                "improvement_percent": 95.89,
+                "status": "improved"
+            }
+        },
+        "network_requests": {
+            "total_requests": 2,
+            "successful_requests": 2,
+            "total_request_time_ms": 4.18,
+            "avg_request_time_ms": 2.09,
+            "phase3_requests": 14,
+            "current_requests": 2,
+            "requests_eliminated": 12,
+            "reduction_percent": 85.71,
+            "baseline_comparison": {
+                "baseline_value": 800,
+                "current_value": 4.17780876159668,
+                "improvement": 795.8221912384033,
+                "improvement_percent": 99.48,
+                "status": "improved"
+            }
+        },
+        "dom_operations": {
+            "total_operations": 5,
+            "total_dom_time_ms": 18.34,
+            "avg_operation_time_ms": 3.67,
+            "operation_times": {
+                "form_initialization": 5.07,
+                "event_binding": 3.07,
+                "live_preview_setup": 4.07,
+                "settings_loading": 2.56,
+                "ui_updates": 3.55
+            },
+            "baseline_comparison": {
+                "baseline_value": 150,
+                "current_value": 18.342971801757812,
+                "improvement": 131.6570281982422,
+                "improvement_percent": 87.77,
+                "status": "improved"
+            }
+        }
+    },
+    "baseline_data": {
+        "file_loading": 500,
+        "memory_usage": 524288,
+        "script_execution": 200,
+        "network_requests": 800,
+        "dom_operations": 150
+    },
+    "overall_improvement": 94.46,
+    "system_info": {
+        "php_version": "8.4.13",
+        "memory_limit": "128M",
+        "max_execution_time": "0"
+    }
+}

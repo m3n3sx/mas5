@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAS Preview Diagnostics Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f0f0f1;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        h1 { color: #1d2327; }
+        h2 { color: #2c3338; margin-top: 0; }
+        .console-output {
+            background: #1d2327;
+            color: #50fa7b;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+            margin: 10px 0;
+        }
+        .test-input {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        input[type="text"],
+        input[type="number"],
+        input[type="color"],
+        select {
+            padding: 8px;
+            border: 1px solid #8c8f94;
+            border-radius: 4px;
+            width: 200px;
+        }
+        button {
+            background: #2271b1;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #135e96;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .status.success {
+            background: #d5f4e6;
+            color: #00a32a;
+            border: 1px solid #00a32a;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #d63638;
+            border: 1px solid #d63638;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 MAS Preview Diagnostic System Test</h1>
+    
+    <div class="test-section">
+        <h2>Test Scenario 1: Normal Operation</h2>
+        <p>This test simulates normal operation with all required dependencies available.</p>
+        <button onclick="testNormalOperation()">Run Test</button>
+        <div id="test1-status"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test Scenario 2: Missing masV2Global</h2>
+        <p>This test simulates what happens when masV2Global is not defined.</p>
+        <button onclick="testMissingGlobal()">Run Test</button>
+        <div id="test2-status"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test Scenario 3: Missing Required Properties</h2>
+        <p>This test simulates what happens when masV2Global is missing required properties.</p>
+        <button onclick="testMissingProperties()">Run Test</button>
+        <div id="test3-status"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Test Scenario 4: Form Element Detection</h2>
+        <p>This test verifies that the diagnostic system can detect form elements.</p>
+        
+        <div class="test-input">
+            <label>Color Input:</label>
+            <input type="color" class="mas-v2-color" name="mas_v2_settings[test_color]" value="#2271b1">
+        </div>
+        
+        <div class="test-input">
+            <label>Text Input:</label>
+            <input type="text" class="mas-v2-input" name="mas_v2_settings[test_text]" value="Test">
+        </div>
+        
+        <div class="test-input">
+            <label>Checkbox:</label>
+            <input type="checkbox" class="mas-v2-checkbox" name="mas_v2_settings[test_checkbox]" checked>
+        </div>
+        
+        <div class="test-input">
+            <label>Select:</label>
+            <select class="mas-v2-select" name="mas_v2_settings[test_select]">
+                <option value="option1">Option 1</option>
+                <option value="option2">Option 2</option>
+            </select>
+        </div>
+        
+        <div class="test-input">
+            <label>Range Slider:</label>
+            <input type="range" class="mas-v2-slider" name="mas_v2_settings[test_slider]" min="0" max="100" value="50">
+        </div>
+        
+        <button onclick="testFormElements()">Run Test</button>
+        <div id="test4-status"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>Console Output</h2>
+        <p>Open your browser's developer console (F12) to see detailed diagnostic messages with [MAS Preview] prefix.</p>
+        <div class="console-output" id="console-output">
+            Console messages will appear here...
+        </div>
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Capture console messages
+        var originalLog = console.log;
+        var originalError = console.error;
+        var consoleOutput = [];
+        
+        console.log = function() {
+            originalLog.apply(console, arguments);
+            var message = Array.from(arguments).map(arg => 
+                typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
+            ).join(' ');
+            consoleOutput.push('<div style="color: #50fa7b;">' + message + '</div>');
+            updateConsoleOutput();
+        };
+        
+        console.error = function() {
+            originalError.apply(console, arguments);
+            var message = Array.from(arguments).map(arg => 
+                typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
+            ).join(' ');
+            consoleOutput.push('<div style="color: #ff5555;">' + message + '</div>');
+            updateConsoleOutput();
+        };
+        
+        function updateConsoleOutput() {
+            document.getElementById('console-output').innerHTML = consoleOutput.join('');
+        }
+        
+        function showStatus(elementId, success, message) {
+            var el = document.getElementById(elementId);
+            el.className = 'status ' + (success ? 'success' : 'error');
+            el.innerHTML = (success ? '✓ ' : '✗ ') + message;
+        }
+        
+        function testNormalOperation() {
+            consoleOutput = [];
+            
+            // Set up masV2Global
+            window.masV2Global = {
+                ajaxUrl: '/wp-admin/admin-ajax.php',
+                nonce: 'test-nonce-123',
+                settings: {}
+            };
+            
+            // Create diagnostic system
+            var MASPreviewDiagnostics = {
+                enabled: true,
+                log: function(message, data) {
+                    if (!this.enabled) return;
+                    if (data !== undefined) {
+                        console.log('[MAS Preview] ' + message, data);
+                    } else {
+                        console.log('[MAS Preview] ' + message);
+                    }
+                },
+                error: function(message, error) {
+                    if (error !== undefined) {
+                        console.error('[MAS Preview ERROR] ' + message, error);
+                    } else {
+                        console.error('[MAS Preview ERROR] ' + message);
+                    }
+                },
+                test: function() {
+                    this.log('Running diagnostics...');
+                    
+                    if (typeof masV2Global === 'undefined') {
+                        this.error('masV2Global is not defined');
+                        return false;
+                    }
+                    this.log('✓ masV2Global defined', masV2Global);
+                    
+                    var required = ['ajaxUrl', 'nonce', 'settings'];
+                    for (var i = 0; i < required.length; i++) {
+                        var prop = required[i];
+                        if (!masV2Global[prop]) {
+                            this.error('masV2Global.' + prop + ' is missing');
+                            return false;
+                        }
+                    }
+                    this.log('✓ All required properties present');
+                    
+                    if (typeof jQuery === 'undefined') {
+                        this.error('jQuery is not loaded');
+                        return false;
+                    }
+                    this.log('✓ jQuery loaded');
+                    
+                    var elements = $('.mas-v2-color, .mas-v2-input, .mas-v2-checkbox, .mas-v2-select, .mas-v2-slider');
+                    this.log('✓ Found ' + elements.length + ' form elements');
+                    
+                    return true;
+                }
+            };
+            
+            var result = MASPreviewDiagnostics.test();
+            showStatus('test1-status', result, result ? 'All diagnostics passed!' : 'Diagnostics failed');
+        }
+        
+        function testMissingGlobal() {
+            consoleOutput = [];
+            
+            // Remove masV2Global
+            delete window.masV2Global;
+            
+            var MASPreviewDiagnostics = {
+                enabled: true,
+                log: function(message, data) {
+                    if (!this.enabled) return;
+                    if (data !== undefined) {
+                        console.log('[MAS Preview] ' + message, data);
+                    } else {
+                        console.log('[MAS Preview] ' + message);
+                    }
+                },
+                error: function(message, error) {
+                    if (error !== undefined) {
+                        console.error('[MAS Preview ERROR] ' + message, error);
+                    } else {
+                        console.error('[MAS Preview ERROR] ' + message);
+                    }
+                },
+                test: function() {
+                    this.log('Running diagnostics...');
+                    
+                    if (typeof masV2Global === 'undefined') {
+                        this.error('masV2Global is not defined');
+                        return false;
+                    }
+                    this.log('✓ masV2Global defined', masV2Global);
+                    
+                    return true;
+                }
+            };
+            
+            var result = MASPreviewDiagnostics.test();
+            showStatus('test2-status', !result, 'Correctly detected missing masV2Global and exited gracefully');
+        }
+        
+        function testMissingProperties() {
+            consoleOutput = [];
+            
+            // Set up incomplete masV2Global
+            window.masV2Global = {
+                ajaxUrl: '/wp-admin/admin-ajax.php'
+                // Missing nonce and settings
+            };
+            
+            var MASPreviewDiagnostics = {
+                enabled: true,
+                log: function(message, data) {
+                    if (!this.enabled) return;
+                    if (data !== undefined) {
+                        console.log('[MAS Preview] ' + message, data);
+                    } else {
+                        console.log('[MAS Preview] ' + message);
+                    }
+                },
+                error: function(message, error) {
+                    if (error !== undefined) {
+                        console.error('[MAS Preview ERROR] ' + message, error);
+                    } else {
+                        console.error('[MAS Preview ERROR] ' + message);
+                    }
+                },
+                test: function() {
+                    this.log('Running diagnostics...');
+                    
+                    if (typeof masV2Global === 'undefined') {
+                        this.error('masV2Global is not defined');
+                        return false;
+                    }
+                    this.log('✓ masV2Global defined', masV2Global);
+                    
+                    var required = ['ajaxUrl', 'nonce', 'settings'];
+                    for (var i = 0; i < required.length; i++) {
+                        var prop = required[i];
+                        if (!masV2Global[prop]) {
+                            this.error('masV2Global.' + prop + ' is missing');
+                            return false;
+                        }
+                    }
+                    this.log('✓ All required properties present');
+                    
+                    return true;
+                }
+            };
+            
+            var result = MASPreviewDiagnostics.test();
+            showStatus('test3-status', !result, 'Correctly detected missing properties and exited gracefully');
+        }
+        
+        function testFormElements() {
+            consoleOutput = [];
+            
+            // Set up masV2Global
+            window.masV2Global = {
+                ajaxUrl: '/wp-admin/admin-ajax.php',
+                nonce: 'test-nonce-123',
+                settings: {}
+            };
+            
+            var MASPreviewDiagnostics = {
+                enabled: true,
+                log: function(message, data) {
+                    if (!this.enabled) return;
+                    if (data !== undefined) {
+                        console.log('[MAS Preview] ' + message, data);
+                    } else {
+                        console.log('[MAS Preview] ' + message);
+                    }
+                },
+                error: function(message, error) {
+                    if (error !== undefined) {
+                        console.error('[MAS Preview ERROR] ' + message, error);
+                    } else {
+                        console.error('[MAS Preview ERROR] ' + message);
+                    }
+                },
+                test: function() {
+                    this.log('Running diagnostics...');
+                    
+                    if (typeof masV2Global === 'undefined') {
+                        this.error('masV2Global is not defined');
+                        return false;
+                    }
+                    this.log('✓ masV2Global defined');
+                    
+                    var required = ['ajaxUrl', 'nonce', 'settings'];
+                    for (var i = 0; i < required.length; i++) {
+                        var prop = required[i];
+                        if (!masV2Global[prop]) {
+                            this.error('masV2Global.' + prop + ' is missing');
+                            return false;
+                        }
+                    }
+                    this.log('✓ All required properties present');
+                    
+                    if (typeof jQuery === 'undefined') {
+                        this.error('jQuery is not loaded');
+                        return false;
+                    }
+                    this.log('✓ jQuery loaded');
+                    
+                    var elements = $('.mas-v2-color, .mas-v2-input, .mas-v2-checkbox, .mas-v2-select, .mas-v2-slider');
+                    this.log('✓ Found ' + elements.length + ' form elements');
+                    
+                    return true;
+                }
+            };
+            
+            var result = MASPreviewDiagnostics.test();
+            showStatus('test4-status', result, 'Found 5 form elements on the page');
+        }
+        
+        // Run initial test
+        setTimeout(function() {
+            testNormalOperation();
+        }, 500);
+    </script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MAS5 Live Diagnostics</title>
+    <style>
+        body { font-family: monospace; padding: 20px; background: #1e1e1e; color: #d4d4d4; }
+        .section { margin: 20px 0; padding: 15px; background: #252526; border-left: 3px solid #007acc; }
+        .pass { color: #4ec9b0; }
+        .fail { color: #f48771; }
+        .warn { color: #dcdcaa; }
+        h2 { color: #569cd6; margin-top: 0; }
+        pre { background: #1e1e1e; padding: 10px; overflow-x: auto; }
+        button { background: #007acc; color: white; border: none; padding: 10px 20px; cursor: pointer; margin: 5px; }
+        button:hover { background: #005a9e; }
+        .result { margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>🔍 MAS5 Live Diagnostics Tool</h1>
+    <p>This tool will run comprehensive diagnostics on the MAS5 plugin.</p>
+    
+    <button onclick="runAllDiagnostics()">▶️ Run All Diagnostics</button>
+    <button onclick="clearResults()">🗑️ Clear Results</button>
+    <button onclick="copyResults()">📋 Copy Results</button>
+    
+    <div id="results"></div>
+
+    <script>
+        let diagnosticResults = [];
+        
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleT

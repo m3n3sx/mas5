@@ -808,17 +808,26 @@ class ModernAdminStylerV2 {
             true
         );
         
-        // Localize script with all required data
-        wp_localize_script('mas-v2-settings-form-handler', 'masV2Global', [
+        // Localize script with all required data - MUST be before script enqueue
+        $mas_global_data = [
             'ajaxUrl' => admin_url('admin-ajax.php'),
-            'restUrl' => rest_url('mas/v2/'),
+            'restUrl' => rest_url('mas-v2/'),
             'nonce' => wp_create_nonce('mas_v2_nonce'),
             'restNonce' => wp_create_nonce('wp_rest'),
             'settings' => $this->getSettings(),
             'debug_mode' => defined('WP_DEBUG') && WP_DEBUG,
             'frontendMode' => 'phase2-stable',
             'emergencyMode' => true
-        ]);
+        ];
+        
+        // Add inline script BEFORE handler loads to ensure masV2Global exists
+        wp_add_inline_script('jquery', 
+            'window.masV2Global = ' . wp_json_encode($mas_global_data) . ';', 
+            'after'
+        );
+        
+        // Also localize for compatibility
+        wp_localize_script('mas-v2-settings-form-handler', 'masV2Global', $mas_global_data);
     }
     
     /**
@@ -1964,36 +1973,69 @@ class ModernAdminStylerV2 {
      * Migration guide: https://github.com/your-repo/modern-admin-styler-v2/wiki/REST-API-Migration
      */
     public function ajaxGetPreviewCSS() {
-        // Security check
-        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'mas_v2_nonce')) {
-            wp_send_json_error(['message' => __('Security error', 'modern-admin-styler-v2')]);
+        // Task 6.1: Debug logging when WP_DEBUG is enabled
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log('MAS: ajaxGetPreviewCSS called');
+            error_log('MAS: POST data: ' . print_r($_POST, true));
         }
         
+        // Task 6.2: Enhanced security check with logging
+        if (!wp_verify_nonce($_POST['nonce'] ?? '', 'mas_v2_nonce')) {
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                error_log('MAS: Nonce verification failed in ajaxGetPreviewCSS');
+            }
+            wp_send_json_error(['message' => __('Security error', 'modern-admin-styler-v2')]);
+            return;
+        }
+        
+        // Task 6.2: Enhanced permission check with logging
         if (!current_user_can('manage_options')) {
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                error_log('MAS: Permission check failed in ajaxGetPreviewCSS');
+            }
             wp_send_json_error(['message' => __('Insufficient permissions', 'modern-admin-styler-v2')]);
+            return;
         }
         
         $start_time = microtime(true);
         
+        // Task 6.2: Wrap CSS generation in try-catch with enhanced error handling
         try {
             // Get current settings
             $settings = $this->getSettings();
             
+            // Task 6.1: Log current settings count
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                error_log('MAS: Current settings count: ' . count($settings));
+            }
+            
             // Update single setting if provided
+            $setting_name = null;
+            $setting_value = null;
+            
             if (isset($_POST['setting']) && isset($_POST['value'])) {
                 $setting_key = sanitize_key($_POST['setting']);
                 $value = wp_unslash($_POST['value']);
+                
+                // Task 6.1: Log setting being updated
+                if (defined('WP_DEBUG') && WP_DEBUG) {
+                    error_log("MAS: Updating setting: {$setting_key} = " . var_export($value, true));
+                }
                 
                 // Sanitize value based on type
                 if (is_numeric($value)) {
                     $settings[$setting_key] = intval($value);
                 } elseif (preg_match('/^#[0-9a-fA-F]{6}$/', $value)) {
                     $settings[$setting_key] = sanitize_hex_color($value);
-                } elseif ($value === 'true' || $value === 'false') {
-                    $settings[$setting_key] = ($value === 'true');
+                } elseif ($value === 'true' || $value === 'false' || $value === true || $value === false) {
+                    $settings[$setting_key] = ($value === 'true' || $value === true);
                 } else {
                     $settings[$setting_key] = sanitize_text_field($value);
                 }
+                
+                // Task 6.3: Store for response
+                $setting_name = $setting_key;
+                $setting_value = $settings[$setting_key];
             }
             
             // Generate CSS
@@ -2003,17 +2045,33 @@ class ModernAdminStylerV2 {
             $css .= $this->generateMenuCSS($settings);
             $css .= $this->generateAdminBarCSS($settings);
             
+            // Task 6.1: Log generated CSS length
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                error_log('MAS: Generated CSS length: ' . strlen($css) . ' characters');
+            }
+            
             $execution_time = round((microtime(true) - $start_time) * 1000, 2);
             
+            // Task 6.3: Enhanced response data with setting name, value, and performance metrics
             wp_send_json_success([
                 'css' => $css,
+                'setting' => $setting_name,
+                'value' => $setting_value,
                 'performance' => [
                     'execution_time_ms' => $execution_time,
-                    'memory_usage_mb' => round(memory_get_usage(true) / 1024 / 1024, 2)
+                    'memory_usage_mb' => round(memory_get_usage(true) / 1024 / 1024, 2),
+                    'css_length' => strlen($css)
                 ]
             ]);
             
         } catch (Exception $e) {
+            // Task 6.2: Log exceptions with full message
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                error_log('MAS: Exception in ajaxGetPreviewCSS: ' . $e->getMessage());
+                error_log('MAS: Exception trace: ' . $e->getTraceAsString());
+            }
+            
+            // Task 6.2: Return JSON error with clear message
             wp_send_json_error([
                 'message' => $e->getMessage(),
                 'code' => 'css_generation_failed'

@@ -117,7 +117,7 @@
                 window.wpApiSettings &&
                 window.wpApiSettings.root &&
                 window.wpApiSettings.nonce &&
-                typeof window.MASRestClient !== 'undefined'
+                window.MASRestClient
             );
         }
         
@@ -196,11 +196,13 @@
                 // Submit via REST or AJAX
                 let result;
                 if (this.useRest && this.client) {
-                    result = await this.submitViaRest(settings).catch(error => {
+                    try {
+                        result = await this.submitViaRest(settings);
+                    } catch (error) {
                         this.log('REST failed, falling back to AJAX:', error);
                         this.showWarning('REST API unavailable, using fallback method');
-                        return this.submitViaAjax(settings);
-                    });
+                        result = await this.submitViaAjax(settings);
+                    }
                 } else {
                     result = await this.submitViaAjax(settings);
                 }
@@ -238,7 +240,6 @@
                 const name = checkbox.getAttribute('name');
                 if (name && !settings.hasOwnProperty(name)) {
                     settings[name] = '0'; // Unchecked = 0
-                    this.log('Added unchecked checkbox:', name, '= 0');
                 }
             });
             
@@ -385,10 +386,12 @@
                 let result;
                 
                 if (this.useRest && this.client) {
-                    result = await this.client.resetSettings().catch(error => {
+                    try {
+                        result = await this.client.resetSettings();
+                    } catch (error) {
                         this.log('REST reset failed, falling back to AJAX:', error);
-                        return this.resetViaAjax();
-                    });
+                        result = await this.resetViaAjax();
+                    }
                 } else {
                     result = await this.resetViaAjax();
                 }
